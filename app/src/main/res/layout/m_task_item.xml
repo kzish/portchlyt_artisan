@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/linlay"
+    android:orientation="horizontal">
+
+    <TextView
+        android:layout_gravity="left"
+        android:gravity="left"
+        android:textColor="#000"
+        android:textSize="10dp"
+        android:layout_weight="0.6"
+        android:id="@+id/txt_task_description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="changing light bulb"/>
+
+    <TextView
+        android:layout_gravity="left"
+        android:gravity="left"
+        android:textColor="#000"
+        android:textSize="10dp"
+        android:layout_weight="0.3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="12000"
+        android:id="@+id/txt_task_price"
+        />
+
+    <ImageView
+        android:layout_gravity="right"
+        android:foregroundGravity="right"
+        android:layout_weight="0.1"
+        android:layout_width="0dp"
+        android:layout_height="20dp"
+        android:id="@+id/img_delete"
+        android:src="@drawable/ic_delete_forever_black_24dp"
+        />
+
+</LinearLayout>

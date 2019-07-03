@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linlay"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".DisputeNotificationActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/mtoolbar"
+        android:layout_width="match_parent"
+        android:layout_height="57dp"
+        android:background="@color/primary"
+        android:elevation="5dp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="20dp">
+
+
+        <LinearLayout
+            android:id="@+id/linlay1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/img_profile"
+            android:layout_centerHorizontal="true"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:text="@string/a_dispute_as_been_opened"
+                android:textColor="#000"
+                android:textSize="30dp" />
+
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/linlay1"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/et_background"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:text="@string/reason_for_dispute"
+                android:textColor="#000"
+                android:textSize="10dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txt_reason_for_dispute"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="too slow" />
+
+
+        </LinearLayout>
+
+        <TextView
+            android:gravity="center"
+            android:layout_centerInParent="true"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:text="@string/we_will_contact_you_to_resolve_the_issue_within_24_hrs" />
+
+
+    </RelativeLayout>
+
+</LinearLayout>
+
+
+

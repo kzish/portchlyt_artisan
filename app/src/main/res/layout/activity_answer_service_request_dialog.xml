@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="true"
+    android:id="@+id/context_view"
+    tools:context=".AnswerServiceRequestDialogActivity">
+
+    <LinearLayout
+        android:id="@+id/linlay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:drawable/dialog_holo_light_frame"
+            android:minHeight="85dp"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <TextView
+                android:id="@+id/txt_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3 bateman drive chinda heights zvishavane" />
+
+            <TextView
+                android:shadowColor="#00F"
+                android:id="@+id/txt_service_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Carpentry"
+                android:textColor="#000"
+                android:textStyle="bold"
+                android:textSize="10dp" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:drawable/dialog_holo_light_frame"
+            android:minHeight="85dp"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <TextView
+                android:id="@+id/txt_eta"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="approximatly 40 mins" />
+
+            <TextView
+                android:id="@+id/txt_client_mobile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0773303669" />
+
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/linlay_map"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:background="@android:drawable/dialog_holo_light_frame"
+            android:orientation="vertical">
+
+            <com.google.android.gms.maps.MapView
+                android:id="@+id/map"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linlay_accept_reject"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:drawable/dialog_holo_light_frame"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <com.agik.AGIKSwipeButton.View.Swipe_Button_View
+                android:id="@+id/btn_reject"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_weight="0.3"
+                app:sb_swipe_animate_text="true"
+                app:sb_swipe_bg_color="#f00"
+                app:sb_swipe_text="@string/reject"
+                app:sb_thumb_bg_color="#f00" />
+
+            <TextView
+                android:id="@+id/txt_count_down_timer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|center_horizontal|center_vertical"
+                android:layout_marginTop="-5dp"
+                android:layout_weight="0.4"
+                android:gravity="center|center_vertical|center_horizontal"
+                android:text="20"
+                android:textColor="#000"
+                android:textSize="37dp"
+                android:textStyle="bold" />
+
+            <com.agik.AGIKSwipeButton.View.Swipe_Button_View
+                android:id="@+id/btn_accept"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_weight="0.3"
+                app:sb_swipe_animate_text="true"
+                app:sb_swipe_bg_color="#0f0"
+                app:sb_swipe_reverse="true"
+                app:sb_swipe_text="@string/accept"
+                app:sb_thumb_bg_color="#0f0" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/linlay_explanation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:drawable/dialog_holo_light_frame"
+            android:orientation="vertical"
+            android:padding="20dp">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/we_want_to_know_why_you_did_not_respond"/>
+
+                <RadioGroup
+                    android:id="@+id/rd_response"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <RadioButton
+                        android:checked="true"
+                        android:id="@+id/rd_1"
+                        android:elevation="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/i_am_busy" />
+
+                    <RadioButton
+                        android:id="@+id/rd_2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/i_am_slow_to_answer" />
+
+
+                    <RadioButton
+                        android:id="@+id/rd_3"
+                        android:elevation="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/i_cannot_do_this_job_right_now" />
+
+                    <RadioButton
+                        android:id="@+id/rd_4"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/the_place_is_too_far" />
+                </RadioGroup>
+                
+           
+
+
+            <com.beardedhen.androidbootstrap.BootstrapButton
+                android:layout_width="match_parent"
+                android:onClick="SubmitReasonForNotAnswering"
+                android:layout_height="wrap_content"
+                android:text="@string/submit"
+                app:roundedCorners="true"
+                app:showOutline="true" />
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
