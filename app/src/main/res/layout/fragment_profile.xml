@@ -11,95 +11,154 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#fff"
-        android:orientation="vertical"
-        android:padding="10dp">
+        android:orientation="vertical">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#fff"
+            android:background="@color/primary"
+            android:elevation="20dp"
             android:orientation="horizontal"
             android:weightSum="1">
 
             <RelativeLayout
-                android:layout_marginTop="10dp"
-                android:layout_weight="0.5"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                >
-                <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_centerInParent="true"
+                android:layout_marginTop="10dp"
+                android:padding="1dp">
+
+                <com.jackandphantom.circularimageview.CircleImage
                     android:id="@+id/img_profile"
-                    android:layout_centerInParent="true"
                     android:layout_width="150dp"
                     android:layout_height="150dp"
+                    android:layout_centerInParent="true"
+                    android:outlineAmbientShadowColor="@color/primary"
+                    android:outlineSpotShadowColor="@color/primary_light"
                     android:src="@drawable/ic_worker"
-                    app:civ_border_color="#000"
-                    android:forceHasOverlappingRendering="true"
-                    app:civ_border_width="1dp" />
+                    app:add_shadow="true"
+                    app:shadow_color="#000"
+                    app:shadow_radius="10" />
 
                 <ProgressBar
-                    android:visibility="invisible"
-                    android:layout_centerInParent="true"
                     android:id="@+id/img_progress_bar"
                     style="?android:attr/progressBarStyle"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                     />
+                    android:layout_centerInParent="true"
+                    android:visibility="invisible" />
 
                 <TextView
-                    android:layout_below="@+id/img_profile"
-                    android:layout_marginTop="20dp"
-                    android:layout_centerHorizontal="true"
-                    android:layout_alignParentBottom="true"
-                    android:layout_width="wrap_content"
-                    android:textColor="#000"
-                    android:textSize="7dp"
-                    android:text="@string/change_profile_picture"
-                    android:layout_height="wrap_content"/>
-
-
-
-            </RelativeLayout>
-
-            <RelativeLayout
-
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.5"
-                android:padding="10dp">
-
-                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:orientation="vertical">
+                    android:layout_below="@+id/img_profile"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/change_profile_picture"
+                    android:textColor="#000"
+                    android:textSize="7dp" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="1 pending jobs"
-                        android:textColor="#000"
-                        android:textSize="9dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="total earnings: N5000"
-                        android:textColor="#000"
-                        android:textSize="9dp" />
-
-                </LinearLayout>
 
             </RelativeLayout>
+
+        </RelativeLayout>
+
+
+        <!--tabs for number of jobs-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:elevation="20dp"
+            android:orientation="horizontal"
+            android:weightSum="0.9">
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.3"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <com.beardedhen.androidbootstrap.BootstrapLabel
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:elevation="10dp"
+                    android:textSize="10dp"
+                    android:text="8"
+                    app:bootstrapBrand="info"
+                    app:bootstrapHeading="h1"
+                    app:roundedCorners="true" />
+
+                <TextView
+                    android:textColor="#000"
+                    android:textStyle="bold"
+                    android:textSize="11dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/jobs" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.3"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <com.beardedhen.androidbootstrap.BootstrapLabel
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:elevation="10dp"
+                    android:text="8"
+                    app:bootstrapBrand="success"
+                    app:bootstrapHeading="h1"
+                    app:roundedCorners="true" />
+
+
+                <TextView
+                    android:textColor="#000"
+                    android:textStyle="bold"
+                    android:textSize="11dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/earnings" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.3"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <com.beardedhen.androidbootstrap.BootstrapLabel
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:elevation="10dp"
+                    android:text="8"
+                    app:bootstrapBrand="danger"
+                    app:bootstrapHeading="h1"
+                    app:roundedCorners="true" />
+
+
+                <TextView
+                    android:textColor="#000"
+                    android:textStyle="bold"
+                    android:textSize="11dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/notifications" />
+            </LinearLayout>
 
 
         </LinearLayout>
+        <!--.tabs for number of jobs-->
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_margin="10dp"
-            android:background="#000" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -115,6 +174,9 @@
                 android:weightSum="1">
 
                 <TextView
+                    android:textColor="#000"
+                    android:textStyle="bold"
+                    android:textSize="11dp"
                     android:id="@+id/txt_mobile"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -240,12 +302,12 @@
             android:orientation="vertical">
 
             <TextView
-                android:clickable="true"
                 android:id="@+id/txt_location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
+                android:clickable="true"
                 android:text="@string/tap_to_enable_your_location_settings"
                 android:textColor="#000" />
 
@@ -260,12 +322,28 @@
             android:orientation="vertical"
             android:padding="30dp">
 
-            <TextView
-                android:id="@+id/txt_skills"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/open_edit_skills_activity"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="Carpentry, Electricals, Swimming pools" />
+                android:orientation="horizontal"
+                android:weightSum="1"
+                >
+                <TextView
+                    android:layout_weight="0.9"
+                    android:id="@+id/txt_skills"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="Carpentry, Electricals, Swimming pools" />
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="12dp"
+                    android:layout_gravity="center_horizontal|center|center_vertical"
+                    android:layout_weight="0.1"
+                    android:src="@drawable/ic_edit_black_24dp" />
+            </LinearLayout>
 
             <RatingBar
                 android:id="@+id/ratingBar"
@@ -273,8 +351,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:foregroundGravity="center_horizontal"
-                android:numStars="5"
                 android:isIndicator="true"
+                android:numStars="5"
                 android:scaleX="0.5"
                 android:scaleY="0.5"
                 android:stepSize="1" />

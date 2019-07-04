@@ -42,6 +42,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.porchlyt_artisan.AddSkillsActivity;
 import com.example.porchlyt_artisan.R;
 import com.example.porchlyt_artisan.app;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -51,6 +52,7 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
+import com.jackandphantom.circularimageview.CircleImage;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.koushikdutta.ion.Response;
@@ -68,7 +70,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import de.hdodenhof.circleimageview.CircleImageView;
+
 import globals.*;
 
 import javax.annotation.Nullable;
@@ -91,8 +93,9 @@ public class ProfileFragment extends Fragment {
     Switch switchAvailable;
     TextView txt_skills;
     LinearLayout content_view;
-    CircleImageView img_profile;
+    CircleImage img_profile;
     public static Context ctx;
+    LinearLayout open_edit_skills_activity;
 
     String my_address = "";
 
@@ -165,9 +168,17 @@ public class ProfileFragment extends Fragment {
         txt_location = (TextView) view.findViewById(R.id.txt_location);//this will be updated automatically
         txt_hourly_rate = (EditText) view.findViewById(R.id.txt_hourly_rate);
         txt_skills = (TextView) view.findViewById(R.id.txt_skills);
-        img_profile = (CircleImageView) view.findViewById(R.id.img_profile);
+        img_profile = (CircleImage) view.findViewById(R.id.img_profile);
         img_progress_bar = (ProgressBar) view.findViewById(R.id.img_progress_bar);
         ratingBar = (RatingBar) view.findViewById(R.id.ratingBar);
+        open_edit_skills_activity = (LinearLayout) view.findViewById(R.id.open_edit_skills_activity);
+
+        open_edit_skills_activity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), AddSkillsActivity.class));
+            }
+        });
 
 
         Realm db = globals.getDB();
@@ -909,6 +920,9 @@ public class ProfileFragment extends Fragment {
             db.close();
         }
     }
+
+
+
 
 
 }//.class

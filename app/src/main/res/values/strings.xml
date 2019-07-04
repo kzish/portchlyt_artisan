@@ -67,7 +67,7 @@
     <string name="change_profile_picture">Change Profile Picture</string>
     <string name="select_photo_from_gallery">Select photo from gallery</string>
     <string name="capture_photo_from_camera">Capture photo from camera</string>
-    <string name="clear_photo">Clear phconfirm_reciept_of_cash_paymentoto</string>
+    <string name="clear_photo">Clear photo</string>
     <string name="total_amount">Total amount</string>
     <string name="cash_payment_received">Cash payment received for:</string>
     <string name="accept_payment">Accept payment</string>
@@ -80,5 +80,7 @@
     <string name="we_will_contact_you_to_resolve_the_issue_within_24_hrs">We will contact you to resolve the issue within 24 hrs</string>
     <string name="you_have_recieved_a_rating_of">You have received a rating of</string>
     <string name="card_payment_received">Card payment received for:</string>
+    <string name="notifications">notifications</string>
+    <string name="earnings">earnings</string>
 
 </resources>

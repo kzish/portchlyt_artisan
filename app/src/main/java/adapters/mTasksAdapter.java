@@ -48,7 +48,7 @@ public class mTasksAdapter extends RecyclerView.Adapter<mTasksAdapter.myViewHold
         mTask task = job.tasks.get(position);
         //
         vh.txt_task_description.setText(task.description);
-        vh.txt_task_price.setText(task.price+"");
+        vh.txt_task_price.setText(  globals.formatCurrency( task.price )  );
         //
         vh.img_delete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,7 +78,11 @@ public class mTasksAdapter extends RecyclerView.Adapter<mTasksAdapter.myViewHold
         if(job.end_time!=null)
         {
             //hide this delete button since the job is competed and no more chnages can be made
-            vh.img_delete.setVisibility(View.GONE);
+            vh.img_delete.setVisibility(View.INVISIBLE);
+        }
+        if(position%2==0)
+        {
+            vh.linlay.setBackgroundColor(app.ctx.getResources().getColor(R.color.light_grey_bg));
         }
     }
 
@@ -99,6 +103,7 @@ public class mTasksAdapter extends RecyclerView.Adapter<mTasksAdapter.myViewHold
             txt_task_description=(TextView)view.findViewById(R.id.txt_task_description);
             txt_task_price=(TextView)view.findViewById(R.id.txt_task_price);
             img_delete=(ImageView) view.findViewById(R.id.img_delete);
+            linlay=(LinearLayout) view.findViewById(R.id.linlay);
         }
     }
 }

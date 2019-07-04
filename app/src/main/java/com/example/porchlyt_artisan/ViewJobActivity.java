@@ -127,7 +127,7 @@ public class ViewJobActivity extends AppCompatActivity {
                         .snippet(getString(R.string.call_or_text_your_client_to_begin_communication)));
 
                 //set the map location
-                CameraPosition cameraPosition = new CameraPosition.Builder().target(my_position).zoom(13).build();
+                CameraPosition cameraPosition = new CameraPosition.Builder().target(my_position).zoom(15).build();
                 googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
             }
         });
@@ -200,7 +200,6 @@ public class ViewJobActivity extends AppCompatActivity {
         DateTimeFormatter dtf2 = DateTimeFormat.forPattern("d MMM,yyyy HH:mm");
         Realm db= globals.getDB();
         mJobs job = db.where(mJobs.class).equalTo("_job_id", _job_id).findFirst();//get the job
-        lbl_total_price.setText(getString(R.string.total_price)+": "+ job.getTheTotalPrice() + "");
 
         txt_start_time.setText(    dtf2.print(dtf.parseLocalDateTime(job.start_time))     );
         if(job.end_time!=null && !job.end_time.equals("")) {
@@ -210,13 +209,14 @@ public class ViewJobActivity extends AppCompatActivity {
         txt_service_type.setText(job.description);
         txt_client_mobile.setText(job.client_mobile);
         db.close();
+        setTotalPrice();
     }
 
     public static void setTotalPrice()
     {
         Realm db  =  globals.getDB();
         mJobs job = db.where(mJobs.class).equalTo("_job_id",_job_id).findFirst();
-        lbl_total_price.setText(app.ctx.getString(R.string.total_price)+": "+ job.getTheTotalPrice() + "");
+        lbl_total_price.setText(app.ctx.getString(R.string.total_price)+": "+ globals.formatCurrency(job.getTheTotalPrice()));
         if(job.getTheTotalPrice()>0)
         {
             tbl_lay.setVisibility(View.VISIBLE);

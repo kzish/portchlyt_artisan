@@ -87,6 +87,11 @@ public class JobsFragment extends Fragment {
 
         try {
             jad = new mjobsAdapter(ctx);
+            jad.setHasStableIds(true);
+
+            lst_jobs.setDrawingCacheEnabled(true);
+            lst_jobs.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+
             lst_jobs.setLayoutManager(new LinearLayoutManager(ctx));
             lst_jobs.setAdapter(jad);
             jad.notifyDataSetChanged();

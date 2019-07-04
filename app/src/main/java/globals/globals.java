@@ -1,5 +1,10 @@
 package globals;
 
+import java.text.NumberFormat;
+import java.util.Currency;
+import java.util.Locale;
+
+import de.jonasrottmann.realmbrowser.helper.Utils;
 import io.realm.Realm;
 
 public class globals {
@@ -14,6 +19,14 @@ public class globals {
     {
         Realm db = Realm.getDefaultInstance();
         return db;
+    }
+
+
+
+    //get currency
+    public static String formatCurrency(double amount) {
+        String amount_currency = "₦"+String.format("%.2f",amount);
+        return amount_currency;
     }
 
 }
