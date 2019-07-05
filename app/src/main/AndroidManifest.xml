@@ -28,7 +28,8 @@
         android:versionCode="1"
         android:versionName="1.0"
         android:windowSoftInputMode="stateHidden">
-        <activity android:name=".CardPaymentReceivedActivity"></activity>
+        <activity android:name=".ViewNotificationActivity"></activity>
+        <activity android:name=".CardPaymentReceivedActivity" />
         <activity android:name=".DisputeNotificationActivity" />
         <activity android:name=".ConfirmPaymentRecievedActivity" />
         <activity

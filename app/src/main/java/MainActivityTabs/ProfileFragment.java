@@ -42,6 +42,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.beardedhen.androidbootstrap.BootstrapButton;
+import com.beardedhen.androidbootstrap.BootstrapLabel;
 import com.example.porchlyt_artisan.AddSkillsActivity;
 import com.example.porchlyt_artisan.R;
 import com.example.porchlyt_artisan.app;
@@ -80,6 +82,8 @@ import globals.MyMqtt;
 import io.realm.Realm;
 import models.mArtisan.mArtisan;
 import models.mArtisanSearch;
+import models.mJobs.mJobs;
+import models.mNotification;
 
 
 //todo ensure google play services is up to date and working
@@ -91,11 +95,11 @@ public class ProfileFragment extends Fragment {
     TextView txt_location;
     EditText txt_hourly_rate;
     Switch switchAvailable;
-    TextView txt_skills;
+    static TextView txt_skills;
     LinearLayout content_view;
     CircleImage img_profile;
     public static Context ctx;
-    LinearLayout open_edit_skills_activity;
+    static BootstrapLabel lbl_notifications;
 
     String my_address = "";
 
@@ -109,6 +113,7 @@ public class ProfileFragment extends Fragment {
     ProgressDialog pd;
     private LocationRequest locationRequest;
     private LocationCallback locationCallback;
+    BootstrapButton btn_save_details;
 
 
     public static ArrayList<String> jobs;//this is the list of jobs to be added by the AddJobActivity
@@ -171,25 +176,36 @@ public class ProfileFragment extends Fragment {
         img_profile = (CircleImage) view.findViewById(R.id.img_profile);
         img_progress_bar = (ProgressBar) view.findViewById(R.id.img_progress_bar);
         ratingBar = (RatingBar) view.findViewById(R.id.ratingBar);
-        open_edit_skills_activity = (LinearLayout) view.findViewById(R.id.open_edit_skills_activity);
+        btn_save_details = (BootstrapButton) view.findViewById(R.id.btn_save_details);
+        lbl_notifications = (BootstrapLabel) view.findViewById(R.id.lbl_notifications);
+        get_number_of_notifications();
+        btn_save_details.setVisibility(View.GONE);
 
-        open_edit_skills_activity.setOnClickListener(new View.OnClickListener() {
+
+        //save details on clicking the button
+        btn_save_details.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getActivity(), AddSkillsActivity.class));
+                update_my_details();
             }
         });
-
+        BootstrapLabel lbl_num_jobs = (BootstrapLabel) view.findViewById(R.id.lbl_num_jobs);
+        lbl_num_jobs.setText(get_number_of_completed_jobs() + "");
 
         Realm db = globals.getDB();
         mArtisan m = db.where(mArtisan.class).findFirst();
-        //
+
+        //get artisan details first time load
         switchAvailable.setChecked(m.on_duty);
         txt_mobile.setText(m.mobile);
         txt_name.setText(m.name);
         txt_email.setText(m.email);
         txt_skills.setText(TextUtils.join(" ", m.skills));
         txt_hourly_rate.setText(m.hourlyRate + "");
+
+        if (!m.synced) {
+            btn_save_details.setVisibility(View.VISIBLE);
+        }
         //
         db.close();
 
@@ -248,17 +264,7 @@ public class ProfileFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                Realm db = globals.getDB();
-                db.executeTransaction(new Realm.Transaction() {
-                    @Override
-                    public void execute(Realm realm) {
-                        mArtisan m = db.where(mArtisan.class).findFirst();
-                        m.email = txt_email.getText().toString();
-                        m.synced = false;
-                    }
-                });
-                db.close();
-
+                btn_save_details.setVisibility(View.VISIBLE);
             }
         });
 
@@ -276,17 +282,7 @@ public class ProfileFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                Realm db = globals.getDB();
-                db.executeTransaction(new Realm.Transaction() {
-                    @Override
-                    public void execute(Realm realm) {
-                        mArtisan m = db.where(mArtisan.class).findFirst();
-                        m.name = txt_name.getText().toString();
-                        m.synced = false;
-                    }
-                });
-                db.close();
-
+                btn_save_details.setVisibility(View.VISIBLE);
             }
         });
 
@@ -304,21 +300,7 @@ public class ProfileFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                Realm db = globals.getDB();
-                db.executeTransaction(new Realm.Transaction() {
-                    @Override
-                    public void execute(Realm realm) {
-                        try {
-                            mArtisan m = db.where(mArtisan.class).findFirst();
-                            m.hourlyRate = Double.parseDouble(txt_hourly_rate.getText().toString());
-                            m.synced = false;
-                        } catch (Exception ex) {
-                            db.close();//
-                        }
-                    }
-                });
-                db.close();
-
+                btn_save_details.setVisibility(View.VISIBLE);
             }
         });
 
@@ -405,16 +387,19 @@ public class ProfileFragment extends Fragment {
         locationRequest.setFastestInterval(1 * 1000);
 
         //attempt getting the last known location
-        mFusedLocationClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
-                if (location != null) {
-                    wayLatitude = location.getLatitude();
-                    wayLongitude = location.getLongitude();
-                    set_my_address(wayLatitude, wayLongitude);
-                }
-            }
-        });
+        mFusedLocationClient.getLastLocation().
+
+                addOnSuccessListener(new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        if (location != null) {
+                            wayLatitude = location.getLatitude();
+                            wayLongitude = location.getLongitude();
+                            set_my_address(wayLatitude, wayLongitude);
+                        }
+                    }
+                });
+
         //
         init_location_listner();
 
@@ -441,7 +426,10 @@ public class ProfileFragment extends Fragment {
 
 
         //check location settings first time
-        if (ContextCompat.checkSelfPermission(getActivity(),
+        if (ContextCompat.checkSelfPermission(
+
+                getActivity(),
+
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             // Permission is not granted
@@ -474,7 +462,7 @@ public class ProfileFragment extends Fragment {
                         //
                         set_my_address(wayLatitude, wayLongitude);
                         update_my_location(wayLatitude, wayLongitude);//send my location to the server
-                        update_my_details();
+
                         //Log.e("l", wayLatitude + " " + wayLongitude);
                     }
                 }
@@ -505,7 +493,8 @@ public class ProfileFragment extends Fragment {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
 
         //this is for fine location
         if (requestCode == 1) {
@@ -562,8 +551,43 @@ public class ProfileFragment extends Fragment {
     //tbis method will update the server, periodically my details incase any hve changed
     public void update_my_details() {
 
-        Realm db = globals.getDB();
-        mArtisan m = db.where(mArtisan.class).findFirst();
+        //get the changes
+        final Realm db = globals.getDB();
+
+        db.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                //effect only when non empty
+                mArtisan m = db.where(mArtisan.class).findFirst();
+                //
+                if (txt_hourly_rate.getText().toString() != "") {
+                    m.hourlyRate = Double.parseDouble(txt_hourly_rate.getText().toString());
+                    m.synced = false;
+                }
+                //
+                if (txt_name.getText().toString() != "") {
+                    m.name = txt_name.getText().toString();
+                    m.synced = false;
+                }
+                //
+                if (txt_email.getText().toString() != "") {
+                    m.email = txt_email.getText().toString();
+                    m.synced = false;
+                }
+            }
+        });
+        db.close();
+
+
+        //
+        ProgressDialog pd = new ProgressDialog(getActivity());
+        pd.setMessage(getString(R.string.please_wait));
+        pd.setCanceledOnTouchOutside(false);
+        pd.show();
+
+
+        Realm db2 = globals.getDB();
+        mArtisan m = db2.where(mArtisan.class).findFirst();
         if (!m.synced) {
             String sdata = "";
             try {
@@ -581,6 +605,7 @@ public class ProfileFragment extends Fragment {
                         .setBodyParameter("data", sdata)
                         .asString()
                         .setCallback((e, result) -> {
+                            pd.dismiss();
                             Log.e("updateMydetails()", result + "");
                             if (e == null) {
                                 try {
@@ -590,6 +615,8 @@ public class ProfileFragment extends Fragment {
                                         public void execute(Realm realm) {
                                             if (res.equals("ok")) {
                                                 m.synced = true;//indicate that no more updates needed
+                                                btn_save_details.setVisibility(View.GONE);
+                                                Snackbar.make(content_view, getString(R.string.saved), Snackbar.LENGTH_SHORT).show();
                                             } else {
                                                 Snackbar.make(content_view, getString(R.string.error_updating_details), Snackbar.LENGTH_SHORT).show();
                                             }
@@ -922,7 +949,27 @@ public class ProfileFragment extends Fragment {
     }
 
 
+    public static void set_artisan_skills() {
+        Realm db = globals.getDB();
+        mArtisan m = db.where(mArtisan.class).findFirst();
+        txt_skills.setText(TextUtils.join(" ", m.skills));
+        db.close();
+    }
 
+    private int get_number_of_completed_jobs() {
+        Realm db = globals.getDB();
+        int num_jobs = (int) db.where(mJobs.class).notEqualTo("end_time", "").count();
+        return num_jobs;
+
+    }
+
+
+    //non read notifications
+    public static void get_number_of_notifications() {
+        Realm db = globals.getDB();
+        int num_notifications = (int) db.where(mNotification.class).equalTo("is_read",false).count();
+        lbl_notifications.setText(num_notifications + "");
+    }
 
 
 }//.class

@@ -10,7 +10,6 @@ import android.widget.EditText;
 
 import com.beardedhen.androidbootstrap.BootstrapEditText;
 
-import de.jonasrottmann.realmbrowser.helper.Utils;
 import io.realm.Realm;
 import models.mJobs.mJobs;
 import models.mJobs.mTask;

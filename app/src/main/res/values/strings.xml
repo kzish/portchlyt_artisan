@@ -69,7 +69,7 @@
     <string name="capture_photo_from_camera">Capture photo from camera</string>
     <string name="clear_photo">Clear photo</string>
     <string name="total_amount">Total amount</string>
-    <string name="cash_payment_received">Cash payment received for:</string>
+    <string name="cash_payment_received_for">Cash payment received for:</string>
     <string name="accept_payment">Accept payment</string>
     <string name="confirm_payment_received">Confirm payment received</string>
     <string name="payment_confirmed">Payment Confirmed</string>
@@ -82,5 +82,11 @@
     <string name="card_payment_received">Card payment received for:</string>
     <string name="notifications">notifications</string>
     <string name="earnings">earnings</string>
+    <string name="saved">saved</string>
+    <string name="error_updating_services">Error updating services</string>
+    <string name="skills_updated">skills updated</string>
+    <string name="cash_payment_received">cash payment received</string>
+    <string name="your_services_have_been_updated">Your services have been updated</string>
+    <string name="view_notification">View notification</string>
 
 </resources>

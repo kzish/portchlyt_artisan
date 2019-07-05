@@ -1,10 +1,23 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/primary"
+    android:background="@color/white"
     tools:context="MainActivityTabs.NewsFragment">
 
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
 
-</FrameLayout>
+        >
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:id="@+id/list_notifications"/>
+
+    </LinearLayout>
+
+
+</LinearLayout>

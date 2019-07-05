@@ -10,13 +10,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.app.ProgressDialog;
-import android.media.TimedText;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -70,7 +68,7 @@ public class ConfirmPaymentRecievedActivity extends AppCompatActivity {
         Realm db = globals.getDB();
         mJobs job = db.where(mJobs.class).equalTo("_job_id", _job_id).findFirst();
         txt_job_name.setText(job.description);
-        txt_total_amount.setText(job.getTheTotalPrice() + "");
+        txt_total_amount.setText(  globals.formatCurrency(job.getTheTotalPrice() ));
         db.close();
     }
 

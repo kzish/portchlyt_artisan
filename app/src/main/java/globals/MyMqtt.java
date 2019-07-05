@@ -26,10 +26,13 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONObject;
 
+import MainActivityTabs.NewsFragment;
 import MainActivityTabs.ProfileFragment;
 import io.realm.Realm;
+import io.realm.RealmList;
 import models.appSettings;
 import models.mArtisan.mArtisan;
+import models.mNotification;
 
 public class MyMqtt {
     public static MqttAndroidClient mqttClient;
@@ -81,9 +84,46 @@ public class MyMqtt {
 
                 //route the message to the correct handler
 
+
+                if (type.equals("update_artisan_services")) {
+
+                    create_notification(app.ctx.getString(R.string.your_services_have_been_updated));
+
+                    Realm db = globals.getDB();
+                    try {
+                        //update the artisans services
+                        mArtisan m = db.where(mArtisan.class).findFirst();
+                        String[] services = json.getString("services").split(":");
+                        RealmList<String> skills = new RealmList<>();
+                        for (String s : services) {
+                            skills.add(s);
+                        }
+                        db.executeTransaction(new Realm.Transaction() {
+                            @Override
+                            public void execute(Realm realm) {
+                                //update
+                                m.skills = skills;
+                            }
+                        });
+
+
+                        //display the skills
+                        ProfileFragment.set_artisan_skills();
+                        Toast.makeText(app.ctx, app.ctx.getString(R.string.skills_updated), Toast.LENGTH_SHORT).show();
+
+                    } catch (Exception ex) {
+                        Toast.makeText(app.ctx, app.ctx.getString(R.string.error_updating_services), Toast.LENGTH_SHORT).show();
+                    } finally {
+                        db.close();
+                    }
+                }
+
                 //this is for card payment
                 if (type.equals("card_payment_recieved")) {
                     //todo set the amount to show on the profile fragment
+
+                    create_notification(app.ctx.getString(R.string.card_payment_received));
+
                     try {
                         Double amount_payed = json.getDouble("amount_payed");
                         String _job_id = json.getString("_job_id");
@@ -92,32 +132,29 @@ public class MyMqtt {
                         cp.putExtra("amount_payed", amount_payed);
                         cp.putExtra("_job_id", _job_id);
                         app.ctx.startActivity(cp);
-                    }catch (Exception ex){
+                    } catch (Exception ex) {
                         //Toast.makeText(app.ctx,ex.getLocalizedMessage()+" ",Toast.LENGTH_LONG).show();
                     }
                 }
 
                 if (type.equals("rating_notification")) {
                     Realm db = globals.getDB();
-                    try
-                    {
+                    try {
                         //save my rating and notify the artisan
                         int rating = json.getInt("rating");
                         //update my rating
-                        mArtisan m= db.where(mArtisan.class).findFirst();
+                        mArtisan m = db.where(mArtisan.class).findFirst();
                         db.executeTransaction(new Realm.Transaction() {
                             @Override
                             public void execute(Realm realm) {
                                 m.artisanRating.add(rating);
                                 ProfileFragment.get_my_rating();//show my rating
-                                Toast.makeText(app.ctx,app.ctx.getString(R.string.you_have_recieved_a_rating_of)+" " +rating,Toast.LENGTH_LONG).show();
+                                Toast.makeText(app.ctx, app.ctx.getString(R.string.you_have_recieved_a_rating_of) + " " + rating, Toast.LENGTH_LONG).show();
                             }
                         });
-                    }catch (Exception ex)
-                    {
-                        Log.e(tag,ex.getMessage());
-                    }
-                    finally {
+                    } catch (Exception ex) {
+                        Log.e(tag, ex.getMessage());
+                    } finally {
 
                         db.close();
                     }
@@ -125,6 +162,8 @@ public class MyMqtt {
 
 
                 if (type.equals("dispute_opened")) {
+
+                    create_notification(app.ctx.getString(R.string.a_dispute_as_been_opened));
 
                     try {
                         String _job_id = json.getString("_job_id");
@@ -142,7 +181,11 @@ public class MyMqtt {
 
                 //this is for cash payments
                 if (type.equals("cash_payment_recieved")) {
+
+                    create_notification(app.ctx.getString(R.string.cash_payment_received));
                     try {
+
+
                         String _job_id = json.getString("_job_id");
                         String amount_payed = json.getString("amount_payed");
                         Intent cp = new Intent(app.ctx, ConfirmPaymentRecievedActivity.class);
@@ -159,7 +202,7 @@ public class MyMqtt {
                 if (type.equals("request_task_notification")) {
                     try {
                         Intent request = new Intent(app.ctx, AnswerServiceRequestDialogActivity.class);
-                        request.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.EXTRA_DOCK_STATE_CAR);
+                        request.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
                         request.putExtra("lat", json.getString("lat"));
                         request.putExtra("lon", json.getString("lon"));
@@ -263,4 +306,32 @@ public class MyMqtt {
             ex.printStackTrace();
         }
     }
+
+
+    //insert notification into db
+    private static void create_notification(String notification_text) {
+        Realm db = globals.getDB();
+        try {
+            db.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    //insert a notification
+                    mNotification notification = new mNotification();
+                    notification.notification_text = notification_text;
+                    db.insertOrUpdate(notification);
+
+                }
+            });
+            ProfileFragment.get_number_of_notifications();
+            NewsFragment.set_notification_adapter();
+
+        } catch (Exception ex) {
+            Log.e(tag, "line 323 create_notification"+ex.getMessage());
+        } finally {
+            db.close();
+        }
+
+    }
+
+
 }
