@@ -99,7 +99,7 @@ public class ProfileFragment extends Fragment {
     LinearLayout content_view;
     CircleImage img_profile;
     public static Context ctx;
-    static BootstrapLabel lbl_notifications;
+    static TextView lbl_notifications;
 
     String my_address = "";
 
@@ -177,7 +177,7 @@ public class ProfileFragment extends Fragment {
         img_progress_bar = (ProgressBar) view.findViewById(R.id.img_progress_bar);
         ratingBar = (RatingBar) view.findViewById(R.id.ratingBar);
         btn_save_details = (BootstrapButton) view.findViewById(R.id.btn_save_details);
-        lbl_notifications = (BootstrapLabel) view.findViewById(R.id.lbl_notifications);
+        lbl_notifications = (TextView) view.findViewById(R.id.lbl_notifications);
         get_number_of_notifications();
         btn_save_details.setVisibility(View.GONE);
 
@@ -189,7 +189,7 @@ public class ProfileFragment extends Fragment {
                 update_my_details();
             }
         });
-        BootstrapLabel lbl_num_jobs = (BootstrapLabel) view.findViewById(R.id.lbl_num_jobs);
+        TextView lbl_num_jobs = (TextView) view.findViewById(R.id.lbl_num_jobs);
         lbl_num_jobs.setText(get_number_of_completed_jobs() + "");
 
         Realm db = globals.getDB();

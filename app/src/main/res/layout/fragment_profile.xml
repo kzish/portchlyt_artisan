@@ -82,24 +82,27 @@
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
 
-                <com.beardedhen.androidbootstrap.BootstrapLabel
-                    android:id="@+id/lbl_num_jobs"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:elevation="10dp"
-                    android:text="8"
-                    android:textSize="10dp"
-                    app:bootstrapBrand="info"
-                    app:bootstrapHeading="h1"
-                    app:roundedCorners="true" />
-
                 <TextView
+                    android:id="@+id/lbl_num_jobs"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:elevation="10dp"
+                    android:text="8"
+                    android:ellipsize="marquee"
+                    android:textColor="#000"
+                    android:textSize="8dp"
+                    android:textStyle="bold" />
+
+                <com.beardedhen.androidbootstrap.BootstrapLabel
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:elevation="5dp"
                     android:text="@string/jobs"
                     android:textColor="#000"
                     android:textSize="11dp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    app:bootstrapBrand="info" />
             </LinearLayout>
 
 
@@ -110,24 +113,28 @@
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
 
-                <com.beardedhen.androidbootstrap.BootstrapLabel
-                    android:id="@+id/lbl_earnings"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:elevation="10dp"
-                    android:text="8"
-                    app:bootstrapBrand="success"
-                    app:bootstrapHeading="h1"
-                    app:roundedCorners="true" />
-
-
                 <TextView
+                    android:id="@+id/lbl_earnings"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:elevation="10dp"
+                    android:text="8"
+                    android:ellipsize="marquee"
+                    android:textColor="#000"
+                    android:textSize="10dp"
+                    android:textStyle="bold" />
+
+
+                <com.beardedhen.androidbootstrap.BootstrapLabel
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:elevation="5dp"
                     android:text="@string/earnings"
                     android:textColor="#000"
                     android:textSize="11dp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    app:bootstrapBrand="success" />
             </LinearLayout>
 
 
@@ -138,24 +145,28 @@
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
 
-                <com.beardedhen.androidbootstrap.BootstrapLabel
-                    android:id="@+id/lbl_notifications"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:elevation="10dp"
-                    android:text="8"
-                    app:bootstrapBrand="danger"
-                    app:bootstrapHeading="h1"
-                    app:roundedCorners="true" />
-
-
                 <TextView
+                    android:id="@+id/lbl_notifications"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:elevation="10dp"
+                    android:text="8"
+                    android:ellipsize="marquee"
+                    android:textColor="#000"
+                    android:textSize="10dp"
+                    android:textStyle="bold" />
+
+
+                <com.beardedhen.androidbootstrap.BootstrapLabel
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:elevation="5dp"
                     android:text="@string/notifications"
                     android:textColor="#000"
                     android:textSize="11dp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    app:bootstrapBrand="danger" />
             </LinearLayout>
 
 
@@ -168,36 +179,45 @@
             android:layout_height="wrap_content"
             android:background="#fff"
             android:orientation="vertical"
-            android:padding="30dp">
+            android:padding="10dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/light_grey_bg"
                 android:orientation="horizontal"
+                android:padding="20dp"
                 android:weightSum="1">
 
                 <TextView
                     android:id="@+id/txt_mobile"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:layout_weight="1"
+                    android:gravity="center_vertical"
                     android:text="+263773303669"
                     android:textColor="#000"
                     android:textSize="20dp"
                     android:textStyle="bold" />
 
 
-
-
             </LinearLayout>
 
-
-            <Switch
-                android:id="@+id/switchAvailable"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/available" />
+                android:background="@color/light_grey_bg"
+                android:orientation="horizontal"
+                android:padding="20dp"
+                android:weightSum="1">
 
+                <Switch
+                    android:id="@+id/switchAvailable"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/available" />
+            </LinearLayout>
         </LinearLayout>
 
 
@@ -206,7 +226,7 @@
             android:layout_height="wrap_content"
             android:background="#fff"
             android:orientation="vertical"
-            android:padding="30dp">
+            android:padding="10dp">
 
             <LinearLayout
                 android:layout_width="match_parent"

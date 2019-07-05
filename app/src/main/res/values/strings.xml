@@ -88,5 +88,6 @@
     <string name="cash_payment_received">cash payment received</string>
     <string name="your_services_have_been_updated">Your services have been updated</string>
     <string name="view_notification">View notification</string>
+    <string name="error_fetching_jobs">Error fetching jobs</string>
 
 </resources>
