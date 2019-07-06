@@ -89,5 +89,6 @@
     <string name="your_services_have_been_updated">Your services have been updated</string>
     <string name="view_notification">View notification</string>
     <string name="error_fetching_jobs">Error fetching jobs</string>
+    <string name="swipe_down_to_refresh">swipe down to refresh</string>
 
 </resources>
