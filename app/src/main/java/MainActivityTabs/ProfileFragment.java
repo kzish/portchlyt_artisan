@@ -2,6 +2,7 @@ package MainActivityTabs;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -134,6 +135,8 @@ public class ProfileFragment extends Fragment {
 
     String tag = "Profile Fragment";
 
+    private static Activity activity;
+
 
     public ProfileFragment() {
     }
@@ -148,6 +151,7 @@ public class ProfileFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ctx = getActivity();
+        activity = getActivity();
         jobs = new ArrayList<String>();
         searches = new ArrayList<mArtisanSearch>();
     }
@@ -222,13 +226,13 @@ public class ProfileFragment extends Fragment {
 
                 //check permission first
                 if (
-                        ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA)
+                        ContextCompat.checkSelfPermission(ctx, Manifest.permission.CAMERA)
                                 != PackageManager.PERMISSION_GRANTED
                                 ||
-                                ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
+                                ContextCompat.checkSelfPermission(ctx, Manifest.permission.READ_EXTERNAL_STORAGE)
                                         != PackageManager.PERMISSION_GRANTED
                                 ||
-                                ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                                ContextCompat.checkSelfPermission(ctx, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                                         != PackageManager.PERMISSION_GRANTED
 
                 ) {
@@ -341,7 +345,7 @@ public class ProfileFragment extends Fragment {
                                         String msg = new JSONObject(result.getResult()).getString("msg");
 
                                         if (res.equals("err")) {
-                                            Toast.makeText(getActivity(), getString(R.string.error_occured), Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(ctx, getString(R.string.error_occured), Toast.LENGTH_SHORT).show();
                                             return;
                                         } else {
                                             //notify the user
@@ -368,7 +372,7 @@ public class ProfileFragment extends Fragment {
                                         Log.e("d", ex.getMessage());
                                     }
                                 } else {
-                                    Toast.makeText(getActivity(), getString(R.string.error_occured), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ctx, getString(R.string.error_occured), Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
@@ -409,7 +413,7 @@ public class ProfileFragment extends Fragment {
                 //
 
                 //check location permision
-                if (ContextCompat.checkSelfPermission(getActivity(),
+                if (ContextCompat.checkSelfPermission(ctx,
                         Manifest.permission.ACCESS_FINE_LOCATION)
                         != PackageManager.PERMISSION_GRANTED) {
                     // Permission is not granted
@@ -427,9 +431,7 @@ public class ProfileFragment extends Fragment {
 
         //check location settings first time
         if (ContextCompat.checkSelfPermission(
-
-                getActivity(),
-
+                ctx,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             // Permission is not granted
@@ -505,7 +507,7 @@ public class ProfileFragment extends Fragment {
                 //
                 //inform artisan why we need his location
                 //permission denied
-                new AlertDialog.Builder(getActivity())
+                new AlertDialog.Builder(ctx)
                         .setMessage(getString(R.string.we_need_your_location_to_provide_you_this_service))
                         .setTitle(getString(R.string.information))
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -580,7 +582,7 @@ public class ProfileFragment extends Fragment {
 
 
         //
-        ProgressDialog pd = new ProgressDialog(getActivity());
+        ProgressDialog pd = new ProgressDialog(ctx);
         pd.setMessage(getString(R.string.please_wait));
         pd.setCanceledOnTouchOutside(false);
         pd.show();
@@ -640,7 +642,7 @@ public class ProfileFragment extends Fragment {
 
     //set profile picture onto the imageView
     private void showPictureDialog() {
-        AlertDialog.Builder pictureDialog = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder pictureDialog = new AlertDialog.Builder(ctx);
         pictureDialog.setTitle(getString(R.string.change_profile_picture));
         String[] pictureDialogItems = {
                 getString(R.string.select_photo_from_gallery),
@@ -687,7 +689,7 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == getActivity().RESULT_CANCELED) {
+        if (resultCode == activity.RESULT_CANCELED) {
             return;
         }
         if (requestCode == GALLERY) {
@@ -705,7 +707,7 @@ public class ProfileFragment extends Fragment {
 
             Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
             //get uri from bitmap
-            String path = MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), thumbnail, "Title", null);
+            String path = MediaStore.Images.Media.insertImage(ctx.getContentResolver(), thumbnail, "Title", null);
             Uri imageUri = Uri.parse(path);
             //crop image
             CropImage.activity(imageUri)
@@ -717,12 +719,12 @@ public class ProfileFragment extends Fragment {
         //crop  and save cropped image
         else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            if (resultCode == getActivity().RESULT_OK) {
+            if (resultCode == activity.RESULT_OK) {
 
                 //handle cropped image
                 try {
                     Uri resultUri = result.getUri();
-                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), resultUri);
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(ctx.getContentResolver(), resultUri);
                     Uri path = saveImage(bitmap);//saved to file
                     //upload save and display picture
                     upload_profile_picture(path);
@@ -754,7 +756,7 @@ public class ProfileFragment extends Fragment {
             f.createNewFile();
             FileOutputStream fo = new FileOutputStream(f);
             fo.write(bytes.toByteArray());
-            MediaScannerConnection.scanFile(getActivity(),
+            MediaScannerConnection.scanFile(ctx,
                     new String[]{f.getPath()},
                     new String[]{"image/jpeg"}, null);
             fo.close();
@@ -780,7 +782,7 @@ public class ProfileFragment extends Fragment {
         mArtisan m = db.where(mArtisan.class).findFirst();
 
         img_progress_bar.setVisibility(View.VISIBLE);
-        Ion.with(getContext())
+        Ion.with(ctx)
                 .load(globals.base_url + "/remove_profile_picture")
                 .setBodyParameter("artisan_app_id", m.app_id)
                 .asString()
@@ -801,7 +803,7 @@ public class ProfileFragment extends Fragment {
                                 }
                             });
                             db.close();
-                            img_profile.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_worker));
+                            img_profile.setImageDrawable(ctx.getResources().getDrawable(R.drawable.ic_worker));
                         } else {
                             db.close();
                             Snackbar.make(content_view, getString(R.string.error_occured), Snackbar.LENGTH_SHORT).show();
@@ -825,7 +827,7 @@ public class ProfileFragment extends Fragment {
         db.close();
 
         img_progress_bar.setVisibility(View.VISIBLE);
-        Ion.with(getContext())
+        Ion.with(ctx)
                 .load(globals.base_url + "/upload_image_from_mobile")
                 //.uploadProgressBar(img_progress_bar)
                 .setMultipartParameter("artisan_app_id", artisan_app_id)
@@ -872,7 +874,7 @@ public class ProfileFragment extends Fragment {
             try {
                 Log.e("pp", m.image);
                 Uri contentURI = Uri.parse(m.image);
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), contentURI);
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(ctx.getContentResolver(), contentURI);
                 img_profile.setImageBitmap(bitmap);
             } catch (Exception ex) {
                 Log.e("pp", ex + " line 178");
@@ -890,8 +892,8 @@ public class ProfileFragment extends Fragment {
             public void run() {
                 Geocoder geocoder;
                 List<Address> addresses;
-                geocoder = new Geocoder(getActivity(), Locale.getDefault());
                 try {
+                    geocoder = new Geocoder(ctx, Locale.getDefault());
                     addresses = geocoder.getFromLocation(wayLatitude, wayLongitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
                     String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
                     String city = addresses.get(0).getLocality();
@@ -911,7 +913,7 @@ public class ProfileFragment extends Fragment {
                 }
 
                 //this will now run on the ui thread
-                getActivity().runOnUiThread(new Runnable() {
+                activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         txt_location.setText(my_address);//set the address
