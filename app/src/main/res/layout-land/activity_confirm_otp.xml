@@ -18,7 +18,8 @@
 
     <com.poovam.pinedittextfield.LinePinField
         android:id="@+id/txtOtp"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_centerHorizontal="true"
         android:layout_height="57dp"
         android:layout_centerInParent="true"
         android:layout_marginLeft="50dp"
@@ -36,7 +37,8 @@
         app:noOfFields="5" />
 
     <com.beardedhen.androidbootstrap.BootstrapButton
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_centerHorizontal="true"
         android:id="@+id/btnOtp"
         android:layout_height="57dp"
         android:layout_below="@+id/txtOtp"
