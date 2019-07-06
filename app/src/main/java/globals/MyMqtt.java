@@ -216,7 +216,7 @@ public class MyMqtt {
 
                 if (type.equals("dispute_opened")) {
 
-                    create_notification(app.ctx.getString(R.string.a_dispute_as_been_opened));
+                    create_notification(app.ctx.getString(R.string.a_dispute_has_been_opened));
 
                     try {
                         String _job_id = json.getString("_job_id");

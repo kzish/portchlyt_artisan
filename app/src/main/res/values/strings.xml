@@ -74,7 +74,7 @@
     <string name="confirm_payment_received">Confirm payment received</string>
     <string name="payment_confirmed">Payment Confirmed</string>
     <string name="this_job_is_closed">This job is closed</string>
-    <string name="a_dispute_as_been_opened">A dispute as been opened</string>
+    <string name="a_dispute_has_been_opened">A dispute has been opened</string>
     <string name="reason_for_dispute">Reason for dispute:</string>
     <string name="dispute_notification">Dispute notification</string>
     <string name="we_will_contact_you_to_resolve_the_issue_within_24_hrs">We will contact you to resolve the issue within 24 hrs</string>

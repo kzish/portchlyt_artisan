@@ -35,7 +35,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="20dp"
-                android:text="@string/a_dispute_as_been_opened"
+                android:text="@string/a_dispute_has_been_opened"
                 android:textColor="#000"
                 android:textSize="30dp" />
 
@@ -73,9 +73,10 @@
         </LinearLayout>
 
         <TextView
-            android:gravity="center"
-            android:layout_centerInParent="true"
-            android:layout_width="300dp"
+            android:layout_centerHorizontal="true"
+            android:gravity="center_horizontal"
+            android:layout_alignParentBottom="true"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/we_will_contact_you_to_resolve_the_issue_within_24_hrs" />
 
