@@ -106,4 +106,10 @@ public class mTasksAdapter extends RecyclerView.Adapter<mTasksAdapter.myViewHold
             linlay=(LinearLayout) view.findViewById(R.id.linlay);
         }
     }
+
+    //inside the adapter class
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 }

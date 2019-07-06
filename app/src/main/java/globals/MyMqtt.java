@@ -85,6 +85,59 @@ public class MyMqtt {
                 //route the message to the correct handler
 
 
+                if (type.equals("general_notification")) {
+                    create_notification(json.getString("general_notification_message"));
+                }
+
+
+                if (type.equals("clear_artisan_earning")) {
+                    Realm db =  globals.getDB();
+                    try {
+                        mArtisan m = db.where(mArtisan.class).findFirst();
+                        db.executeTransaction(new Realm.Transaction() {
+                            @Override
+                            public void execute(Realm realm) {
+                                m.earnings_since_last_disbursement = 0;
+                            }
+                        });
+                        ProfileFragment.set_my_earning();
+                    }catch (Exception ex)
+                    {
+                        Log.e(tag,"clear_artisan_earning " +ex.getMessage());
+                    }
+                    finally {
+                        db.close();
+                    }
+                }
+
+
+                if (type.equals("artisan_earning")) {
+                    //what the artisan has earned
+                    //insert it into the database
+                    Realm db =  globals.getDB();
+                        double earning = json.getDouble("earning");
+                        try
+                        {
+                            mArtisan m = db.where(mArtisan.class).findFirst();
+                            db.executeTransaction(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+                                    m.earnings_since_last_disbursement+=earning;
+                                }
+                            });
+                            ProfileFragment.set_my_earning();
+                        }catch (Exception ex)
+                        {
+                            Log.e(tag,"artisan_earning "+ex.getLocalizedMessage());
+                        }
+                        finally {
+                            db.close();
+                        }
+
+                }
+
+
+
                 if (type.equals("update_artisan_services")) {
 
                     create_notification(app.ctx.getString(R.string.your_services_have_been_updated));

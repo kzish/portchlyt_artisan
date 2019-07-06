@@ -17,6 +17,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -88,7 +89,8 @@ public class AnswerServiceRequestDialogActivity extends AppCompatActivity implem
 
 
     LinearLayout linlay_explanation,
-            linlay_accept_reject, linlay_map;
+            linlay_accept_reject;
+            FrameLayout linlay_map;
 
     MediaPlayer mp;
 
@@ -107,7 +109,7 @@ public class AnswerServiceRequestDialogActivity extends AppCompatActivity implem
 
         linlay_accept_reject = (LinearLayout) findViewById(R.id.linlay_accept_reject);
         linlay_explanation = (LinearLayout) findViewById(R.id.linlay_explanation);
-        linlay_map = (LinearLayout) findViewById(R.id.linlay_map);
+        linlay_map = (FrameLayout) findViewById(R.id.linlay_map);
 
         rd_1 = (RadioButton) findViewById(R.id.rd_1);
         rd_2 = (RadioButton) findViewById(R.id.rd_2);

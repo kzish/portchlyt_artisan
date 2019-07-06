@@ -30,6 +30,7 @@ import org.joda.time.format.ISODateTimeFormat;
 import java.util.List;
 import java.util.Locale;
 
+import MainActivityTabs.NewsFragment;
 import globals.globals;
 import io.realm.Realm;
 import io.realm.Sort;
@@ -45,7 +46,10 @@ public class mExtra_Jobs_Adapter extends RecyclerView.Adapter<mExtra_Jobs_Adapte
     Activity act;
 
     public mExtra_Jobs_Adapter(Activity act) {
+
         this.act = act;
+
+
     }
 
 
@@ -211,6 +215,11 @@ public class mExtra_Jobs_Adapter extends RecyclerView.Adapter<mExtra_Jobs_Adapte
         notifyDataSetChanged();
     }
 
+    //inside the adapter class
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 
 
 

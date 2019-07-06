@@ -1,98 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".ConfirmPaymentRecievedActivity"
     android:layout_width="match_parent"
-    android:id="@+id/linlay"
     android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <androidx.appcompat.widget.Toolbar
-        android:layout_width="match_parent"
-        android:layout_height="57dp"
-        android:id="@+id/mtoolbar"
-        android:background="@color/primary"
-        android:elevation="5dp" />
-
-    <RelativeLayout
+    android:fillViewport="true">
+    <LinearLayout
+        android:id="@+id/linlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="20dp">
+        android:orientation="vertical"
+        tools:context=".ConfirmPaymentRecievedActivity">
 
-
-        <LinearLayout
-            android:id="@+id/linlay1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/img_profile"
-            android:layout_centerHorizontal="true"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/cash_payment_received_for"
-                android:textColor="#000"
-                android:textSize="18dp" />
-
-            <TextView
-                android:id="@+id/txt_job_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="fumigation"
-                android:textColor="#000"
-                android:textSize="12dp" />
-
-
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:layout_below="@+id/linlay1"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/et_background"
-            android:gravity="center_vertical"
-            android:orientation="vertical"
-            android:padding="20dp">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/total_amount"
-
-                />
-
-            <TextView
-                android:id="@+id/txt_total_amount"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="N5000"
-
-                />
-        </LinearLayout>
-
-        <com.beardedhen.androidbootstrap.BootstrapButton
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/mtoolbar"
             android:layout_width="match_parent"
             android:layout_height="57dp"
-            android:layout_alignParentBottom="true"
-            android:onClick="accept_cash_payment"
-            app:bootstrapBrand="warning"
+            android:background="@color/primary"
+            android:elevation="5dp" />
 
-            app:bootstrapText="@string/accept_payment"
-            app:roundedCorners="true"
-            app:showOutline="true" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="20dp">
 
-    </RelativeLayout>
-</LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/linlay1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/img_profile"
+                android:layout_centerHorizontal="true"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/cash_payment_received_for"
+                    android:textColor="#000"
+                    android:textSize="18dp" />
+
+                <TextView
+                    android:id="@+id/txt_job_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="fumigation"
+                    android:textColor="#000"
+                    android:textSize="12dp" />
+
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/linlay1"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/et_background"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/total_amount"
+
+                    />
+
+                <TextView
+                    android:id="@+id/txt_total_amount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="N5000"
+
+                    />
+            </LinearLayout>
+
+            <com.beardedhen.androidbootstrap.BootstrapButton
+                android:layout_width="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_height="57dp"
+                android:layout_alignParentBottom="true"
+                android:onClick="accept_cash_payment"
+                app:bootstrapBrand="warning"
+
+                app:bootstrapText="@string/accept_payment"
+                app:roundedCorners="true"
+                app:showOutline="true" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</ScrollView>
 
 

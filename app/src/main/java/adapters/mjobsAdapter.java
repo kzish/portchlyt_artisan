@@ -118,6 +118,12 @@ public class mjobsAdapter extends RecyclerView.Adapter<mjobsAdapter.myViewHolder
 
     }
 
+    //inside the adapter class
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
     class myViewHolder extends RecyclerView.ViewHolder {
         public TextView txt_date_time;
         public TextView txt_description;

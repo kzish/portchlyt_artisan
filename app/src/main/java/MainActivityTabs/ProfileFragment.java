@@ -45,7 +45,6 @@ import androidx.fragment.app.Fragment;
 
 import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.beardedhen.androidbootstrap.BootstrapLabel;
-import com.example.porchlyt_artisan.AddSkillsActivity;
 import com.example.porchlyt_artisan.R;
 import com.example.porchlyt_artisan.app;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -115,6 +114,7 @@ public class ProfileFragment extends Fragment {
     private LocationRequest locationRequest;
     private LocationCallback locationCallback;
     BootstrapButton btn_save_details;
+    static TextView lbl_earnings;
 
 
     public static ArrayList<String> jobs;//this is the list of jobs to be added by the AddJobActivity
@@ -172,6 +172,7 @@ public class ProfileFragment extends Fragment {
 
         //
         txt_mobile = (TextView) view.findViewById(R.id.txt_mobile);
+        lbl_earnings = (TextView) view.findViewById(R.id.lbl_earnings);
         txt_name = (EditText) view.findViewById(R.id.txt_name);
         txt_email = (EditText) view.findViewById(R.id.txt_email);
         txt_location = (TextView) view.findViewById(R.id.txt_location);//this will be updated automatically
@@ -206,6 +207,7 @@ public class ProfileFragment extends Fragment {
         txt_email.setText(m.email);
         txt_skills.setText(TextUtils.join(" ", m.skills));
         txt_hourly_rate.setText(m.hourlyRate + "");
+        lbl_earnings.setText( globals.formatCurrency( m.earnings_since_last_disbursement ) );
 
         if (!m.synced) {
             btn_save_details.setVisibility(View.VISIBLE);
@@ -552,6 +554,21 @@ public class ProfileFragment extends Fragment {
 
     //tbis method will update the server, periodically my details incase any hve changed
     public void update_my_details() {
+
+
+
+
+        if(txt_name.getText().equals(""))
+        {
+            txt_name.setError(getString(R.string.cannot_be_blank));
+            return;
+        }
+
+        if(txt_email.getText().equals(""))
+        {
+            txt_email.setError(getString(R.string.cannot_be_blank));
+            return;
+        }
 
         //get the changes
         final Realm db = globals.getDB();
@@ -971,6 +988,15 @@ public class ProfileFragment extends Fragment {
         Realm db = globals.getDB();
         int num_notifications = (int) db.where(mNotification.class).equalTo("is_read",false).count();
         lbl_notifications.setText(num_notifications + "");
+    }
+
+    public static void set_my_earning()
+    {
+        Realm db=globals.getDB();
+        mArtisan m =  db.where(mArtisan.class).findFirst();
+        lbl_earnings.setText( globals.formatCurrency( m.earnings_since_last_disbursement ) );
+        db.close();
+
     }
 
 

@@ -374,6 +374,7 @@ public class ViewJobActivity extends AppCompatActivity {
     public static void set_tasks_adapter()
     {
         tasks_adapter = new mTasksAdapter(_job_id);//this automatically pulls the tasks of this job
+        tasks_adapter.setHasStableIds(true);
         list_tasks.setAdapter(tasks_adapter);
     }
 

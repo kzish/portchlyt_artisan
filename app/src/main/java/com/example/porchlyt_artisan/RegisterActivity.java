@@ -42,11 +42,9 @@ public class RegisterActivity extends AppCompatActivity {
     BootstrapEditText txt_mobile;
     CountryCodePicker ccp;
     Toolbar mtoolbar;
-    public static List<String> skills;//these are the skills of the artisan
     private ArrayAdapter<String> adapter;
     Realm db;
 
-    static BootstrapLabel lbl_skills;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,27 +60,9 @@ public class RegisterActivity extends AppCompatActivity {
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_24dp);
         getSupportActionBar().setTitle(getString(R.string.registration));
         mtoolbar.setTitle(getResources().getString(R.string.registration));
-        lbl_skills = (BootstrapLabel) findViewById(R.id.lbl_skills);
-        lbl_skills.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {//start dialog actiivty
-                startActivity(new Intent(RegisterActivity.this, AddSkillsActivity.class));
-            }
-        });
-
-        skills = new ArrayList<String>();
         db = Realm.getDefaultInstance();
     }
 
-    //this method is to display te skills on the label only
-    public static void setSkills() {
-        String numSkill = skills.size() + "";
-        String skills_ = "";
-        for (String s : skills) {
-            skills_ += s + " ";
-        }
-        lbl_skills.setText(skills_);
-    }
 
 
     @Override
@@ -101,17 +81,11 @@ public class RegisterActivity extends AppCompatActivity {
             txt_mobile.setError(getResources().getString(R.string.cannot_be_blank));
             return;
         }
-        if (skills.size() == 0) {
-            lbl_skills.setError(getString(R.string.select_some_skills));
-            return;
-        }
+
 
         db.beginTransaction();
         mArtisan m = new mArtisan();
         m.mobile = ccp.getSelectedCountryCodeWithPlus() + mobile;
-        RealmList<String> rl = new RealmList<String>();
-        rl.addAll(skills);
-        m.skills = rl;//add the skills this way
         appSettings aps=db.where(appSettings.class).findFirst();
         m.app_id =aps.app_id;
         db.insertOrUpdate(m);//insert this artisan into the db

@@ -49,11 +49,13 @@
 
         <activity
             android:name=".AnswerServiceRequestDialogActivity"
-            android:theme="@style/MyDialogThemeModal" />
+            android:theme="@style/MyDialogThemeModal" >
+
+
+
+        </activity>
         <activity android:name=".ConfirmOTPActivity" />
-        <activity
-            android:name=".AddSkillsActivity"
-            android:theme="@style/MyDialogTheme" />
+
         <activity android:name=".RegisterActivity" />
         <activity
             android:name=".SplashActivity"

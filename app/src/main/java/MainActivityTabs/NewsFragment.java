@@ -45,6 +45,8 @@ public class NewsFragment extends Fragment {
 
     static public RecyclerView list_notifications;
     static RecyclerView list_extra_jobs ;
+    public static LinearLayout lin_notifications;
+    public static LinearLayout lin_extra_jobs;
 
     static String tag = "NewsFragment";
     static Activity activity;
@@ -74,9 +76,13 @@ public class NewsFragment extends Fragment {
         activity = getActivity();
         swipeContainer = (SwipeRefreshLayout)view. findViewById(R.id.swipeContainer);
 
-
+        //
         list_notifications = (RecyclerView) view.findViewById(R.id.list_notifications);
         list_extra_jobs = (RecyclerView) view.findViewById(R.id.list_extra_jobs);
+
+        //
+        lin_notifications = (LinearLayout)view.findViewById(R.id.lin_notifications);
+        lin_extra_jobs = (LinearLayout)view.findViewById(R.id.lin_extra_jobs);
 
         //
         set_notification_adapter();
@@ -126,6 +132,7 @@ public class NewsFragment extends Fragment {
     public static void set_notification_adapter() {
         try {
             mNotification_Adapter notification_adapter = new mNotification_Adapter();
+            notification_adapter.setHasStableIds(true);
             LinearLayoutManager lm = new LinearLayoutManager(app.ctx, LinearLayoutManager.HORIZONTAL, false);
             list_notifications.setLayoutManager(lm);
             list_notifications.setAdapter(notification_adapter);
@@ -140,6 +147,7 @@ public class NewsFragment extends Fragment {
         List<mArtisanServiceRequest>jobs=new ArrayList<>();
 
         mExtra_Jobs_Adapter extra_jobs_adapter=new mExtra_Jobs_Adapter(activity);
+        extra_jobs_adapter.setHasStableIds(true);
 
         LinearLayoutManager lm =  new LinearLayoutManager(app.ctx,LinearLayoutManager.HORIZONTAL,false);
         list_extra_jobs.setLayoutManager(lm);
@@ -168,11 +176,22 @@ public class NewsFragment extends Fragment {
                                     }
                                     extra_jobs_adapter.jobs=jobs;
                                     list_extra_jobs.setAdapter(extra_jobs_adapter);
+
+
+
                                 } catch (Exception ex) {
                                     Log.e(tag, "line 118 " + ex.getMessage());
-                                    Toast.makeText(app.ctx, app.ctx.getString(R.string.error_occured), Toast.LENGTH_SHORT).show();
+                                    //Toast.makeText(app.ctx, app.ctx.getString(R.string.error_occured), Toast.LENGTH_SHORT).show();
                                 }
                                 finally {
+                                    if(jobs.size()<=0)
+                                    {
+                                        NewsFragment.lin_extra_jobs.setVisibility(View.GONE);//hide
+                                    }
+                                    else
+                                    {
+                                        NewsFragment.lin_extra_jobs.setVisibility(View.VISIBLE);//show
+                                    }
                                 }
 
                             } else {

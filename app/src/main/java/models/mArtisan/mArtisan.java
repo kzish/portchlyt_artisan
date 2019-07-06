@@ -39,6 +39,8 @@ public class mArtisan extends RealmObject {
     public Location location = new Location(0.0,0.0);
     public boolean synced;
     public String app_id;//the app id of this artisan
+    public double earnings_since_last_disbursement;//this is what this person has earned since his/her last dispursment
+
 
 
     public int getRating()//get my rating
