@@ -16,6 +16,7 @@
     <string name="invalid_otp">invalid Otp</string>
 
     <string name="jobs">jobs</string>
+    <string name="available_jobs">available jobs</string>
     <string name="profile">profile</string>
     <string name="blog">blog</string>
     <string name="available">Available</string>

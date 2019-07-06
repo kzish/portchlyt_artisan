@@ -18,6 +18,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application
+        android:configChanges="orientation|screenSize"
         android:name=".app"
         android:allowBackup="true"
         android:icon="@drawable/p_logo_"

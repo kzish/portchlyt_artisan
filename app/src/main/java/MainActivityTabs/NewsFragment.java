@@ -149,7 +149,7 @@ public class NewsFragment extends Fragment {
         mExtra_Jobs_Adapter extra_jobs_adapter=new mExtra_Jobs_Adapter(activity);
         extra_jobs_adapter.setHasStableIds(true);
 
-        LinearLayoutManager lm =  new LinearLayoutManager(app.ctx,LinearLayoutManager.HORIZONTAL,false);
+        LinearLayoutManager lm =  new LinearLayoutManager(app.ctx,LinearLayoutManager.VERTICAL,false);
         list_extra_jobs.setLayoutManager(lm);
 
         AsyncTask.execute(new Runnable() {
