@@ -195,4 +195,23 @@ public class mExtra_Jobs_Adapter extends RecyclerView.Adapter<mExtra_Jobs_Adapte
             linlay = (LinearLayout) view.findViewById(R.id.linlay);
         }
     }
-}
+
+
+
+
+    // Clean all elements of the recycler
+    public void clear() {
+        jobs.clear();
+        notifyDataSetChanged();
+    }
+
+    // Add a list of items -- change to type used
+    public void addAll(List<mArtisanServiceRequest> list) {
+        jobs.addAll(list);
+        notifyDataSetChanged();
+    }
+
+
+
+
+}//.adapter

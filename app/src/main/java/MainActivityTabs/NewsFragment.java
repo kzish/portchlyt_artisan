@@ -16,6 +16,7 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.porchlyt_artisan.R;
 import com.example.porchlyt_artisan.app;
@@ -47,6 +48,8 @@ public class NewsFragment extends Fragment {
 
     static String tag = "NewsFragment";
     static Activity activity;
+    private static SwipeRefreshLayout swipeContainer;
+
 
     public NewsFragment() {
     }
@@ -69,6 +72,8 @@ public class NewsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_news, container, false);
         //
         activity = getActivity();
+        swipeContainer = (SwipeRefreshLayout)view. findViewById(R.id.swipeContainer);
+
 
         list_notifications = (RecyclerView) view.findViewById(R.id.list_notifications);
         list_extra_jobs = (RecyclerView) view.findViewById(R.id.list_extra_jobs);
@@ -76,6 +81,26 @@ public class NewsFragment extends Fragment {
         //
         set_notification_adapter();
         fetch_extra_jobs();
+
+
+        // Setup refresh listener which triggers new data loading
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeContainer.setRefreshing(true);
+                // Your code to refresh the list here.
+                // Make sure you call swipeContainer.setRefreshing(false)
+                // once the network request has completed successfully.
+                fetch_extra_jobs();
+            }
+        });
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
+
 
         return view;
     }
@@ -131,7 +156,7 @@ public class NewsFragment extends Fragment {
                         .setBodyParameter("artisan_skills", TextUtils.join(":", m.skills))
                         .asString()
                         .setCallback((e, result) -> {
-
+                            swipeContainer.setRefreshing(false);
                             if (e == null) {
                                 //create and display the jobs
                                 try {
