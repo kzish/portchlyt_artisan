@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="150dp"
-    android:layout_height="wrap_content"
+    android:layout_height="120dp"
     android:background="@color/light_grey_bg"
     android:orientation="horizontal"
     android:id="@+id/linlay"
@@ -17,6 +17,7 @@
         android:orientation="vertical">
 
         <TextView
+            android:singleLine="true"
             android:id="@+id/txt_job_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -26,22 +27,23 @@
             android:textStyle="bold" />
 
         <TextView
+            android:singleLine="true"
             android:id="@+id/txt_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="12 june 2012"
-            android:textColor="#000"
-            android:textSize="10dp"
+            android:textSize="8dp"
             android:textStyle="bold" />
 
         <TextView
+            android:singleLine="true"
             android:id="@+id/txt_client_mobile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:text="0773303669"
             android:textColor="#000"
-            android:textSize="10dp"
+            android:textSize="8dp"
             android:textStyle="bold" />
 
         <TextView
@@ -51,8 +53,8 @@
             android:ellipsize="marquee"
             android:text="mandava plaza 25"
             android:textColor="#000"
-            android:textSize="8dp"
-            android:textStyle="bold" />
+            android:textSize="6dp"
+            android:textStyle="italic" />
     </LinearLayout>
 
 

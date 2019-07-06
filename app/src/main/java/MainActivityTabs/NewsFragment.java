@@ -1,5 +1,6 @@
 package MainActivityTabs;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -45,6 +46,7 @@ public class NewsFragment extends Fragment {
     static RecyclerView list_extra_jobs ;
 
     static String tag = "NewsFragment";
+    static Activity activity;
 
     public NewsFragment() {
     }
@@ -66,6 +68,7 @@ public class NewsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_news, container, false);
         //
+        activity = getActivity();
 
         list_notifications = (RecyclerView) view.findViewById(R.id.list_notifications);
         list_extra_jobs = (RecyclerView) view.findViewById(R.id.list_extra_jobs);
@@ -111,7 +114,7 @@ public class NewsFragment extends Fragment {
 
         List<mArtisanServiceRequest>jobs=new ArrayList<>();
 
-        mExtra_Jobs_Adapter extra_jobs_adapter=new mExtra_Jobs_Adapter();
+        mExtra_Jobs_Adapter extra_jobs_adapter=new mExtra_Jobs_Adapter(activity);
 
         LinearLayoutManager lm =  new LinearLayoutManager(app.ctx,LinearLayoutManager.HORIZONTAL,false);
         list_extra_jobs.setLayoutManager(lm);
