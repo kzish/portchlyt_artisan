@@ -36,7 +36,7 @@ public class app extends MultiDexApplication {
         MultiDex.install(this);
         RealmConfiguration realmConfig = new RealmConfiguration.Builder()
                 .name("porchlyt_artisan.realm")
-                .schemaVersion(18)
+                .schemaVersion(19)
                 .deleteRealmIfMigrationNeeded()
                 .build();
         Realm.setDefaultConfiguration(realmConfig);
