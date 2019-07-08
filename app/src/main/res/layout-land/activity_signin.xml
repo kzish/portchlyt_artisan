@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SigninActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/mtoolbar"
+        android:layout_width="match_parent"
+        android:layout_height="57dp"
+        android:background="@color/primary"
+        android:elevation="5dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        android:padding="50dp">
+
+        <LinearLayout
+            android:id="@+id/linlay"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="20dp"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <com.rilixtech.CountryCodePicker
+                android:id="@+id/ccp"
+                android:layout_width="0dp"
+                android:layout_height="57dp"
+                android:layout_weight="0.5"
+                android:background="@drawable/txt_bg"
+                android:gravity="center"
+                android:padding="5dp"
+                app:ccp_defaultNameCode="NG"
+                app:ccp_textSize="9dp" />
+
+            <com.beardedhen.androidbootstrap.BootstrapEditText
+                android:id="@+id/txt_mobile"
+                android:layout_width="0dp"
+                android:layout_height="57dp"
+                android:layout_weight="0.5"
+                android:textSize="9dp"
+                android:inputType="number"
+                app:bootstrapBrand="warning"
+                app:roundedCorners="false" />
+
+
+        </LinearLayout>
+
+        <com.beardedhen.androidbootstrap.BootstrapButton
+            android:id="@+id/btnRegister"
+            android:layout_width="150dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_height="57dp"
+            android:onClick="Sign_in"
+            android:text="@string/sign_in"
+            android:textColor="#000"
+            app:bootstrapBrand="warning"
+            app:showOutline="true" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="3dp"
+            android:text="@string/we_need_to_verify_your_mobile_number"
+            android:textColor="#000"
+            android:textSize="9sp" />
+    </LinearLayout>
+
+
+</RelativeLayout>
