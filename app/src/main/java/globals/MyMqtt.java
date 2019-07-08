@@ -31,6 +31,7 @@ import MainActivityTabs.ProfileFragment;
 import io.realm.Realm;
 import io.realm.RealmList;
 import models.appSettings;
+import models.mArtisan.artisanRating;
 import models.mArtisan.mArtisan;
 import models.mNotification;
 
@@ -200,7 +201,9 @@ public class MyMqtt {
                         db.executeTransaction(new Realm.Transaction() {
                             @Override
                             public void execute(Realm realm) {
-                                m.artisanRating.add(rating);
+                                artisanRating a_rating = new artisanRating();
+                                a_rating.numStars=rating;
+                                m.artisanRating.add(a_rating);
                                 ProfileFragment.get_my_rating();//show my rating
                                 Toast.makeText(app.ctx, app.ctx.getString(R.string.you_have_recieved_a_rating_of) + " " + rating, Toast.LENGTH_LONG).show();
                             }

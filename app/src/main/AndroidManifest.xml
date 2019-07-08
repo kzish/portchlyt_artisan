@@ -18,9 +18,9 @@
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application
-        android:configChanges="orientation|screenSize"
         android:name=".app"
         android:allowBackup="true"
+        android:configChanges="orientation|screenSize"
         android:icon="@drawable/p_logo_"
         android:label="@string/app_name"
         android:roundIcon="@drawable/p_logo_"
@@ -29,7 +29,8 @@
         android:versionCode="1"
         android:versionName="1.0"
         android:windowSoftInputMode="stateHidden">
-        <activity android:name=".ViewNotificationActivity"></activity>
+        <activity android:name=".SigninActivity"></activity>
+        <activity android:name=".ViewNotificationActivity" />
         <activity android:name=".CardPaymentReceivedActivity" />
         <activity android:name=".DisputeNotificationActivity" />
         <activity android:name=".ConfirmPaymentRecievedActivity" />
@@ -50,13 +51,8 @@
 
         <activity
             android:name=".AnswerServiceRequestDialogActivity"
-            android:theme="@style/MyDialogThemeModal" >
-
-
-
-        </activity>
+            android:theme="@style/MyDialogThemeModal"></activity>
         <activity android:name=".ConfirmOTPActivity" />
-
         <activity android:name=".RegisterActivity" />
         <activity
             android:name=".SplashActivity"

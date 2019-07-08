@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RegisterActivity">
+    tools:context=".SigninActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/mtoolbar"
@@ -22,9 +22,9 @@
 
         <LinearLayout
             android:id="@+id/linlay"
-            android:layout_width="250dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
+            android:layout_centerInParent="true"
             android:layout_marginBottom="20dp"
             android:orientation="horizontal"
             android:weightSum="1">
@@ -33,7 +33,7 @@
                 android:id="@+id/ccp"
                 android:layout_width="0dp"
                 android:layout_height="57dp"
-                android:layout_weight="0.5"
+                android:layout_weight="0.4"
                 android:background="@drawable/txt_bg"
                 android:gravity="center"
                 android:padding="5dp"
@@ -44,7 +44,7 @@
                 android:id="@+id/txt_mobile"
                 android:layout_width="0dp"
                 android:layout_height="57dp"
-                android:layout_weight="0.5"
+                android:layout_weight="0.6"
                 android:textSize="9dp"
                 android:inputType="number"
                 app:bootstrapBrand="warning"
@@ -55,11 +55,10 @@
 
         <com.beardedhen.androidbootstrap.BootstrapButton
             android:id="@+id/btnRegister"
-            android:layout_width="150dp"
-            android:layout_gravity="center_horizontal"
+            android:layout_width="match_parent"
             android:layout_height="57dp"
-            android:onClick="Register"
-            android:text="@string/register"
+            android:onClick="Sign_in"
+            android:text="@string/sign_in"
             android:textColor="#000"
             app:bootstrapBrand="warning"
             app:showOutline="true" />

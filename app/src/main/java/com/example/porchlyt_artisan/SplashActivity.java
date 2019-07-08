@@ -38,6 +38,7 @@ public class SplashActivity extends AppCompatActivity {
     }
     public void Signin(View v) {
 
-
+        startActivity(new Intent(SplashActivity.this,SigninActivity.class));
+        Log.e("d","clicked");
     }
 }

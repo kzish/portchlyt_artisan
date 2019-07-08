@@ -31,7 +31,7 @@ public class mArtisan extends RealmObject {
     public String otp;
     public RealmList<String> skills = new RealmList<>();
     public RealmList<Referee> referees = new RealmList<>();
-    public RealmList<Integer> artisanRating = new RealmList<Integer>();
+    public RealmList<artisanRating> artisanRating = new RealmList<artisanRating>();
     public int numJobs;//the number of jobs that i have done
     public boolean registered;
     public boolean busy=false;//is this artisan currently busy or not, you do not get another work untill you finish your current work
@@ -53,11 +53,11 @@ public class mArtisan extends RealmObject {
             int twoRatings   = 0;
             int oneRatings   = 0;
 
-            for(int i :artisanRating){if(i==5)fiveRatings++;}
-            for(int i :artisanRating){if(i==4)fourRatings++;}
-            for(int i :artisanRating){if(i==3)threeRatings++;}
-            for(int i :artisanRating){if(i==2)twoRatings++;}
-            for(int i :artisanRating){if(i==1)oneRatings++;}
+            for(artisanRating i :artisanRating){if(i.numStars==5)fiveRatings++;}
+            for(artisanRating i :artisanRating){if(i.numStars==4)fourRatings++;}
+            for(artisanRating i :artisanRating){if(i.numStars==3)threeRatings++;}
+            for(artisanRating i :artisanRating){if(i.numStars==2)twoRatings++;}
+            for(artisanRating i :artisanRating){if(i.numStars==1)oneRatings++;}
 
             int rating = (
                     5 * fiveRatings +

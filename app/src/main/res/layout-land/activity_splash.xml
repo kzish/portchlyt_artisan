@@ -8,42 +8,64 @@
     tools:context=".SplashActivity">
 
 
-
     <LinearLayout
         android:id="@+id/linlay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_alignParentBottom="true">
-        <com.beardedhen.androidbootstrap.BootstrapButton
-            android:layout_width="120dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_gravity="center_horizontal"
-            android:layout_height="57dp"
-            android:text="@string/register"
-            app:bootstrapBrand="secondary"
-            app:roundedCorners="true"
-            android:onClick="Register"
-            app:showOutline="false" />
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <com.beardedhen.androidbootstrap.BootstrapButton
+                android:layout_width="0dp"
+                android:layout_height="57dp"
+                android:layout_margin="2dp"
+                android:layout_weight="0.5"
+                android:onClick="Register"
+                android:text="@string/register"
+                app:bootstrapBrand="warning"
+                app:roundedCorners="true"
+                app:showOutline="false" />
+
+            <com.beardedhen.androidbootstrap.BootstrapButton
+                android:layout_width="0dp"
+                android:layout_height="57dp"
+                android:layout_margin="2dp"
+                android:layout_weight="0.5"
+                android:onClick="Signin"
+                android:text="@string/sign_in"
+                app:bootstrapBrand="success"
+                app:roundedCorners="true"
+                app:showOutline="false" />
+
+        </LinearLayout>
+
 
         <TextView
-            android:layout_gravity="center_horizontal"
-            android:layout_margin="5dp"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true"
             android:id="@+id/textView5"
-            android:textSize="11dp"
-            android:textColor="#fff"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="\u00a9 porchlyt" />
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="5dp"
+            android:text="\u00a9 porchlyt"
+            android:textColor="#fff"
+            android:textSize="11dp" />
     </LinearLayout>
 
     <TextView
-        android:layout_centerInParent="true"
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
         android:text="porchlyt"
         android:textColor="#fff"
         android:textSize="48dp" />
@@ -60,11 +82,11 @@
         android:textStyle="bold" />
 
     <ImageView
-        android:layout_above="@+id/textView3"
-        android:layout_centerHorizontal="true"
         android:id="@+id/imageView"
         android:layout_width="100dp"
         android:layout_height="100dp"
+        android:layout_above="@+id/textView3"
+        android:layout_centerHorizontal="true"
         app:srcCompat="@drawable/p_logo_2" />
 
 
