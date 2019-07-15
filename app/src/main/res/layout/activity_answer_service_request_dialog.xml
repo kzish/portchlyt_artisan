@@ -22,7 +22,6 @@
             android:id="@+id/linlay_map"
             android:layout_width="match_parent"
             android:layout_height="220dp"
-            android:background="@android:drawable/dialog_holo_light_frame"
             android:orientation="vertical">
 
             <com.google.android.gms.maps.MapView
@@ -84,7 +83,6 @@
             android:id="@+id/linlay_accept_reject"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:drawable/dialog_holo_light_frame"
             android:orientation="vertical"
             android:padding="20dp">
 
@@ -128,7 +126,6 @@
             android:id="@+id/linlay_explanation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:drawable/dialog_holo_light_frame"
             android:orientation="vertical"
             android:padding="20dp">
             <TextView

@@ -290,7 +290,7 @@ public class ViewJobActivity extends AppCompatActivity {
                 break;
 
             case R.id.m_cancel:
-                Intent cancel = new Intent(ViewJobActivity.this, ViewJobActivity.class);
+                Intent cancel = new Intent(ViewJobActivity.this, CancelJobActivity.class);
                 Realm db = globals.getDB();
                 mArtisan artisan = db.where(mArtisan.class).findFirst();
                 mJobs job  = db.where(mJobs.class).equalTo("_job_id",_job_id).findFirst();
