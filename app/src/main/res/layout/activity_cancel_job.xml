@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/contextView"
+    android:layout_height="match_parent"
+    tools:context=".CancelJobActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/mtoolbar"
+        android:layout_width="match_parent"
+        android:layout_height="57dp"
+        android:background="@color/primary"
+        android:elevation="5dp" />
+
+
+
+    <!--reason for cancelling-->
+    <LinearLayout
+        android:id="@+id/linlay_explanation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:drawable/dialog_holo_light_frame"
+        android:orientation="vertical"
+        android:padding="20dp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/why_do_you_want_to_cancel"/>
+
+        <RadioGroup
+            android:id="@+id/rd_response"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <RadioButton
+                android:checked="true"
+                android:id="@+id/rd_1"
+                android:elevation="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/client_cannot_pay" />
+
+            <RadioButton
+                android:id="@+id/rd_2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/bad_reception" />
+
+
+            <RadioButton
+                android:id="@+id/rd_3"
+                android:elevation="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/incorrect_job_requested" />
+
+
+        </RadioGroup>
+
+
+
+
+        <com.beardedhen.androidbootstrap.BootstrapButton
+            android:layout_width="match_parent"
+            android:onClick="submit_reason_for_cancelling"
+            android:layout_height="wrap_content"
+            android:text="@string/submit"
+            app:roundedCorners="true"
+            app:showOutline="true" />
+
+
+    </LinearLayout>
+    <!--./reason for cancelling-->
+
+</LinearLayout>

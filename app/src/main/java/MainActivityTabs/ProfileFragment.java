@@ -924,6 +924,8 @@ public class ProfileFragment extends Fragment {
                     if (knownName.equals(null))
                         knownName = "";//this to ensure that we dont pull null values in the address
                     my_address = country + ", " + city + ", " + state + ", " + knownName;
+                    if(my_address.equals("") || my_address.equals(" ") || TextUtils.isEmpty(my_address))
+                        my_address=getString(R.string.unknown_location);
 
                 } catch (Exception ex) {
                     Log.e(tag, "line 456 " + ex.getMessage());

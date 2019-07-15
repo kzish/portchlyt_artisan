@@ -29,7 +29,8 @@
         android:versionCode="1"
         android:versionName="1.0"
         android:windowSoftInputMode="stateHidden">
-        <activity android:name=".SigninActivity"></activity>
+        <activity android:name=".CancelJobActivity"></activity>
+        <activity android:name=".SigninActivity" />
         <activity android:name=".ViewNotificationActivity" />
         <activity android:name=".CardPaymentReceivedActivity" />
         <activity android:name=".DisputeNotificationActivity" />
@@ -51,7 +52,7 @@
 
         <activity
             android:name=".AnswerServiceRequestDialogActivity"
-            android:theme="@style/MyDialogThemeModal"></activity>
+            android:theme="@style/MyDialogThemeModal" />
         <activity android:name=".ConfirmOTPActivity" />
         <activity android:name=".RegisterActivity" />
         <activity

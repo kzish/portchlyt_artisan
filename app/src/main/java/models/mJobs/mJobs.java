@@ -32,6 +32,7 @@ public class mJobs extends RealmObject {
     public double price;
     public String description;//any notes the artsian may want to note
     public RealmList<mTask> tasks;//these are te bills or break down of the job
+    public String job_status=JobStatus.opened.toString();//
 
     public mJobs() {
         start_time = LocalDateTime.now().toString();
@@ -45,4 +46,7 @@ public class mJobs extends RealmObject {
         }
         return total;
     }
+
+
+
 }

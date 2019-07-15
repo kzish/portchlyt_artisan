@@ -11,6 +11,7 @@ import com.example.porchlyt_artisan.CardPaymentReceivedActivity;
 import com.example.porchlyt_artisan.ConfirmPaymentRecievedActivity;
 import com.example.porchlyt_artisan.DisputeNotificationActivity;
 import com.example.porchlyt_artisan.R;
+import com.example.porchlyt_artisan.ViewNotificationActivity;
 import com.example.porchlyt_artisan.app;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
@@ -24,6 +25,7 @@ import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.joda.time.LocalDateTime;
 import org.json.JSONObject;
 
 import MainActivityTabs.NewsFragment;
@@ -33,6 +35,8 @@ import io.realm.RealmList;
 import models.appSettings;
 import models.mArtisan.artisanRating;
 import models.mArtisan.mArtisan;
+import models.mJobs.JobStatus;
+import models.mJobs.mJobs;
 import models.mNotification;
 
 public class MyMqtt {
@@ -88,6 +92,26 @@ public class MyMqtt {
 
                 if (type.equals("general_notification")) {
                     create_notification(json.getString("general_notification_message"));
+                }
+
+                if (type.equals("job_cancelled")) {
+                   String notification_id = create_notification(json.getString("reason"));
+                    Realm db = globals.getDB();
+                    mJobs job = db.where(mJobs.class).equalTo("_job_id",json.getString("_job_id")).findFirst();
+                    db.executeTransaction(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            job.end_time=LocalDateTime.now().toString();
+                            job.job_status= JobStatus.cancelled.toString();
+                        }
+                    });
+                    db.close();
+
+                    //open the notification activity
+                    Intent notification = new Intent(app.ctx, ViewNotificationActivity.class);
+                    notification.putExtra("notification_id",notification_id);
+                    notification.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    app.ctx.startActivity(notification);
                 }
 
 
@@ -280,7 +304,7 @@ public class MyMqtt {
 
             @Override
             public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
-                Log.e(tag, "message delivered");
+                //Log.e(tag, "message delivered");
             }
         });
 
@@ -365,7 +389,8 @@ public class MyMqtt {
 
 
     //insert notification into db
-    private static void create_notification(String notification_text) {
+    private static String create_notification(String notification_text) {
+        String[] notification_id = {""};
         Realm db = globals.getDB();
         try {
             db.executeTransaction(new Realm.Transaction() {
@@ -374,15 +399,17 @@ public class MyMqtt {
                     //insert a notification
                     mNotification notification = new mNotification();
                     notification.notification_text = notification_text;
+                    notification_id[0] = notification._id;
                     db.insertOrUpdate(notification);
-
                 }
             });
             ProfileFragment.get_number_of_notifications();
             NewsFragment.set_notification_adapter();
+            return notification_id[0];
 
         } catch (Exception ex) {
             Log.e(tag, "line 323 create_notification"+ex.getMessage());
+            return "";
         } finally {
             db.close();
         }

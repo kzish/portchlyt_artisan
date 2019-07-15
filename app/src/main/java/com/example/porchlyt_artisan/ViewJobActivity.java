@@ -48,6 +48,8 @@ import java.util.Locale;
 import adapters.mTasksAdapter;
 import globals.globals;
 import io.realm.Realm;
+import models.mArtisan.mArtisan;
+import models.mJobs.JobStatus;
 import models.mJobs.mJobs;
 
 public class ViewJobActivity extends AppCompatActivity {
@@ -185,8 +187,11 @@ public class ViewJobActivity extends AppCompatActivity {
         //show that this job is currently closed
         Realm db=globals.getDB();
         mJobs job=db.where(mJobs.class).equalTo("_job_id",_job_id).findFirst();
-        if(job.end_time!=null) {
+        if(job.job_status== JobStatus.closed.toString()) {
             Snackbar.make(content_view, getString(R.string.this_job_is_closed), Snackbar.LENGTH_INDEFINITE).show();
+        }
+        if(job.job_status== JobStatus.cancelled.toString()) {
+            Snackbar.make(content_view, getString(R.string.this_job_was_cancelled), Snackbar.LENGTH_INDEFINITE).show();
         }
         db.close();
 
@@ -283,6 +288,18 @@ public class ViewJobActivity extends AppCompatActivity {
             case R.id.m_send_bill_to_client:
                 forward_bill_to_client();
                 break;
+
+            case R.id.m_cancel:
+                Intent cancel = new Intent(ViewJobActivity.this, ViewJobActivity.class);
+                Realm db = globals.getDB();
+                mArtisan artisan = db.where(mArtisan.class).findFirst();
+                mJobs job  = db.where(mJobs.class).equalTo("_job_id",_job_id).findFirst();
+                cancel.putExtra("_job_id", _job_id);
+                cancel.putExtra("artisan_app_id",artisan.app_id);
+                cancel.putExtra("client_app_id", job.client_app_id);
+                db.close();
+                startActivity(cancel);
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -294,7 +311,7 @@ public class ViewJobActivity extends AppCompatActivity {
         mJobs job =  db.where(mJobs.class).equalTo("_job_id",_job_id).findFirst();
         if(job.end_time==null) {//show the menu if this job is not completed
             getMenuInflater().inflate(R.menu.view_job_menu, menu);
-        }
+        }//only show when job i still pending completion
         return true;
     }
 

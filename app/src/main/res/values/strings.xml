@@ -92,5 +92,17 @@
     <string name="error_fetching_jobs">Error fetching jobs</string>
     <string name="swipe_down_to_refresh">swipe down to refresh</string>
     <string name="this_mobile_does_not_exist">This mobile does not exist</string>
+    <string name="unknown_location">Unknown location?</string>
+
+
+    <string name="why_do_you_want_to_cancel">why do you want to cancel</string>
+
+    <string name="client_cannot_pay">client cannot pay</string>
+    <string name="bad_reception">bad reception</string>
+    <string name="incorrect_job_requested">incorrect job requested</string>
+
+
+    <string name="this_job_was_cancelled">this job was cancelled</string>
+
 
 </resources>

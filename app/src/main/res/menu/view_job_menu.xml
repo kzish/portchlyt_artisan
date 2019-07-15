@@ -1,18 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:title="@string/add_bill"
-        android:icon="@drawable/ic_playlist_add_black_24dp"
-        app:showAsAction="always"
         android:id="@+id/m_add_task"
-        />
+        android:icon="@drawable/ic_playlist_add_black_24dp"
+        android:title="@string/add_bill"
+        app:showAsAction="always" />
 
     <item
-        android:title="@string/send_bill_to_client"
-        android:icon="@drawable/ic_trending_up_black_24dp"
-        app:showAsAction="always"
         android:id="@+id/m_send_bill_to_client"
-        />
+        android:icon="@drawable/ic_trending_up_black_24dp"
+        android:title="@string/send_bill_to_client"
+        app:showAsAction="always" />
+
+
+    <item
+        android:id="@+id/m_cancel"
+        android:icon="@drawable/ic_cancel_black_24dp"
+        android:title="@string/cancel"
+        app:showAsAction="always" />
+
 
 </menu>
