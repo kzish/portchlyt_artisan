@@ -22,7 +22,6 @@
         android:id="@+id/linlay_explanation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:drawable/dialog_holo_light_frame"
         android:orientation="vertical"
         android:padding="20dp">
         <TextView
@@ -57,7 +56,35 @@
                 android:text="@string/incorrect_job_requested" />
 
 
+            <RadioButton
+                android:id="@+id/rd_4"
+                android:elevation="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/other" />
+
+
         </RadioGroup>
+
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:id="@+id/lay_other"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+                <EditText
+                    android:hint="..."
+                    android:id="@+id/txt_other"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
 
 
 
