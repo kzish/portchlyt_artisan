@@ -7,12 +7,14 @@ import io.realm.RealmModel;
 import io.realm.RealmRecyclerViewAdapter;
 import io.realm.Sort;
 import models.mArtisan.mArtisan;
+import models.mJobs.JobStatus;
 import models.mJobs.mJobs;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.Image;
+import android.media.JetPlayer;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -101,8 +103,12 @@ public class mjobsAdapter extends RecyclerView.Adapter<mjobsAdapter.myViewHolder
 
 
         //indicate that this job is completed
-        if (job.end_time != null) {
+        if (job.job_status.equals(JobStatus.closed.toString())) {
             vh.img_status.setImageResource((R.drawable.ic_verified_user_black_24dp));
+        }
+
+        if (job.job_status.equals(JobStatus.cancelled.toString())) {
+            vh.img_status.setImageResource((R.drawable.ic_cancel_black_24dp));
         }
 
         //todo improve performance so we can ue the following code to set the profile image of the artisan

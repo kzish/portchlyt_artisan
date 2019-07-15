@@ -28,6 +28,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.joda.time.LocalDateTime;
 import org.json.JSONObject;
 
+import MainActivityTabs.JobsFragment;
 import MainActivityTabs.NewsFragment;
 import MainActivityTabs.ProfileFragment;
 import io.realm.Realm;
@@ -95,23 +96,29 @@ public class MyMqtt {
                 }
 
                 if (type.equals("job_cancelled")) {
-                   String notification_id = create_notification(json.getString("reason"));
-                    Realm db = globals.getDB();
-                    mJobs job = db.where(mJobs.class).equalTo("_job_id",json.getString("_job_id")).findFirst();
-                    db.executeTransaction(new Realm.Transaction() {
-                        @Override
-                        public void execute(Realm realm) {
-                            job.end_time=LocalDateTime.now().toString();
-                            job.job_status= JobStatus.cancelled.toString();
-                        }
-                    });
-                    db.close();
-
-                    //open the notification activity
-                    Intent notification = new Intent(app.ctx, ViewNotificationActivity.class);
-                    notification.putExtra("notification_id",notification_id);
-                    notification.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    app.ctx.startActivity(notification);
+                    try {
+                        String notification_id = create_notification(json.getString("reason_for_cancellation"));
+                        Realm db = globals.getDB();
+                        mJobs job = db.where(mJobs.class).equalTo("_job_id", json.getString("_job_id")).findFirst();
+                        db.executeTransaction(new Realm.Transaction() {
+                            @Override
+                            public void execute(Realm realm) {
+                                job.end_time = LocalDateTime.now().toString();
+                                job.job_status = JobStatus.cancelled.toString();
+                            }
+                        });
+                        db.close();
+                        
+                        JobsFragment.refreshJobsAdapter();
+                        //open the notification activity
+                        Intent notification = new Intent(app.ctx, ViewNotificationActivity.class);
+                        notification.putExtra("notification_id", notification_id);
+                        notification.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        app.ctx.startActivity(notification);
+                    }catch (Exception ex)
+                    {
+                        Log.e(tag,ex.getMessage());
+                    }
                 }
 
 

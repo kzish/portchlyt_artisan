@@ -19,7 +19,11 @@ import com.koushikdutta.ion.Ion;
 
 import org.json.JSONObject;
 
+import MainActivityTabs.JobsFragment;
 import globals.globals;
+import io.realm.Realm;
+import models.mJobs.JobStatus;
+import models.mJobs.mJobs;
 
 public class CancelJobActivity extends AppCompatActivity {
     String tag = "CancelJobActivity";
@@ -104,7 +108,7 @@ public class CancelJobActivity extends AppCompatActivity {
     public void submit_reason_for_cancelling(View v) {
         String reason = "";
         if (rd_1.isChecked()) reason = "took_too_long_to_arrive";
-        if (rd_2.isChecked()) reason = "bad_service";
+        if (rd_2.isChecked()) reason = "bad_reception";
         if (rd_3.isChecked()) reason = "too_expensive";
         if (rd_4.isChecked()) reason = txt_other.getText().toString();
 
@@ -141,8 +145,20 @@ public class CancelJobActivity extends AppCompatActivity {
                                 JSONObject json = new JSONObject(result);
                                 String res = json.getString("res");
                                 if (res.equals("ok")) {
+                                    Realm db = globals.getDB();
+                                    mJobs job  = db.where(mJobs.class).equalTo("_job_id",_job_id).findFirst();
+                                    db.executeTransaction(new Realm.Transaction() {
+                                        @Override
+                                        public void execute(Realm realm) {
+                                            job.job_status= JobStatus.cancelled.toString();
+                                            JobsFragment.refreshJobsAdapter();
+                                        }
+                                    });
+                                    db.close();
                                     Toast.makeText(CancelJobActivity.this,getString(R.string.job_cancelled),Toast.LENGTH_SHORT).show();
-                                    finishActivity(ViewJobActivity.request_code_for_cancel_job);
+                                    finishActivityFromChild(CancelJobActivity.this,ViewJobActivity.request_code_for_cancel_job);
+                                    finish();
+
                                 } else {
                                     Snackbar.make(contextView, R.string.error_occured, Snackbar.LENGTH_SHORT).show();
                                 }
