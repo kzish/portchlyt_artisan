@@ -10,6 +10,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -30,6 +31,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.internal.NavigationMenu;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.koushikdutta.ion.Ion;
@@ -47,7 +50,10 @@ import java.util.Locale;
 
 import adapters.mTasksAdapter;
 import globals.globals;
+import io.github.kobakei.materialfabspeeddial.FabSpeedDial;
 import io.realm.Realm;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function3;
 import models.mArtisan.mArtisan;
 import models.mJobs.JobStatus;
 import models.mJobs.mJobs;
@@ -68,6 +74,7 @@ public class ViewJobActivity extends AppCompatActivity {
     static LinearLayout tbl_lay;
     LinearLayout content_view;
 
+
     //map
     MapView mMapView;
     private GoogleMap googleMap;
@@ -78,14 +85,51 @@ public class ViewJobActivity extends AppCompatActivity {
 
     public static mTasksAdapter tasks_adapter;
 
-    public static int request_code_for_cancel_job=2;
+    public static int request_code_for_cancel_job = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_job);
-        content_view = (LinearLayout)findViewById(R.id.content_view);
+        content_view = (LinearLayout) findViewById(R.id.content_view);
         _job_id = getIntent().getStringExtra("_job_id");
+
+
+        FabSpeedDial fab = (FabSpeedDial) findViewById(R.id.fab);
+        fab.addOnMenuItemClickListener(new Function3<FloatingActionButton, TextView, Integer, Unit>() {
+            @Override
+            public Unit invoke(FloatingActionButton floatingActionButton, TextView textView, Integer integer) {
+                Realm db = globals.getDB();
+                mJobs job = db.where(mJobs.class).equalTo("_job_id", _job_id).findFirst();//get the job
+                String mobile = job.client_mobile;
+                db.close();
+
+                if(integer==R.id.m_call) {
+                    Intent call = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", mobile, null));
+                    ViewJobActivity.this.startActivity(call);
+                }
+
+                if(integer==R.id.m_sms)
+                {
+                    Intent sms = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("smsto", mobile, null));
+                    ViewJobActivity.this.startActivity(sms);
+                }
+
+
+                return null;
+            }
+        });
+
+        //
+        Realm db=globals.getDB();
+        mJobs job= db.where(mJobs  .class).equalTo("_job_id",_job_id).findFirst();
+        if (job.job_status.equals(JobStatus.closed.toString()) ||  job.job_status.equals(JobStatus.cancelled.toString()) ) {
+            fab.setVisibility(View.GONE);
+        }
+        db.close();
+
+
+
 
 
         mtoolbar = (Toolbar) findViewById(R.id.mtoolbar);
@@ -123,8 +167,8 @@ public class ViewJobActivity extends AppCompatActivity {
                 googleMap = mMap;
 
                 // For dropping a marker at a point on the Map
-                Realm db=globals.getDB();
-                mJobs job=db.where(mJobs.class).equalTo("_job_id",_job_id).findFirst();
+                Realm db = globals.getDB();
+                mJobs job = db.where(mJobs.class).equalTo("_job_id", _job_id).findFirst();
                 LatLng my_position = new LatLng(Double.parseDouble(job.geoLocationLatitude), Double.parseDouble(job.geoLocationLongitude));
                 db.close();
                 googleMap.addMarker(new MarkerOptions().position(my_position).title(getString((R.string.your_client_is_here)))
@@ -148,12 +192,12 @@ public class ViewJobActivity extends AppCompatActivity {
             @Override
             public void run() {
 
-                Realm db= globals.getDB();
+                Realm db = globals.getDB();
                 Geocoder geocoder;
                 List<Address> addresses;
                 geocoder = new Geocoder(ViewJobActivity.this, Locale.getDefault());
                 try {
-                    mJobs job=db.where(mJobs.class).equalTo("_job_id",_job_id).findFirst();
+                    mJobs job = db.where(mJobs.class).equalTo("_job_id", _job_id).findFirst();
                     addresses = geocoder.getFromLocation(Double.parseDouble(job.geoLocationLatitude), Double.parseDouble(job.geoLocationLongitude), 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
                     String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
                     String city = addresses.get(0).getLocality();
@@ -170,8 +214,7 @@ public class ViewJobActivity extends AppCompatActivity {
 
                 } catch (Exception ex) {
                     Log.e(tag, "asrda line 95 " + ex.getMessage());
-                }
-                finally {
+                } finally {
                     db.close();
                 }
 
@@ -187,12 +230,12 @@ public class ViewJobActivity extends AppCompatActivity {
 
 
         //show that this job is currently closed
-        Realm db=globals.getDB();
-        mJobs job=db.where(mJobs.class).equalTo("_job_id",_job_id).findFirst();
-        if(job.job_status.equals(JobStatus.closed.toString())) {
+        db = globals.getDB();
+        job = db.where(mJobs.class).equalTo("_job_id", _job_id).findFirst();
+        if (job.job_status.equals(JobStatus.closed.toString())) {
             Snackbar.make(content_view, getString(R.string.this_job_is_closed), Snackbar.LENGTH_INDEFINITE).show();
         }
-        if(job.job_status.equals(JobStatus.cancelled.toString())) {
+        if (job.job_status.equals(JobStatus.cancelled.toString())) {
             Snackbar.make(content_view, getString(R.string.this_job_was_cancelled), Snackbar.LENGTH_INDEFINITE).show();
         }
         db.close();
@@ -205,12 +248,12 @@ public class ViewJobActivity extends AppCompatActivity {
     private void getTheJob() {
         DateTimeFormatter dtf = ISODateTimeFormat.localDateOptionalTimeParser();
         DateTimeFormatter dtf2 = DateTimeFormat.forPattern("d MMM,yyyy HH:mm");
-        Realm db= globals.getDB();
+        Realm db = globals.getDB();
         mJobs job = db.where(mJobs.class).equalTo("_job_id", _job_id).findFirst();//get the job
 
-        txt_start_time.setText(    dtf2.print(dtf.parseLocalDateTime(job.start_time))     );
-        if(job.end_time!=null && !job.end_time.equals("")) {
-            txt_end_time.setText(    dtf2.print(dtf.parseLocalDateTime(job.end_time))     );
+        txt_start_time.setText(dtf2.print(dtf.parseLocalDateTime(job.start_time)));
+        if (job.end_time != null && !job.end_time.equals("")) {
+            txt_end_time.setText(dtf2.print(dtf.parseLocalDateTime(job.end_time)));
         }
         set_the_total_time();//set the time in a pretty format
         txt_service_type.setText(job.description);
@@ -219,17 +262,13 @@ public class ViewJobActivity extends AppCompatActivity {
         setTotalPrice();
     }
 
-    public static void setTotalPrice()
-    {
-        Realm db  =  globals.getDB();
-        mJobs job = db.where(mJobs.class).equalTo("_job_id",_job_id).findFirst();
-        lbl_total_price.setText(app.ctx.getString(R.string.total_price)+": "+ globals.formatCurrency(job.getTheTotalPrice()));
-        if(job.getTheTotalPrice()>0)
-        {
+    public static void setTotalPrice() {
+        Realm db = globals.getDB();
+        mJobs job = db.where(mJobs.class).equalTo("_job_id", _job_id).findFirst();
+        lbl_total_price.setText(app.ctx.getString(R.string.total_price) + ": " + globals.formatCurrency(job.getTheTotalPrice()));
+        if (job.getTheTotalPrice() > 0) {
             tbl_lay.setVisibility(View.VISIBLE);
-        }
-        else
-        {
+        } else {
             tbl_lay.setVisibility(View.INVISIBLE);
         }
         db.close();
@@ -238,17 +277,14 @@ public class ViewJobActivity extends AppCompatActivity {
     //set the total time of this job if running or complete
     private void set_the_total_time() {
         Realm db = globals.getDB();
-        mJobs job = db.where(mJobs.class).equalTo("_job_id",_job_id).findFirst();
+        mJobs job = db.where(mJobs.class).equalTo("_job_id", _job_id).findFirst();
         DateTimeFormatter dtf = ISODateTimeFormat.localDateOptionalTimeParser();
         LocalDateTime start_time = dtf.parseLocalDateTime(job.start_time);
         LocalDateTime end_time;
 
-        if(job.end_time!=null)
-        {
-            end_time   = dtf.parseLocalDateTime(job.end_time);
-        }
-        else
-        {
+        if (job.end_time != null) {
+            end_time = dtf.parseLocalDateTime(job.end_time);
+        } else {
             end_time = LocalDateTime.now();
         }
 
@@ -257,9 +293,9 @@ public class ViewJobActivity extends AppCompatActivity {
         int hours = p.getHours();
         int mins = p.getMinutes();
         txt_total_time.setText(
-                getString(R.string.total_time)+" "+ days + " " +   getString(R.string.days)
-                +" " + hours+" "+ getString(R.string.hrs)
-                +" " + mins +" " + getString(R.string.mins)
+                getString(R.string.total_time) + " " + days + " " + getString(R.string.days)
+                        + " " + hours + " " + getString(R.string.hrs)
+                        + " " + mins + " " + getString(R.string.mins)
         );
         db.close();
     }
@@ -284,7 +320,7 @@ public class ViewJobActivity extends AppCompatActivity {
                 break;
             case R.id.m_add_task:
                 Intent at = new Intent(ViewJobActivity.this, AddTaskActivity.class);
-                at.putExtra("_job_id",_job_id);
+                at.putExtra("_job_id", _job_id);
                 startActivity(at);
                 break;
             case R.id.m_send_bill_to_client:
@@ -295,12 +331,12 @@ public class ViewJobActivity extends AppCompatActivity {
                 Intent cancel = new Intent(ViewJobActivity.this, CancelJobActivity.class);
                 Realm db = globals.getDB();
                 mArtisan artisan = db.where(mArtisan.class).findFirst();
-                mJobs job  = db.where(mJobs.class).equalTo("_job_id",_job_id).findFirst();
+                mJobs job = db.where(mJobs.class).equalTo("_job_id", _job_id).findFirst();
                 cancel.putExtra("_job_id", _job_id);
-                cancel.putExtra("artisan_app_id",artisan.app_id);
+                cancel.putExtra("artisan_app_id", artisan.app_id);
                 cancel.putExtra("client_app_id", job.client_app_id);
                 db.close();
-                startActivityForResult(cancel,request_code_for_cancel_job);
+                startActivityForResult(cancel, request_code_for_cancel_job);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -309,9 +345,9 @@ public class ViewJobActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        Realm db= globals.getDB();
-        mJobs job =  db.where(mJobs.class).equalTo("_job_id",_job_id).findFirst();
-        if(job.job_status.equals(JobStatus.opened.toString())) {//show the menu if this job is still open
+        Realm db = globals.getDB();
+        mJobs job = db.where(mJobs.class).equalTo("_job_id", _job_id).findFirst();
+        if (job.job_status.equals(JobStatus.opened.toString())) {//show the menu if this job is still open
             getMenuInflater().inflate(R.menu.view_job_menu, menu);
         }//only show when job i still pending completion
         return true;
@@ -325,78 +361,67 @@ public class ViewJobActivity extends AppCompatActivity {
 
 
     //function to send this job task to the client
-    public void forward_bill_to_client()
-    {
+    public void forward_bill_to_client() {
 
-        Realm db=globals.getDB();
-        mJobs job=db.where(mJobs.class).equalTo("_job_id",_job_id).findFirst();
-        if(job.getTheTotalPrice()==0)
-        {
-            Snackbar.make(content_view,getString(R.string.add_some_bills),Snackbar.LENGTH_SHORT).show();
+        Realm db = globals.getDB();
+        mJobs job = db.where(mJobs.class).equalTo("_job_id", _job_id).findFirst();
+        if (job.getTheTotalPrice() == 0) {
+            Snackbar.make(content_view, getString(R.string.add_some_bills), Snackbar.LENGTH_SHORT).show();
             return;//dont send anything unless some bills have been added
         }
-        String sdata="";
-        ProgressDialog pd= new ProgressDialog(ViewJobActivity.this);
+        String sdata = "";
+        ProgressDialog pd = new ProgressDialog(ViewJobActivity.this);
         pd.setMessage(getString(R.string.please_wait));
         pd.setCanceledOnTouchOutside(false);
         pd.show();
 
         try {
 
-            sdata    = new Gson().toJson(db.copyFromRealm(job));
+            sdata = new Gson().toJson(db.copyFromRealm(job));
             db.close();
             Ion.with(ViewJobActivity.this)
-                    .load(globals.base_url+"/forward_bill_to_client")
+                    .load(globals.base_url + "/forward_bill_to_client")
                     .setBodyParameter("data", sdata)
                     .asString()
                     .setCallback((e, result) -> {
                         pd.dismiss();//hide the pd
-                        Log.e(tag,result+" result");
-                        if(e!=null)
-                        {
+                        Log.e(tag, result + " result");
+                        if (e != null) {
                             //handle error
-                            Snackbar.make(content_view,getString(R.string.error_occured),Snackbar.LENGTH_SHORT).show();
+                            Snackbar.make(content_view, getString(R.string.error_occured), Snackbar.LENGTH_SHORT).show();
                             return;
                         }
                         //proceed if no error
                         try {
                             JSONObject json = new JSONObject(result);
-                            String res=json.getString("res");
+                            String res = json.getString("res");
                             String msg = json.getString("msg");
-                            if(res.equals("ok"))
-                            {
-                                Snackbar.make(content_view,getString(R.string.sent),Snackbar.LENGTH_SHORT).show();
+                            if (res.equals("ok")) {
+                                Snackbar.make(content_view, getString(R.string.sent), Snackbar.LENGTH_SHORT).show();
+                                return;
+                            } else {
+                                Log.e(tag, msg);
+                                Snackbar.make(content_view, getString(R.string.error_occured), Snackbar.LENGTH_SHORT).show();
                                 return;
                             }
-                            else
-                            {
-                                Log.e(tag,msg);
-                                Snackbar.make(content_view,getString(R.string.error_occured),Snackbar.LENGTH_SHORT).show();
-                                return;
-                            }
-                        }catch (Exception ex)
-                        {
-                            Log.e(tag,ex.getMessage());
+                        } catch (Exception ex) {
+                            Log.e(tag, ex.getMessage());
                         }
                     });
-        }catch (Exception ex)
-        {
-            Log.e(tag,ex.getMessage());
+        } catch (Exception ex) {
+            Log.e(tag, ex.getMessage());
             pd.dismiss();
-        }
-        finally {
+        } finally {
             //
         }
     }
 
 
-    public static void set_tasks_adapter()
-    {
+    public static void set_tasks_adapter() {
         tasks_adapter = new mTasksAdapter(_job_id);//this automatically pulls the tasks of this job
         tasks_adapter.setHasStableIds(true);
         list_tasks.setAdapter(tasks_adapter);
     }
-
 
 
     @Override
@@ -409,7 +434,6 @@ public class ViewJobActivity extends AppCompatActivity {
             }
         }
     }
-
 
 
 }

@@ -104,6 +104,8 @@
     <string name="other">other</string>
     <string name="this_job_was_cancelled">this job was cancelled</string>
     <string name="job_cancelled">Job cancelled</string>
+    <string name="call">call</string>
+    <string name="sms">sms</string>
 
 
 </resources>

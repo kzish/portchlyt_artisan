@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/m_sms"
+        android:title="@string/sms"
+        android:icon="@drawable/ic_sms_black_24dp"
+        android:orderInCategory="1"/>
+    <item
+        android:id="@+id/m_call"
+        android:title="@string/call"
+        android:icon="@drawable/ic_call_black_24dp"
+        android:orderInCategory="2"/>
+
+</menu>

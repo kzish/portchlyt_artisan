@@ -72,6 +72,7 @@
             android:theme="@style/Base.Theme.AppCompat" />
 
         <service android:name="org.eclipse.paho.android.service.MqttService" />
+
     </application>
 
 </manifest>
