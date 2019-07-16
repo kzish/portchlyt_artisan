@@ -82,6 +82,7 @@ import globals.MyMqtt;
 import io.realm.Realm;
 import models.mArtisan.mArtisan;
 import models.mArtisanSearch;
+import models.mJobs.JobStatus;
 import models.mJobs.mJobs;
 import models.mNotification;
 
@@ -928,6 +929,7 @@ public class ProfileFragment extends Fragment {
                         my_address=getString(R.string.unknown_location);
 
                 } catch (Exception ex) {
+                    my_address=getString(R.string.unknown_location);
                     Log.e(tag, "line 456 " + ex.getMessage());
                 }
 
@@ -979,7 +981,8 @@ public class ProfileFragment extends Fragment {
 
     private int get_number_of_completed_jobs() {
         Realm db = globals.getDB();
-        int num_jobs = (int) db.where(mJobs.class).notEqualTo("end_time", "").count();
+        int num_jobs = (int) db.where(mJobs.class).equalTo("job_status", JobStatus.closed.toString()).count();
+        db.close();
         return num_jobs;
 
     }

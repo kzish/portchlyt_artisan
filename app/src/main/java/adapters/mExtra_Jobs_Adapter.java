@@ -128,6 +128,13 @@ public class mExtra_Jobs_Adapter extends RecyclerView.Adapter<mExtra_Jobs_Adapte
             Log.e(tag, ex.getLocalizedMessage());
         }
 
+        //long press to open this option
+        holder.linlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                NewsFragment.show_artisan_contact_dialog(job.client_mobile);
+            }
+        });
         //also get the address
 
         client_address = "";
@@ -188,6 +195,7 @@ public class mExtra_Jobs_Adapter extends RecyclerView.Adapter<mExtra_Jobs_Adapte
         public TextView txt_client_mobile;
         public TextView txt_job_location;
         public LinearLayout linlay;
+
 
         public myHolder(View view) {
             super(view);

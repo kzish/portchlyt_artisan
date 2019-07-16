@@ -107,9 +107,9 @@ public class CancelJobActivity extends AppCompatActivity {
 
     public void submit_reason_for_cancelling(View v) {
         String reason = "";
-        if (rd_1.isChecked()) reason = "took_too_long_to_arrive";
+        if (rd_1.isChecked()) reason = "client_cannot_pay";
         if (rd_2.isChecked()) reason = "bad_reception";
-        if (rd_3.isChecked()) reason = "too_expensive";
+        if (rd_3.isChecked()) reason = "incorrect_job_requested";
         if (rd_4.isChecked()) reason = txt_other.getText().toString();
 
 

@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.tabs.TabLayout;
@@ -39,9 +40,11 @@ public class MainActivity extends AppCompatActivity {
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
         setTabIcons();
-        if(MyMqtt.mqttClient==null) {//only if client is not already there then re-init
-            MyMqtt.init(this);
-        }
+
+
+        //start the mqtt service
+        Intent mqtt_service =  new Intent(this,globals.MyMqtt.class);
+        startService(mqtt_service);
 
     }
 

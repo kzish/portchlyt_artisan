@@ -1,15 +1,29 @@
 package globals;
 
+import android.annotation.TargetApi;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
+import android.os.Build;
+import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
+
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.core.app.NotificationCompat;
 
 import com.example.porchlyt_artisan.AnswerServiceRequestDialogActivity;
 import com.example.porchlyt_artisan.CardPaymentReceivedActivity;
 import com.example.porchlyt_artisan.ConfirmPaymentRecievedActivity;
 import com.example.porchlyt_artisan.DisputeNotificationActivity;
+import com.example.porchlyt_artisan.MainActivity;
 import com.example.porchlyt_artisan.R;
 import com.example.porchlyt_artisan.ViewNotificationActivity;
 import com.example.porchlyt_artisan.app;
@@ -40,7 +54,8 @@ import models.mJobs.JobStatus;
 import models.mJobs.mJobs;
 import models.mNotification;
 
-public class MyMqtt {
+public class MyMqtt extends Service {
+
     public static MqttAndroidClient mqttClient;
     public static Context ctx;
     //final String serverUri = "tcp://postman.cloudmqtt.com:16998";
@@ -52,7 +67,7 @@ public class MyMqtt {
     public static String mqtt_server = "porchlyt_mqtt_server";
 
     //init the mqtt service
-    public static void init(Context context) {
+    public static void init_(Context context) {
         ctx = context;
 
         //get the correct client id for this specific device
@@ -108,22 +123,21 @@ public class MyMqtt {
                             }
                         });
                         db.close();
-                        
+
                         JobsFragment.refreshJobsAdapter();
                         //open the notification activity
                         Intent notification = new Intent(app.ctx, ViewNotificationActivity.class);
                         notification.putExtra("notification_id", notification_id);
                         notification.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         app.ctx.startActivity(notification);
-                    }catch (Exception ex)
-                    {
-                        Log.e(tag,ex.getMessage());
+                    } catch (Exception ex) {
+                        Log.e(tag, ex.getMessage());
                     }
                 }
 
 
                 if (type.equals("clear_artisan_earning")) {
-                    Realm db =  globals.getDB();
+                    Realm db = globals.getDB();
                     try {
                         mArtisan m = db.where(mArtisan.class).findFirst();
                         db.executeTransaction(new Realm.Transaction() {
@@ -133,11 +147,9 @@ public class MyMqtt {
                             }
                         });
                         ProfileFragment.set_my_earning();
-                    }catch (Exception ex)
-                    {
-                        Log.e(tag,"clear_artisan_earning " +ex.getMessage());
-                    }
-                    finally {
+                    } catch (Exception ex) {
+                        Log.e(tag, "clear_artisan_earning " + ex.getMessage());
+                    } finally {
                         db.close();
                     }
                 }
@@ -146,28 +158,24 @@ public class MyMqtt {
                 if (type.equals("artisan_earning")) {
                     //what the artisan has earned
                     //insert it into the database
-                    Realm db =  globals.getDB();
-                        double earning = json.getDouble("earning");
-                        try
-                        {
-                            mArtisan m = db.where(mArtisan.class).findFirst();
-                            db.executeTransaction(new Realm.Transaction() {
-                                @Override
-                                public void execute(Realm realm) {
-                                    m.earnings_since_last_disbursement+=earning;
-                                }
-                            });
-                            ProfileFragment.set_my_earning();
-                        }catch (Exception ex)
-                        {
-                            Log.e(tag,"artisan_earning "+ex.getLocalizedMessage());
-                        }
-                        finally {
-                            db.close();
-                        }
+                    Realm db = globals.getDB();
+                    double earning = json.getDouble("earning");
+                    try {
+                        mArtisan m = db.where(mArtisan.class).findFirst();
+                        db.executeTransaction(new Realm.Transaction() {
+                            @Override
+                            public void execute(Realm realm) {
+                                m.earnings_since_last_disbursement += earning;
+                            }
+                        });
+                        ProfileFragment.set_my_earning();
+                    } catch (Exception ex) {
+                        Log.e(tag, "artisan_earning " + ex.getLocalizedMessage());
+                    } finally {
+                        db.close();
+                    }
 
                 }
-
 
 
                 if (type.equals("update_artisan_services")) {
@@ -194,7 +202,6 @@ public class MyMqtt {
 
                         //display the skills
                         ProfileFragment.set_artisan_skills();
-                        Toast.makeText(app.ctx, app.ctx.getString(R.string.skills_updated), Toast.LENGTH_SHORT).show();
 
                     } catch (Exception ex) {
                         Toast.makeText(app.ctx, app.ctx.getString(R.string.error_updating_services), Toast.LENGTH_SHORT).show();
@@ -233,12 +240,12 @@ public class MyMqtt {
                             @Override
                             public void execute(Realm realm) {
                                 artisanRating a_rating = new artisanRating();
-                                a_rating.numStars=rating;
+                                a_rating.numStars = rating;
                                 m.artisanRating.add(a_rating);
                                 ProfileFragment.get_my_rating();//show my rating
-                                Toast.makeText(app.ctx, app.ctx.getString(R.string.you_have_recieved_a_rating_of) + " " + rating, Toast.LENGTH_LONG).show();
                             }
                         });
+                        create_notification(app.ctx.getString(R.string.you_have_recieved_a_rating_of));
                     } catch (Exception ex) {
                         Log.e(tag, ex.getMessage());
                     } finally {
@@ -288,9 +295,10 @@ public class MyMqtt {
 
                 if (type.equals("request_task_notification")) {
                     try {
+
+                        //on the screen when this activity starts
                         Intent request = new Intent(app.ctx, AnswerServiceRequestDialogActivity.class);
                         request.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
                         request.putExtra("lat", json.getString("lat"));
                         request.putExtra("lon", json.getString("lon"));
                         request.putExtra("services", json.getString("services"));
@@ -412,10 +420,51 @@ public class MyMqtt {
             });
             ProfileFragment.get_number_of_notifications();
             NewsFragment.set_notification_adapter();
-            return notification_id[0];
 
+            //notification ontop of screen
+            Notification builder = new NotificationCompat.Builder(app.ctx)
+                    .setSmallIcon(R.drawable.p_logo_)
+                    .setContentTitle(app.ctx.getString(R.string.notification))
+                    .setContentText(notification_text)
+                    .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT).build();
+
+            NotificationManager notificationManager =
+                    (NotificationManager) app.ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.notify(0, builder);
+
+
+            //for oreo android 8
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+
+                int notifyID = 1;
+                String CHANNEL_ID = "my_channel_01";// The id of the channel.
+                CharSequence name = app.ctx.getString(R.string.channel_name);// The user-visible name of the channel.
+                int importance = NotificationManager.IMPORTANCE_HIGH;
+                NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
+                // Create a notification and set the notification channel.
+                Notification notification = new Notification.Builder(app.ctx)
+                        .setContentTitle(app.ctx.getString(R.string.notification))
+                        .setContentText(notification_text)
+                        .setSmallIcon(R.drawable.p_logo_)
+                        .setChannelId(CHANNEL_ID)
+                        .build();
+
+                NotificationManager mNotificationManager =
+                        (NotificationManager) app.ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+                mNotificationManager.createNotificationChannel(mChannel);
+                mNotificationManager.notify(notifyID, notification);
+
+            }
+
+            //play a sound for notification
+            MediaPlayer mp = MediaPlayer.create(app.ctx, R.raw.plucky);
+            mp.start();
+
+
+            return notification_id[0];
         } catch (Exception ex) {
-            Log.e(tag, "line 323 create_notification"+ex.getMessage());
+            Log.e(tag, "line 323 create_notification" + ex.getMessage());
             return "";
         } finally {
             db.close();
@@ -423,5 +472,32 @@ public class MyMqtt {
 
     }
 
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        super.onStartCommand(intent, flags, startId);
+        Log.e(tag, "mqtt_service started");
+
+        if (MyMqtt.mqttClient == null) {//only if client is not already there then re-init
+            MyMqtt.init_(this);
+        } else if (!MyMqtt.mqttClient.isConnected()) {//if not connected attempt to connect
+            connect();
+        }
+
+        return START_STICKY;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.e(tag, "mqtt_service stopped");
+    }
+
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
 
 }

@@ -105,6 +105,22 @@ public class AnswerServiceRequestDialogActivity extends AppCompatActivity implem
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_answer_service_request_dialog);
 
+
+
+        //wake the phone up, on the screen, when this activity starts
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
+                | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+                | WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON);
+
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+
+
+
         contextView = findViewById(R.id.context_view);
 
         linlay_accept_reject = (LinearLayout) findViewById(R.id.linlay_accept_reject);

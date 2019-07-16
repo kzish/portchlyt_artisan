@@ -2,6 +2,8 @@ package MainActivityTabs;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -127,6 +130,43 @@ public class NewsFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
     }
+
+    //how do you want to contact this artisan
+    public static void show_artisan_contact_dialog(String mobile) {
+        AlertDialog.Builder pictureDialog = new AlertDialog.Builder(activity);
+        pictureDialog.setTitle(activity.getResources().getString(R.string.contact) + " " + mobile);
+        String[] pictureDialogItems = {
+                activity.getResources().getString(R.string.call),
+                activity.getResources().getString(R.string.sms)
+        };
+
+        pictureDialog.setItems(pictureDialogItems,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case 0:
+
+                                Intent call = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", mobile, null));
+                                activity.startActivity(call);
+                                break;
+
+                            case 1:
+
+                                Intent sms = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("smsto", mobile, null));
+                                activity.startActivity(sms);
+                                break;
+                        }
+                    }
+                });
+        try {
+            pictureDialog.show();
+        }catch (Exception ex)
+        {
+            Log.e(tag,"line 258 "+ex.getMessage());
+        }
+    }
+
 
 
     public static void set_notification_adapter() {
