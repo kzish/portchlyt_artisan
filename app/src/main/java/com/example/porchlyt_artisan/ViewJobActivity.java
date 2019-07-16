@@ -82,6 +82,7 @@ public class ViewJobActivity extends AppCompatActivity {
 
     //
     String tag = "ViewJobActivity";
+    static Activity activity;
 
     public static mTasksAdapter tasks_adapter;
 
@@ -94,6 +95,7 @@ public class ViewJobActivity extends AppCompatActivity {
         content_view = (LinearLayout) findViewById(R.id.content_view);
         _job_id = getIntent().getStringExtra("_job_id");
 
+        activity = this;
 
         FabSpeedDial fab = (FabSpeedDial) findViewById(R.id.fab);
         fab.addOnMenuItemClickListener(new Function3<FloatingActionButton, TextView, Integer, Unit>() {
@@ -433,6 +435,10 @@ public class ViewJobActivity extends AppCompatActivity {
                 finish();//finish this activity too
             }
         }
+    }
+
+    public static void close_activity() {
+        activity.finish();
     }
 
 

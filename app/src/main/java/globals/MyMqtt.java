@@ -25,6 +25,7 @@ import com.example.porchlyt_artisan.ConfirmPaymentRecievedActivity;
 import com.example.porchlyt_artisan.DisputeNotificationActivity;
 import com.example.porchlyt_artisan.MainActivity;
 import com.example.porchlyt_artisan.R;
+import com.example.porchlyt_artisan.ViewJobActivity;
 import com.example.porchlyt_artisan.ViewNotificationActivity;
 import com.example.porchlyt_artisan.app;
 
@@ -124,7 +125,14 @@ public class MyMqtt extends Service {
                         });
                         db.close();
 
+                        //refresh the jobs adapter
                         JobsFragment.refreshJobsAdapter();
+
+                        //close the ViewJobActivity if running
+                        try{
+                            ViewJobActivity.close_activity();
+                        }catch (Exception ex){}
+
                         //open the notification activity
                         Intent notification = new Intent(app.ctx, ViewNotificationActivity.class);
                         notification.putExtra("notification_id", notification_id);
@@ -223,6 +231,14 @@ public class MyMqtt extends Service {
                         cp.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         cp.putExtra("amount_payed", amount_payed);
                         cp.putExtra("_job_id", _job_id);
+
+                        //close the ViewJobActivity if running
+                        try{
+                            ViewJobActivity.close_activity();
+                        }catch (Exception ex){}
+
+
+
                         app.ctx.startActivity(cp);
                     } catch (Exception ex) {
                         //Toast.makeText(app.ctx,ex.getLocalizedMessage()+" ",Toast.LENGTH_LONG).show();
