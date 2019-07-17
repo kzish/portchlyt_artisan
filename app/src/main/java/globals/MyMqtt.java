@@ -261,7 +261,7 @@ public class MyMqtt extends Service {
                                 ProfileFragment.get_my_rating();//show my rating
                             }
                         });
-                        create_notification(app.ctx.getString(R.string.you_have_recieved_a_rating_of));
+                        create_notification(app.ctx.getString(R.string.you_have_recieved_a_rating_of)+ " " +rating);
                     } catch (Exception ex) {
                         Log.e(tag, ex.getMessage());
                     } finally {

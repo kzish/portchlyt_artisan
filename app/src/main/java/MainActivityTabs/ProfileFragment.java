@@ -911,6 +911,7 @@ public class ProfileFragment extends Fragment {
                 Geocoder geocoder;
                 List<Address> addresses;
                 try {
+                    my_address = getString(R.string.unknown_location);
                     geocoder = new Geocoder(ctx, Locale.getDefault());
                     addresses = geocoder.getFromLocation(wayLatitude, wayLongitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
                     String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
@@ -925,21 +926,25 @@ public class ProfileFragment extends Fragment {
                     if (knownName.equals(null))
                         knownName = "";//this to ensure that we dont pull null values in the address
                     my_address = country + ", " + city + ", " + state + ", " + knownName;
-                    if(my_address.equals("") || my_address.equals(" ") || TextUtils.isEmpty(my_address))
-                        my_address=getString(R.string.unknown_location);
+                    if (my_address.equals("") || my_address.equals(" ") || TextUtils.isEmpty(my_address))
+                        my_address = getString(R.string.unknown_location);
 
                 } catch (Exception ex) {
-                    my_address=getString(R.string.unknown_location);
                     Log.e(tag, "line 456 " + ex.getMessage());
                 }
 
-                //this will now run on the ui thread
-                activity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        txt_location.setText(my_address);//set the address
-                    }
-                });
+                try {
+                    //this will now run on the ui thread
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            txt_location.setText(my_address);//set the address
+                        }
+                    });
+                }catch (Exception ex)
+                {
+
+                }
             }
 
         });

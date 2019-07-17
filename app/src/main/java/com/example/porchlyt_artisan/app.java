@@ -36,7 +36,7 @@ public class app extends MultiDexApplication {
         MultiDex.install(this);
         RealmConfiguration realmConfig = new RealmConfiguration.Builder()
                 .name("porchlyt_artisan.realm")
-                .schemaVersion(19)
+                .schemaVersion(20)
                 .deleteRealmIfMigrationNeeded()
                 .build();
         Realm.setDefaultConfiguration(realmConfig);
@@ -59,7 +59,7 @@ public class app extends MultiDexApplication {
 
 
         //show the realm database
-        RealmBrowser.startRealmModelsActivity(this, realmConfig);
+        //RealmBrowser.startRealmModelsActivity(this, realmConfig);
     }
 
 

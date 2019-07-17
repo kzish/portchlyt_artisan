@@ -87,10 +87,14 @@ public class ConfirmOTPActivity extends AppCompatActivity {
                                                     db.beginTransaction();
                                                     m.registered = true;
                                                     db.commitTransaction();//save the new status
+
                                                     Intent main = new Intent(ConfirmOTPActivity.this, MainActivity.class);
-                                                    main.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                                    startActivity(main);//clear all the activity=ies and start the main activty see
-                                                    finish();//end this activity
+                                                    main.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                    main.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                                                    main.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                    main.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                    startActivity(main);
+                                                    finish();//clear this activity
                                                 } else {
                                                     Toast.makeText(ConfirmOTPActivity.this, getString(R.string.error_occured), Toast.LENGTH_SHORT).show();
                                                 }
