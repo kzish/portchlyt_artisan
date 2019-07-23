@@ -111,20 +111,12 @@ public class mjobsAdapter extends RecyclerView.Adapter<mjobsAdapter.myViewHolder
             vh.img_status.setImageResource((R.drawable.ic_cancel_black_24dp));
         }
 
-        //todo improve performance so we can ue the following code to set the profile image of the artisan
-        //set the profile pic if one exists
-        /*Realm db = globals.getDB();
-        mArtisan m = db.where(mArtisan.class).findFirst();
-        if(m.image!=null) {
-            //set_profile_pic(vh.img_artisan_icon);
-        }
-        db.close();*/
+
 
 
 
     }
 
-    //inside the adapter class
     @Override
     public long getItemId(int position) {
         return position;

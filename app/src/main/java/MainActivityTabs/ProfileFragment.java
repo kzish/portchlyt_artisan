@@ -390,8 +390,8 @@ public class ProfileFragment extends Fragment {
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(app.ctx);
         locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(1 * 1000);
-        locationRequest.setFastestInterval(1 * 1000);
+        locationRequest.setInterval(10 * 1000);
+        locationRequest.setFastestInterval(10 * 1000);
 
         //attempt getting the last known location
         mFusedLocationClient.getLastLocation().
