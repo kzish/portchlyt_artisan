@@ -59,8 +59,6 @@ public class MyMqtt extends Service {
 
     public static MqttAndroidClient mqttClient;
     public static Context ctx;
-    //final String serverUri = "tcp://postman.cloudmqtt.com:16998";
-    final static String serverUri = "tcp://192.168.138.1:1883";
     static String clientId = "";//this is the client id for this specific device, this is the maintain the correct messages
     final String username = "uiemrvua";
     final String password = "cB51Tz-tin54";
@@ -77,7 +75,7 @@ public class MyMqtt extends Service {
         appSettings aps = db.where(appSettings.class).findFirst();
         clientId = artisan.app_id;//use this topic for real time comms with the client app
         db.close();
-        mqttClient = new MqttAndroidClient(app.ctx, serverUri, clientId);
+        mqttClient = new MqttAndroidClient(app.ctx, globals.mqtt_server, clientId);
         mqttClient.setCallback(new MqttCallbackExtended() {
             @Override
             public void connectComplete(boolean b, String s) {
@@ -368,7 +366,7 @@ public class MyMqtt extends Service {
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    Log.w(tag, "Failed to connect to: " + serverUri + " " + exception.toString());
+                    Log.w(tag, "Failed to connect to: " + globals.mqtt_server + " " + exception.toString());
                 }
             });
 
