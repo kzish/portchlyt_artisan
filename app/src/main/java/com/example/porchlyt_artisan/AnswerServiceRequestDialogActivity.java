@@ -109,15 +109,11 @@ public class AnswerServiceRequestDialogActivity extends AppCompatActivity implem
 
         //wake the phone up, on the screen, when this activity starts
 
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
-                | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
-                | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-                | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
-                | WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON);
-
-
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON);
 
 
 
@@ -187,8 +183,8 @@ public class AnswerServiceRequestDialogActivity extends AppCompatActivity implem
 
                 Geocoder geocoder;
                 List<Address> addresses;
-                geocoder = new Geocoder(AnswerServiceRequestDialogActivity.this, Locale.getDefault());
                 try {
+                    geocoder = new Geocoder(AnswerServiceRequestDialogActivity.this, Locale.getDefault());
                     addresses = geocoder.getFromLocation(Double.parseDouble(lat), Double.parseDouble(lon), 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
                     String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
                     String city = addresses.get(0).getLocality();
@@ -207,13 +203,17 @@ public class AnswerServiceRequestDialogActivity extends AppCompatActivity implem
                     Log.e(tag, "asrda line 95 " + ex.getMessage());
                 }
 
-                //this will now run on the ui thread
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        txt_address.setText(client_address);//set the address
-                    }
-                });
+                try {
+                    //this will now run on the ui thread
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            txt_address.setText(client_address);//set the address
+                        }
+                    });
+                }catch (Exception ex) {
+
+                }
             }
         });
 
