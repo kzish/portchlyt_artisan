@@ -64,6 +64,7 @@
     <string name="full_name">full name</string>
     <string name="email">email</string>
     <string name="hourly_rate">hourly rate</string>
+    <string name="account_number">account number</string>
     <string name="error_updating_details">Error updating details</string>
     <string name="change_profile_picture">Change Profile Picture</string>
     <string name="select_photo_from_gallery">Select photo from gallery</string>
@@ -109,6 +110,8 @@
     <string name="notification">notification</string>
     <string name="channel_name">porchlyt</string>
     <string name="contact">Contact</string>
+    <string name="banking_details">Banking details</string>
+
 
 
 </resources>

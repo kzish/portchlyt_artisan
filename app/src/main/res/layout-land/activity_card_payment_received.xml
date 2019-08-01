@@ -54,12 +54,13 @@
 
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:minWidth="200dp"
+            android:layout_width="wrap_content"
             android:layout_height="120dp"
             android:layout_below="@+id/linlay1"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
-            android:background="@drawable/et_background"
+            android:background="@drawable/et_background_light"
             android:gravity="center_vertical"
             android:orientation="vertical"
             android:padding="20dp">
@@ -82,12 +83,12 @@
                 />
         </LinearLayout>
         <com.beardedhen.androidbootstrap.BootstrapButton
-            android:layout_width="match_parent"
+            android:layout_width="200dp"
             android:layout_height="57dp"
             android:layout_alignParentBottom="true"
             android:onClick="accept_card_payment"
             app:bootstrapBrand="warning"
-
+android:layout_centerHorizontal="true"
             app:bootstrapText="@string/confirm_payment_received"
             app:roundedCorners="true"
             app:showOutline="true" />

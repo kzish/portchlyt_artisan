@@ -494,7 +494,7 @@ public class MyMqtt extends Service {
             connect();
         }
 
-        return START_STICKY;
+        return START_REDELIVER_INTENT;
     }
 
     @Override

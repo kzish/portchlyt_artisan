@@ -26,12 +26,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -54,6 +57,8 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.jackandphantom.circularimageview.CircleImage;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
@@ -64,10 +69,16 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -82,6 +93,7 @@ import globals.MyMqtt;
 import io.realm.Realm;
 import models.mArtisan.mArtisan;
 import models.mArtisanSearch;
+import models.mBank;
 import models.mJobs.JobStatus;
 import models.mJobs.mJobs;
 import models.mNotification;
@@ -93,6 +105,9 @@ public class ProfileFragment extends Fragment {
     TextView txt_mobile;
     EditText txt_name;
     EditText txt_email;
+    EditText txt_bank_account_number;
+    Spinner spinner_bank_name;
+
     TextView txt_location;
     EditText txt_hourly_rate;
     Switch switchAvailable;
@@ -101,6 +116,7 @@ public class ProfileFragment extends Fragment {
     CircleImage img_profile;
     public static Context ctx;
     static TextView lbl_notifications;
+
 
     String my_address = "";
 
@@ -176,6 +192,8 @@ public class ProfileFragment extends Fragment {
         lbl_earnings = (TextView) view.findViewById(R.id.lbl_earnings);
         txt_name = (EditText) view.findViewById(R.id.txt_name);
         txt_email = (EditText) view.findViewById(R.id.txt_email);
+        txt_bank_account_number = (EditText) view.findViewById(R.id.txt_bank_account_number);
+        spinner_bank_name = (Spinner) view.findViewById(R.id.spinner_bank_name);
         txt_location = (TextView) view.findViewById(R.id.txt_location);//this will be updated automatically
         txt_hourly_rate = (EditText) view.findViewById(R.id.txt_hourly_rate);
         txt_skills = (TextView) view.findViewById(R.id.txt_skills);
@@ -188,6 +206,8 @@ public class ProfileFragment extends Fragment {
         btn_save_details.setVisibility(View.GONE);
 
 
+        populate_spinner_banks();
+
         //save details on clicking the button
         btn_save_details.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -196,7 +216,7 @@ public class ProfileFragment extends Fragment {
             }
         });
         TextView lbl_num_jobs = (TextView) view.findViewById(R.id.lbl_num_jobs);
-        lbl_num_jobs.setText(get_number_of_completed_jobs() + "");
+        lbl_num_jobs.setText(globals.numberCalculation(get_number_of_completed_jobs()));
 
         Realm db = globals.getDB();
         mArtisan m = db.where(mArtisan.class).findFirst();
@@ -206,9 +226,11 @@ public class ProfileFragment extends Fragment {
         txt_mobile.setText(m.mobile);
         txt_name.setText(m.name);
         txt_email.setText(m.email);
+        txt_bank_account_number.setText(m.account_number);
+
         txt_skills.setText(TextUtils.join(" ", m.skills));
         txt_hourly_rate.setText(m.hourlyRate + "");
-        lbl_earnings.setText( globals.formatCurrency( m.earnings_since_last_disbursement ) );
+        lbl_earnings.setText(globals.formatCurrency(m.earnings_since_last_disbursement));
 
         if (!m.synced) {
             btn_save_details.setVisibility(View.VISIBLE);
@@ -259,6 +281,25 @@ public class ProfileFragment extends Fragment {
 
         //
         txt_email.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                btn_save_details.setVisibility(View.VISIBLE);
+            }
+        });
+
+
+        //
+        txt_bank_account_number.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -430,6 +471,17 @@ public class ProfileFragment extends Fragment {
 
             }
         });
+        spinner_bank_name.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                btn_save_details.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
 
         //check location settings first time
@@ -557,17 +609,18 @@ public class ProfileFragment extends Fragment {
     public void update_my_details() {
 
 
-
-
-        if(txt_name.getText().equals(""))
-        {
+        if (txt_name.getText().equals("")) {
             txt_name.setError(getString(R.string.cannot_be_blank));
             return;
         }
 
-        if(txt_email.getText().equals(""))
-        {
+        if (txt_email.getText().equals("")) {
             txt_email.setError(getString(R.string.cannot_be_blank));
+            return;
+        }
+
+        if (txt_bank_account_number.getText().equals("")) {
+            txt_bank_account_number.setError(getString(R.string.cannot_be_blank));
             return;
         }
 
@@ -594,6 +647,15 @@ public class ProfileFragment extends Fragment {
                     m.email = txt_email.getText().toString();
                     m.synced = false;
                 }
+
+                //
+                if (txt_bank_account_number.getText().toString() != "") {
+                    m.account_number = txt_bank_account_number.getText().toString();
+                    m.synced = false;
+                }
+
+
+                m.account_bank=spinner_bank_name.getSelectedItem().toString();
             }
         });
         db.close();
@@ -616,6 +678,8 @@ public class ProfileFragment extends Fragment {
                 json.put("name", m.name);
                 json.put("email", m.email);
                 json.put("hourlyRate", m.hourlyRate);
+                json.put("account_bank", m.account_bank);
+                json.put("account_number", m.account_number);
 
                 sdata = json.toString();
                 Log.e("d", sdata);
@@ -630,6 +694,7 @@ public class ProfileFragment extends Fragment {
                             if (e == null) {
                                 try {
                                     String res = new JSONObject(result).getString("res");
+                                    String msg = new JSONObject(result).getString("msg");
                                     db.executeTransaction(new Realm.Transaction() {
                                         @Override
                                         public void execute(Realm realm) {
@@ -638,6 +703,7 @@ public class ProfileFragment extends Fragment {
                                                 btn_save_details.setVisibility(View.GONE);
                                                 Snackbar.make(content_view, getString(R.string.saved), Snackbar.LENGTH_SHORT).show();
                                             } else {
+                                                Toast.makeText(getContext(),msg+" ",Toast.LENGTH_LONG).show();
                                                 Snackbar.make(content_view, getString(R.string.error_updating_details), Snackbar.LENGTH_SHORT).show();
                                             }
                                         }
@@ -649,7 +715,7 @@ public class ProfileFragment extends Fragment {
 
                         });
             } catch (Exception ex) {
-                Log.e("d", ex.getMessage());
+                Log.e(tag, ex.getMessage());
             } finally {
                 db.close();
             }
@@ -941,8 +1007,7 @@ public class ProfileFragment extends Fragment {
                             txt_location.setText(my_address);//set the address
                         }
                     });
-                }catch (Exception ex)
-                {
+                } catch (Exception ex) {
 
                 }
             }
@@ -996,16 +1061,75 @@ public class ProfileFragment extends Fragment {
     //non read notifications
     public static void get_number_of_notifications() {
         Realm db = globals.getDB();
-        int num_notifications = (int) db.where(mNotification.class).equalTo("is_read",false).count();
-        lbl_notifications.setText(num_notifications + "");
+        int num_notifications = (int) db.where(mNotification.class).equalTo("is_read", false).count();
+        lbl_notifications.setText(globals.numberCalculation(num_notifications));
     }
 
-    public static void set_my_earning()
-    {
-        Realm db=globals.getDB();
-        mArtisan m =  db.where(mArtisan.class).findFirst();
-        lbl_earnings.setText( globals.formatCurrency( m.earnings_since_last_disbursement ) );
+    public static void set_my_earning() {
+        Realm db = globals.getDB();
+        mArtisan m = db.where(mArtisan.class).findFirst();
+        lbl_earnings.setText(globals.formatCurrency(m.earnings_since_last_disbursement));
         db.close();
+
+    }
+
+
+    private void populate_spinner_banks() {
+        InputStream is = getResources().openRawResource(R.raw.list_of_banks_in_nigeria);
+        Writer writer = new StringWriter();
+        char[] buffer = new char[1024];
+        try {
+            Reader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+            int n;
+            while ((n = reader.read(buffer)) != -1) {
+                writer.write(buffer, 0, n);
+            }
+            String jsonString = writer.toString();
+            JSONObject json = new JSONObject(jsonString);
+            JSONArray json_a = json.getJSONArray("Banks");
+
+            ArrayList<mBank>banks = new ArrayList<>();
+            for(int i=0;i<json_a.length();i++)
+            {
+                JSONObject j = json_a.getJSONObject(i);
+                mBank bank = new Gson().fromJson(j.toString(),mBank.class);
+                banks.add(bank);
+
+            }
+
+
+            List<String> spinnerArray = new ArrayList<String>();
+            int index=0;
+            int selected_index=0;
+            Realm db = globals.getDB();
+            mArtisan artisan = db.where(mArtisan.class).findFirst();
+            for(mBank bank:banks) {
+
+                spinnerArray.add(bank.Name);
+                if(artisan.account_bank!=null && artisan.account_bank.equals(bank.Name)) {
+                    selected_index = index;
+                }
+                index++;
+            }
+            db.close();
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                    getActivity(), android.R.layout.simple_spinner_item, spinnerArray);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinner_bank_name.setAdapter(adapter);
+            spinner_bank_name.setSelection(selected_index,true);
+
+
+
+        } catch (Exception ex) {
+Toast.makeText(getActivity(),ex.getLocalizedMessage(),Toast.LENGTH_LONG).show();
+Log.e(tag,ex.getMessage());
+        } finally {
+            try {
+                is.close();
+            } catch (Exception ex) {
+            }
+        }
+
 
     }
 

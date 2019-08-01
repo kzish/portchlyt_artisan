@@ -21,6 +21,7 @@ import MainActivityTabs.JobsFragment;
 import globals.globals;
 import io.realm.Realm;
 import models.mArtisan.mArtisan;
+import models.mJobs.JobStatus;
 import models.mJobs.mJobs;
 
 public class CardPaymentReceivedActivity extends AppCompatActivity {
@@ -122,6 +123,7 @@ public class CardPaymentReceivedActivity extends AppCompatActivity {
                                     public void execute(Realm realm) {
                                         if(job.end_time==null) {//make sure we dont change the date again
                                             job.end_time = LocalDateTime.now().toString();//set the end time
+                                            job.job_status=JobStatus.closed.toString();
                                         }
                                     }
                                 });
