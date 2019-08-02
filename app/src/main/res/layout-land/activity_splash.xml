@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_splash_land"
+    android:background="#fff"
     tools:context=".SplashActivity">
 
 
@@ -20,30 +20,27 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_gravity="center_horizontal"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:weightSum="1">
 
             <com.beardedhen.androidbootstrap.BootstrapButton
-                android:layout_width="0dp"
-                android:layout_height="57dp"
-                android:layout_margin="2dp"
-                android:layout_weight="0.5"
+                android:layout_width="match_parent"
+                android:layout_height="37dp"
                 android:onClick="Register"
                 android:text="@string/register"
-                app:bootstrapBrand="warning"
+                app:bootstrapBrand="info"
                 app:roundedCorners="true"
-                app:showOutline="false" />
+                app:showOutline="true" />
 
             <com.beardedhen.androidbootstrap.BootstrapButton
-                android:layout_width="0dp"
-                android:layout_height="57dp"
-                android:layout_margin="2dp"
-                android:layout_weight="0.5"
+                android:layout_width="match_parent"
+                android:layout_height="37dp"
+                android:layout_marginTop="5dp"
                 android:onClick="Signin"
                 android:text="@string/sign_in"
                 app:bootstrapBrand="success"
                 app:roundedCorners="true"
-                app:showOutline="false" />
+                app:showOutline="true" />
 
         </LinearLayout>
 
@@ -57,7 +54,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_margin="5dp"
             android:text="\u00a9 porchlyt"
-            android:textColor="#fff"
+            android:textColor="#000"
             android:textSize="11dp" />
     </LinearLayout>
 
@@ -67,7 +64,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:text="porchlyt"
-        android:textColor="#fff"
+        android:textColor="#dedede"
         android:textSize="48dp" />
 
     <TextView

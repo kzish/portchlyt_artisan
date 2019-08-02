@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_splash"
+    android:background="#fff"
     tools:context=".SplashActivity">
 
 
@@ -20,28 +20,25 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:weightSum="1"
-            android:orientation="horizontal">
+            android:orientation="vertical">
             <com.beardedhen.androidbootstrap.BootstrapButton
-                android:layout_width="0dp"
-                android:layout_margin="2dp"
-                android:layout_weight="0.5"
+                android:layout_width="match_parent"
                 android:layout_height="57dp"
                 android:onClick="Register"
                 android:text="@string/register"
-                app:bootstrapBrand="warning"
+                app:bootstrapBrand="info"
                 app:roundedCorners="true"
-                app:showOutline="false" />
+                app:showOutline="true" />
 
             <com.beardedhen.androidbootstrap.BootstrapButton
-                android:layout_width="0dp"
-                android:layout_weight="0.5"
-                android:layout_margin="2dp"
+                android:layout_width="match_parent"
+                android:layout_marginTop="15dp"
                 android:layout_height="57dp"
                 android:onClick="Signin"
                 android:text="@string/sign_in"
                 app:bootstrapBrand="success"
                 app:roundedCorners="true"
-                app:showOutline="false" />
+                app:showOutline="true" />
 
         </LinearLayout>
 
@@ -53,7 +50,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_margin="5dp"
             android:text="\u00a9 porchlyt"
-            android:textColor="#fff"
+            android:textColor="#000"
             android:textSize="11dp" />
 
 
@@ -66,7 +63,7 @@
         android:layout_centerHorizontal="true"
         android:text="porchlyt"
         android:layout_below="@+id/imageView"
-        android:textColor="#fff"
+        android:textColor="#dedede"
         android:textSize="48dp" />
 
     <TextView

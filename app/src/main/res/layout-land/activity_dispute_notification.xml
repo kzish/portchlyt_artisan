@@ -49,7 +49,7 @@
             android:layout_below="@+id/linlay1"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
-            android:background="@drawable/et_background"
+            android:background="@drawable/et_background_light"
             android:gravity="center_vertical"
             android:orientation="vertical"
             android:padding="20dp">
