@@ -15,11 +15,13 @@
     <string name="confirm_5_digit_pin">Confirm 5 digit pin</string>
     <string name="invalid_otp">invalid Otp</string>
 
-    <string name="jobs">jobs</string>
-    <string name="available_jobs">available jobs</string>
-    <string name="profile">profile</string>
-    <string name="blog">blog</string>
-    <string name="available">Available</string>
+    <string name="completed_jobs">Completed\njobs</string>
+    <string name="cancelled_jobs">Cancelled\njobs</string>
+    <string name="disputed_jobs">Disputed\njobs</string>
+    <string name="available_jobs">Available jobs</string>
+    <string name="profile">Profile</string>
+    <string name="blog">Blog</string>
+    <string name="availability">Availability</string>
     <string name="ok">ok</string>
     <string name="cancel">cancel</string>
     <string name="please_wait">please wait...</string>
@@ -82,16 +84,16 @@
     <string name="we_will_contact_you_to_resolve_the_issue_within_24_hrs">We will contact you to resolve the issue within 24 hrs</string>
     <string name="you_have_recieved_a_rating_of">You have received a rating of</string>
     <string name="card_payment_received">Card payment received for:</string>
-    <string name="notifications">notifications</string>
-    <string name="earnings">earnings</string>
+    <string name="notifications">Notifications</string>
+    <string name="earnings">Earnings</string>
     <string name="saved">saved</string>
     <string name="error_updating_services">Error updating services</string>
-    <string name="skills_updated">skills updated</string>
-    <string name="cash_payment_received">cash payment received</string>
+    <string name="skills_updated">Skills updated</string>
+    <string name="cash_payment_received">Cash payment received</string>
     <string name="your_services_have_been_updated">Your services have been updated</string>
     <string name="view_notification">View notification</string>
     <string name="error_fetching_jobs">Error fetching jobs</string>
-    <string name="swipe_down_to_refresh">swipe down to refresh</string>
+    <string name="swipe_down_to_refresh">Swipe down to refresh</string>
     <string name="this_mobile_does_not_exist">This mobile does not exist</string>
     <string name="unknown_location">Unknown location?</string>
 
@@ -103,14 +105,25 @@
     <string name="incorrect_job_requested">incorrect job requested</string>
 
     <string name="other">other</string>
-    <string name="this_job_was_cancelled">this job was cancelled</string>
+    <string name="this_job_was_cancelled">This job was cancelled</string>
     <string name="job_cancelled">Job cancelled</string>
     <string name="call">call</string>
     <string name="sms">sms</string>
-    <string name="notification">notification</string>
+    <string name="notification">Notification</string>
     <string name="channel_name">porchlyt</string>
     <string name="contact">Contact</string>
     <string name="banking_details">Banking details</string>
+    <string name="total_earnings">Total earnings</string>
+    <string name="view_more">View more</string>
+    <string name="additional_settings">Additional Settings</string>
+    <string name="jobs">Jobs</string>
+    <string name="total_jobs">Total jobs</string>
+    <string name="total_jobs_this">Total jobs this </string>
+    <string name="total_earnings_this">Total earnings this </string>
+    <string name="network_error">Network Error</string>
+    <string name="extra_jobs">Extra Jobs</string>
+    <string name="no_notifications">No notifications</string>
+    <string name="no_extra_jobs">No extra jobs</string>
 
 
 

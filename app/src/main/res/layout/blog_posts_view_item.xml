@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:background="@android:drawable/dialog_holo_light_frame"
+    >
+
+
+    <LinearLayout
+        android:background="#fff"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+
+        <TextView
+            android:singleLine="true"
+            android:id="@+id/txt_post_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:text="blog_title"
+            android:textColor="#000"
+            android:textSize="30dp"
+            android:textStyle="bold" />
+
+
+        <WebView
+            android:id="@+id/web_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="3dp"
+            android:elevation="5dp"
+            android:scrollbars="none" />
+
+
+    </LinearLayout>
+
+
+    <!--this view appears with alpha 0 to behave as the click view-->
+    <LinearLayout
+        android:elevation="1000dp"
+        android:background="#000"
+        android:alpha="0"
+        android:id="@id/linlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" />
+
+
+
+
+
+</FrameLayout>

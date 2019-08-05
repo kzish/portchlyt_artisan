@@ -15,13 +15,13 @@ import com.google.android.material.tabs.TabLayout;
 import java.util.ArrayList;
 import java.util.List;
 
+import MainActivityTabs.BlogFragment;
 import MainActivityTabs.JobsFragment;
-import MainActivityTabs.NewsFragment;
 import MainActivityTabs.ProfileFragment;
 import globals.MyMqtt;
 
 public class MainActivity extends AppCompatActivity {
-    private Toolbar toolbar;
+    //private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
 
@@ -31,8 +31,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        toolbar = (Toolbar) findViewById(R.id.mtoolbar);
-        setSupportActionBar(toolbar);
+        //toolbar = (Toolbar) findViewById(R.id.mtoolbar);
+        //setSupportActionBar(toolbar);
 
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         setupViewPager(viewPager);
@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new JobsFragment(), getString(R.string.jobs));
         adapter.addFragment(new ProfileFragment(), getString(R.string.profile));
-        adapter.addFragment(new NewsFragment(), getString(R.string.blog));
+        adapter.addFragment(new BlogFragment(), getString(R.string.blog));
         viewPager.setAdapter(adapter);
     }
 }

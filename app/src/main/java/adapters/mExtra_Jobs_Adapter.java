@@ -1,10 +1,12 @@
 package adapters;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
@@ -16,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,7 +34,6 @@ import org.joda.time.format.ISODateTimeFormat;
 import java.util.List;
 import java.util.Locale;
 
-import MainActivityTabs.NewsFragment;
 import globals.globals;
 import io.realm.Realm;
 import io.realm.Sort;
@@ -44,11 +46,11 @@ public class mExtra_Jobs_Adapter extends RecyclerView.Adapter<mExtra_Jobs_Adapte
     public List<mArtisanServiceRequest> jobs;
     String tag = "mExtra_Jobs_Adapter";
     String client_address;
-    Activity act;
+    Activity activity;
 
     public mExtra_Jobs_Adapter(Activity act) {
 
-        this.act = act;
+        this.activity = act;
 
 
     }
@@ -132,7 +134,7 @@ public class mExtra_Jobs_Adapter extends RecyclerView.Adapter<mExtra_Jobs_Adapte
         holder.linlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                NewsFragment.show_artisan_contact_dialog(job.client_mobile);
+                show_artisan_contact_dialog(job.client_mobile);
             }
         });
         //also get the address
@@ -170,7 +172,7 @@ public class mExtra_Jobs_Adapter extends RecyclerView.Adapter<mExtra_Jobs_Adapte
                 }
 
                 //this will now run on the ui thread
-                act.runOnUiThread(new Runnable() {
+                activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         holder.txt_job_location.setText(client_address);
@@ -228,6 +230,43 @@ public class mExtra_Jobs_Adapter extends RecyclerView.Adapter<mExtra_Jobs_Adapte
     @Override
     public long getItemId(int position) {
         return position;
+    }
+
+
+
+    //how do you want to contact this artisan
+    public void show_artisan_contact_dialog(String mobile) {
+        AlertDialog.Builder pictureDialog = new AlertDialog.Builder(activity);
+        pictureDialog.setTitle(activity.getResources().getString(R.string.contact) + " " + mobile);
+        String[] pictureDialogItems = {
+                activity.getResources().getString(R.string.call),
+                activity.getResources().getString(R.string.sms)
+        };
+
+        pictureDialog.setItems(pictureDialogItems,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case 0:
+
+                                Intent call = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", mobile, null));
+                                activity.startActivity(call);
+                                break;
+
+                            case 1:
+
+                                Intent sms = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("smsto", mobile, null));
+                                activity.startActivity(sms);
+                                break;
+                        }
+                    }
+                });
+        try {
+            pictureDialog.show();
+        } catch (Exception ex) {
+            Log.e(tag, "line 258 " + ex.getMessage());
+        }
     }
 
 

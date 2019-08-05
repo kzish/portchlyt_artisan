@@ -49,6 +49,7 @@ import androidx.fragment.app.Fragment;
 import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.beardedhen.androidbootstrap.BootstrapLabel;
 import com.example.porchlyt_artisan.R;
+import com.example.porchlyt_artisan.ViewMoreEarningsActivity;
 import com.example.porchlyt_artisan.app;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -103,10 +104,15 @@ import models.mNotification;
 public class ProfileFragment extends Fragment {
 
     TextView txt_mobile;
+    TextView txt_view_more_earnings;
     EditText txt_name;
     EditText txt_email;
     EditText txt_bank_account_number;
     Spinner spinner_bank_name;
+
+    static TextView lbl_completed_jobs;
+    static TextView lbl_cancelled_jobs;
+    static TextView lbl_disputed_jobs;
 
     TextView txt_location;
     EditText txt_hourly_rate;
@@ -115,7 +121,6 @@ public class ProfileFragment extends Fragment {
     LinearLayout content_view;
     CircleImage img_profile;
     public static Context ctx;
-    static TextView lbl_notifications;
 
 
     String my_address = "";
@@ -195,18 +200,32 @@ public class ProfileFragment extends Fragment {
         txt_bank_account_number = (EditText) view.findViewById(R.id.txt_bank_account_number);
         spinner_bank_name = (Spinner) view.findViewById(R.id.spinner_bank_name);
         txt_location = (TextView) view.findViewById(R.id.txt_location);//this will be updated automatically
+        txt_view_more_earnings = (TextView) view.findViewById(R.id.txt_view_more_earnings);
         txt_hourly_rate = (EditText) view.findViewById(R.id.txt_hourly_rate);
         txt_skills = (TextView) view.findViewById(R.id.txt_skills);
         img_profile = (CircleImage) view.findViewById(R.id.img_profile);
         img_progress_bar = (ProgressBar) view.findViewById(R.id.img_progress_bar);
         ratingBar = (RatingBar) view.findViewById(R.id.ratingBar);
         btn_save_details = (BootstrapButton) view.findViewById(R.id.btn_save_details);
-        lbl_notifications = (TextView) view.findViewById(R.id.lbl_notifications);
-        get_number_of_notifications();
         btn_save_details.setVisibility(View.GONE);
 
 
+        lbl_completed_jobs = (TextView) view.findViewById(R.id.lbl_completed_jobs);
+        lbl_cancelled_jobs = (TextView) view.findViewById(R.id.lbl_cancelled_jobs);
+        lbl_disputed_jobs = (TextView) view.findViewById(R.id.lbl_disputed_jobs);
+        //load the number of jobs completed, cancelled, and disputed
+        load_jobs();
+
         populate_spinner_banks();
+
+        txt_view_more_earnings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent vm= new Intent(activity,ViewMoreEarningsActivity.class);
+                vm.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getActivity().startActivity(vm);
+            }
+        });
 
         //save details on clicking the button
         btn_save_details.setOnClickListener(new View.OnClickListener() {
@@ -215,8 +234,6 @@ public class ProfileFragment extends Fragment {
                 update_my_details();
             }
         });
-        TextView lbl_num_jobs = (TextView) view.findViewById(R.id.lbl_num_jobs);
-        lbl_num_jobs.setText(globals.numberCalculation(get_number_of_completed_jobs()));
 
         Realm db = globals.getDB();
         mArtisan m = db.where(mArtisan.class).findFirst();
@@ -655,7 +672,7 @@ public class ProfileFragment extends Fragment {
                 }
 
 
-                m.account_bank=spinner_bank_name.getSelectedItem().toString();
+                m.account_bank = spinner_bank_name.getSelectedItem().toString();
             }
         });
         db.close();
@@ -703,7 +720,7 @@ public class ProfileFragment extends Fragment {
                                                 btn_save_details.setVisibility(View.GONE);
                                                 Snackbar.make(content_view, getString(R.string.saved), Snackbar.LENGTH_SHORT).show();
                                             } else {
-                                                Toast.makeText(getContext(),msg+" ",Toast.LENGTH_LONG).show();
+                                                Toast.makeText(getContext(), msg + " ", Toast.LENGTH_LONG).show();
                                                 Snackbar.make(content_view, getString(R.string.error_updating_details), Snackbar.LENGTH_SHORT).show();
                                             }
                                         }
@@ -1005,6 +1022,7 @@ public class ProfileFragment extends Fragment {
                         @Override
                         public void run() {
                             txt_location.setText(my_address);//set the address
+                            txt_location.setSelected(true);
                         }
                     });
                 } catch (Exception ex) {
@@ -1058,12 +1076,7 @@ public class ProfileFragment extends Fragment {
     }
 
 
-    //non read notifications
-    public static void get_number_of_notifications() {
-        Realm db = globals.getDB();
-        int num_notifications = (int) db.where(mNotification.class).equalTo("is_read", false).count();
-        lbl_notifications.setText(globals.numberCalculation(num_notifications));
-    }
+
 
     public static void set_my_earning() {
         Realm db = globals.getDB();
@@ -1088,25 +1101,24 @@ public class ProfileFragment extends Fragment {
             JSONObject json = new JSONObject(jsonString);
             JSONArray json_a = json.getJSONArray("Banks");
 
-            ArrayList<mBank>banks = new ArrayList<>();
-            for(int i=0;i<json_a.length();i++)
-            {
+            ArrayList<mBank> banks = new ArrayList<>();
+            for (int i = 0; i < json_a.length(); i++) {
                 JSONObject j = json_a.getJSONObject(i);
-                mBank bank = new Gson().fromJson(j.toString(),mBank.class);
+                mBank bank = new Gson().fromJson(j.toString(), mBank.class);
                 banks.add(bank);
 
             }
 
 
             List<String> spinnerArray = new ArrayList<String>();
-            int index=0;
-            int selected_index=0;
+            int index = 0;
+            int selected_index = 0;
             Realm db = globals.getDB();
             mArtisan artisan = db.where(mArtisan.class).findFirst();
-            for(mBank bank:banks) {
+            for (mBank bank : banks) {
 
                 spinnerArray.add(bank.Name);
-                if(artisan.account_bank!=null && artisan.account_bank.equals(bank.Name)) {
+                if (artisan.account_bank != null && artisan.account_bank.equals(bank.Name)) {
                     selected_index = index;
                 }
                 index++;
@@ -1116,13 +1128,12 @@ public class ProfileFragment extends Fragment {
                     getActivity(), android.R.layout.simple_spinner_item, spinnerArray);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinner_bank_name.setAdapter(adapter);
-            spinner_bank_name.setSelection(selected_index,true);
-
+            spinner_bank_name.setSelection(selected_index, true);
 
 
         } catch (Exception ex) {
-Toast.makeText(getActivity(),ex.getLocalizedMessage(),Toast.LENGTH_LONG).show();
-Log.e(tag,ex.getMessage());
+            Toast.makeText(getActivity(), ex.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+            Log.e(tag, ex.getMessage());
         } finally {
             try {
                 is.close();
@@ -1130,6 +1141,27 @@ Log.e(tag,ex.getMessage());
             }
         }
 
+
+    }
+
+
+    //load the number of jobs for the artisan
+    public static void load_jobs() {
+
+        long num_completed_jobs = 0;
+        long num_cancelled_jobs = 0;
+        long num_disputed_jobs = 0;
+
+        Realm db = globals.getDB();
+        num_completed_jobs = db.where(mJobs.class).equalTo("job_status", JobStatus.closed.toString()).count();
+        num_cancelled_jobs = db.where(mJobs.class).equalTo("job_status", JobStatus.cancelled.toString()).count();
+        num_disputed_jobs = db.where(mJobs.class).equalTo("job_status", JobStatus.disputed.toString()).count();
+
+        db.close();
+
+        lbl_completed_jobs.setText( globals.numberCalculation(num_completed_jobs) );
+        lbl_cancelled_jobs.setText( globals.numberCalculation(num_cancelled_jobs) );
+        lbl_disputed_jobs.setText( globals.numberCalculation(num_disputed_jobs) );
 
     }
 

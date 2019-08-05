@@ -53,10 +53,9 @@
             android:layout_below="@+id/linlay1"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
-            android:background="@drawable/et_background"
             android:gravity="center_vertical"
             android:orientation="vertical"
-            android:padding="20dp">
+            >
 
             <TextView
                 android:id="@+id/txt_notification_text"
@@ -70,14 +69,7 @@
 
         </LinearLayout>
 
-        <com.beardedhen.androidbootstrap.BootstrapButton
-            android:layout_width="match_parent"
-            android:layout_height="57dp"
-            android:onClick="delete_notification"
-            android:layout_alignParentBottom="true"
-            android:text="@string/delete"
-            app:bootstrapBrand="warning"
-            app:roundedCorners="true" />
+
 
     </RelativeLayout>
 

@@ -5,6 +5,8 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -16,7 +18,6 @@ import com.github.marlonlom.utilities.timeago.TimeAgo;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
-import MainActivityTabs.NewsFragment;
 import MainActivityTabs.ProfileFragment;
 import globals.globals;
 import io.realm.Realm;
@@ -65,8 +66,6 @@ public class ViewNotificationActivity extends AppCompatActivity {
             }
         });
         db.close();
-        NewsFragment.set_notification_adapter();
-        ProfileFragment.get_number_of_notifications();
 
         //
         //artisan can also reject the payment by closing this activity
@@ -80,8 +79,13 @@ public class ViewNotificationActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.delete_notification, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
-    public void delete_notification(View v) {
+    public void delete_notification() {
         Realm db = globals.getDB();
         try {
             db.executeTransaction(new Realm.Transaction() {
@@ -95,8 +99,6 @@ public class ViewNotificationActivity extends AppCompatActivity {
         {
             Log.e(tag,ex.getLocalizedMessage());
         }
-        NewsFragment.set_notification_adapter();
-        ProfileFragment.get_number_of_notifications();
         finish();
     }
 
@@ -106,6 +108,9 @@ public class ViewNotificationActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
+                break;
+            case R.id.m_delete:
+                delete_notification();
                 break;
         }
         return super.onOptionsItemSelected(item);

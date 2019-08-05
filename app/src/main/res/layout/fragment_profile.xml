@@ -1,5 +1,6 @@
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:sothree="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,112 +8,85 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="MainActivityTabs.ProfileFragment">
 
-    <LinearLayout
-        android:id="@+id/content_view"
+
+    <com.sothree.slidinguppanel.SlidingUpPanelLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/sliding_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#fff"
-        android:orientation="vertical">
+        android:gravity="bottom"
+        sothree:umanoPanelHeight="68dp"
+        sothree:umanoShadowHeight="4dp">
 
-        <RelativeLayout
+
+        <!--top layout of sliding up panel-->
+        <LinearLayout
+            android:id="@+id/content_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_profile_"
-            android:elevation="20dp"
-            android:orientation="horizontal"
-            android:weightSum="1">
+            android:layout_height="match_parent"
+            android:background="#fff"
+            android:orientation="vertical">
 
+
+            <!--rel layout of image and its background-->
             <RelativeLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_marginTop="10dp"
-                android:padding="1dp">
+                android:background="@drawable/bg_cover_profile"
+                android:elevation="20dp"
+                android:orientation="horizontal"
+                android:weightSum="1">
 
-                <com.jackandphantom.circularimageview.CircleImage
-                    android:id="@+id/img_profile"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:layout_centerInParent="true"
-                    android:outlineAmbientShadowColor="@color/primary"
-                    android:outlineSpotShadowColor="@color/primary_light"
-                    android:src="@drawable/ic_worker"
-                    app:add_shadow="true"
-                    app:shadow_color="#000"
-                    app:shadow_radius="10" />
-
-                <ProgressBar
-                    android:id="@+id/img_progress_bar"
-                    style="?android:attr/progressBarStyle"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_centerInParent="true"
-                    android:visibility="invisible" />
-
-                <TextView
+                <!--profile image and its progress bar-->
+                <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/img_profile"
-                    android:layout_alignParentBottom="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="20dp"
-                    android:text="@string/change_profile_picture"
-                    android:textColor="#000"
-                    android:textSize="7dp" />
+                    android:layout_centerInParent="true"
+                    android:layout_marginTop="10dp"
+                    android:padding="1dp">
+
+                    <com.jackandphantom.circularimageview.CircleImage
+                        android:id="@+id/img_profile"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_centerInParent="true"
+                        android:outlineAmbientShadowColor="@color/primary"
+                        android:outlineSpotShadowColor="@color/primary_light"
+                        android:src="@drawable/ic_worker"
+                        app:add_shadow="true"
+                        app:shadow_color="#000"
+                        app:shadow_radius="10" />
+
+                    <ProgressBar
+                        android:id="@+id/img_progress_bar"
+                        style="?android:attr/progressBarStyle"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_centerInParent="true"
+                        android:visibility="invisible" />
+
+
+                </RelativeLayout>
+                <!--.//profile image and its progress bar-->
 
 
             </RelativeLayout>
+            <!--.//rel laypout of image and its background-->
 
-        </RelativeLayout>
-
-
-        <!--tabs for number of jobs-->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:elevation="20dp"
-            android:orientation="horizontal"
-            android:weightSum="0.9">
-
-
+            <!--earnings-->
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.3"
+                android:background="#dedede"
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/lbl_num_jobs"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:elevation="10dp"
-                    android:ellipsize="marquee"
-                    android:text="8"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/total_earnings"
                     android:textColor="#000"
-                    android:textSize="8dp"
-                    android:textStyle="bold" />
-
-                <com.beardedhen.androidbootstrap.BootstrapLabel
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:elevation="5dp"
-                    android:text="@string/jobs"
-                    android:textColor="#000"
-                    android:textSize="11dp"
-                    android:textStyle="bold"
-                    app:bootstrapBrand="info" />
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.3"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
+                    android:textSize="10dp" />
 
                 <TextView
                     android:id="@+id/lbl_earnings"
@@ -120,318 +94,32 @@
                     android:layout_height="wrap_content"
                     android:elevation="10dp"
                     android:ellipsize="marquee"
-                    android:text="8"
+                    android:text="N8000"
                     android:textColor="#000"
-                    android:textSize="10dp"
+                    android:textSize="38dp"
                     android:textStyle="bold" />
 
-
-                <com.beardedhen.androidbootstrap.BootstrapLabel
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:elevation="5dp"
-                    android:text="@string/earnings"
-                    android:textColor="#000"
-                    android:textSize="11dp"
-                    android:textStyle="bold"
-                    app:bootstrapBrand="success" />
-            </LinearLayout>
+                    android:layout_height="50dp"
+                    android:background="#000">
 
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.3"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/lbl_notifications"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:elevation="10dp"
-                    android:ellipsize="marquee"
-                    android:text="8"
-                    android:textColor="#000"
-                    android:textSize="10dp"
-                    android:textStyle="bold" />
-
-
-                <com.beardedhen.androidbootstrap.BootstrapLabel
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:elevation="5dp"
-                    android:text="@string/notifications"
-                    android:textColor="#000"
-                    android:textSize="11dp"
-                    android:textStyle="bold"
-                    app:bootstrapBrand="danger" />
-            </LinearLayout>
-
-
-        </LinearLayout>
-        <!--.tabs for number of jobs-->
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#fff"
-            android:orientation="vertical"
-            android:padding="10dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/light_grey_bg"
-                android:orientation="horizontal"
-                android:padding="20dp"
-                android:weightSum="1">
-
-                <TextView
-                    android:id="@+id/txt_mobile"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:text="+263773303669"
-                    android:textColor="#000"
-                    android:textSize="20dp"
-                    android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/txt_view_more_earnings"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:clickable="true"
+                        android:text="@string/view_more"
+                        android:textColor="#fff" />
+                </RelativeLayout>
 
 
             </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/light_grey_bg"
-                android:orientation="horizontal"
-                android:padding="20dp"
-                android:weightSum="1">
-
-                <Switch
-                    android:id="@+id/switchAvailable"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/available" />
-            </LinearLayout>
-        </LinearLayout>
+            <!--.//earnings layout-->
 
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#fff"
-            android:orientation="vertical"
-            android:padding="10dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="1">
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.9">
-
-                    <EditText
-                        android:id="@+id/txt_name"
-                        android:layout_width="match_parent"
-                        android:layout_height="57dp"
-                        android:hint="@string/full_name"
-                        android:singleLine="true" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <ImageView
-                    android:layout_width="0dp"
-                    android:layout_height="12dp"
-                    android:layout_gravity="center_horizontal|center|center_vertical"
-                    android:layout_weight="0.1"
-                    android:src="@drawable/ic_edit_black_24dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="1">
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.9">
-
-                    <EditText
-                        android:id="@+id/txt_email"
-                        android:layout_width="match_parent"
-                        android:layout_height="57dp"
-                        android:hint="@string/email"
-                        android:inputType="textEmailAddress"
-                        android:singleLine="true" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <ImageView
-                    android:layout_width="0dp"
-                    android:layout_height="12dp"
-                    android:layout_gravity="center_horizontal|center|center_vertical"
-                    android:layout_weight="0.1"
-                    android:src="@drawable/ic_edit_black_24dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="1">
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.9">
-
-                    <EditText
-                        android:id="@+id/txt_hourly_rate"
-                        android:layout_width="match_parent"
-                        android:layout_height="57dp"
-                        android:hint="@string/hourly_rate"
-                        android:inputType="number"
-                        android:singleLine="true" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <ImageView
-                    android:layout_width="0dp"
-                    android:layout_height="12dp"
-                    android:layout_gravity="center_horizontal|center|center_vertical"
-                    android:layout_weight="0.1"
-                    android:src="@drawable/ic_edit_black_24dp" />
-
-            </LinearLayout>
-
-
-            <TextView
-                android:layout_marginTop="20dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/banking_details"
-                android:textSize="9dp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="1">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.9"
-                    android:background="@drawable/et_background">
-
-                    <Spinner
-                        android:id="@+id/spinner_bank_name"
-                        android:layout_width="match_parent"
-                        android:layout_height="57dp" />
-                </LinearLayout>
-
-                <ImageView
-                    android:layout_width="0dp"
-                    android:layout_height="12dp"
-                    android:layout_gravity="center_horizontal|center|center_vertical"
-                    android:layout_weight="0.1"
-                    android:src="@drawable/ic_edit_black_24dp" />
-
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="1">
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.9">
-
-                    <EditText
-                        android:id="@+id/txt_bank_account_number"
-                        android:layout_width="match_parent"
-                        android:layout_height="57dp"
-                        android:hint="@string/account_number"
-                        android:inputType="number"
-                        android:singleLine="true" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <ImageView
-                    android:layout_width="0dp"
-                    android:layout_height="12dp"
-                    android:layout_gravity="center_horizontal|center|center_vertical"
-                    android:layout_weight="0.1"
-                    android:src="@drawable/ic_edit_black_24dp" />
-
-            </LinearLayout>
-
-            <com.beardedhen.androidbootstrap.BootstrapButton
-                android:id="@+id/btn_save_details"
-                android:layout_width="match_parent"
-                android:layout_height="57dp"
-                android:layout_marginTop="20dp"
-                android:text="@string/save"
-                app:bootstrapBrand="success"
-                app:roundedCorners="true"
-                app:showOutline="false" />
-
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#fff"
-            android:padding="10dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/txt_location"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                android:clickable="true"
-                android:text="@string/tap_to_enable_your_location_settings"
-                android:textColor="#000" />
-
-
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#fff"
-            android:orientation="vertical"
-            android:padding="30dp">
-
-            <TextView
-                android:id="@+id/txt_skills"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal"
-                android:text="Carpentry, Electricals, Swimming pools" />
-
-
+            <!--my rating bar-->
             <RatingBar
                 android:id="@+id/ratingBar"
                 android:layout_width="wrap_content"
@@ -444,10 +132,391 @@
                 android:scaleY="0.5"
                 android:stepSize="1" />
 
+            <!--my skills-->
+            <RelativeLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                >
+
+                <TextView
+                    android:singleLine="true"
+                    android:ellipsize="marquee"
+                    android:layout_centerInParent="true"
+                    android:id="@+id/txt_skills"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:text="Carpentry, Electricals, Swimming pools" />
+
+            </RelativeLayout>
+
+            <!--tabs for number of jobs-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal"
+                android:weightSum="0.9">
+
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.3"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/lbl_completed_jobs"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:elevation="10dp"
+                        android:ellipsize="marquee"
+                        android:text="8"
+                        android:textColor="#000"
+                        android:textSize="10dp"
+                        android:textStyle="bold" />
+
+                    <com.beardedhen.androidbootstrap.BootstrapLabel
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:elevation="3dp"
+                        android:text="@string/completed_jobs"
+                        android:textColor="#000"
+                        android:textSize="11dp"
+                        android:textStyle="bold"
+                        app:bootstrapBrand="info" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.3"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/lbl_cancelled_jobs"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:elevation="10dp"
+                        android:ellipsize="marquee"
+                        android:text="8"
+                        android:textColor="#000"
+                        android:textSize="10dp"
+                        android:textStyle="bold" />
+
+
+                    <com.beardedhen.androidbootstrap.BootstrapLabel
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:elevation="3dp"
+                        android:text="@string/cancelled_jobs"
+                        android:textColor="#000"
+                        android:textSize="11dp"
+                        android:textStyle="bold"
+                        app:bootstrapBrand="danger" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.3"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/lbl_disputed_jobs"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:elevation="10dp"
+                        android:ellipsize="marquee"
+                        android:text="8"
+                        android:textColor="#000"
+                        android:textSize="10dp"
+                        android:textStyle="bold" />
+
+
+                    <com.beardedhen.androidbootstrap.BootstrapLabel
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:elevation="3dp"
+                        android:text="@string/disputed_jobs"
+                        android:textColor="#000"
+                        android:textSize="11dp"
+                        android:textStyle="bold"
+                        app:bootstrapBrand="warning" />
+                </LinearLayout>
+
+
+            </LinearLayout>
+            <!--.tabs for number of jobs-->
+
+
+            <!--address-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_gravity="bottom"
+                android:background="#fff"
+                android:baselineAligned="true"
+                android:gravity="bottom"
+                android:orientation="vertical"
+                android:padding="10dp">
+
+                <TextView
+
+                    android:ellipsize="marquee"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:singleLine="true"
+
+
+                    android:id="@+id/txt_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="1dp"
+                    android:clickable="true"
+                    android:text="@string/tap_to_enable_your_location_settings"
+                    android:textColor="#000" />
+
+
+            </LinearLayout>
+            <!--.//address-->
+
 
         </LinearLayout>
+        <!--.//top layout of sliding up panel-->
 
 
-    </LinearLayout>
+        <!--bottom layout of sliding up panel-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-</androidx.core.widget.NestedScrollView>
+            <!--additional settings label-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#dedede"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@string/additional_settings"
+                    android:textColor="#000"
+                    android:textSize="20dp" />
+
+
+            </LinearLayout>
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fillViewport="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <!--mobile number and availability-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#fff"
+                        android:orientation="vertical"
+                        android:padding="10dp">
+
+                        <TextView
+                            android:id="@+id/txt_mobile"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="+263773303669"
+                            android:textColor="#000"
+                            android:textStyle="bold" />
+
+
+                        <Switch
+                            android:id="@+id/switchAvailable"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/availability" />
+
+                    </LinearLayout>
+                    <!--.//mobile number and availability-->
+
+
+                    <!--details panel-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#fff"
+                        android:orientation="vertical"
+                        android:padding="10dp">
+
+                        <!--name-->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:weightSum="1">
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1">
+
+                                <EditText
+                                    android:id="@+id/txt_name"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="57dp"
+                                    android:hint="@string/full_name"
+                                    android:singleLine="true" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+
+                        </LinearLayout>
+                        <!--.//name-->
+
+                        <!--email-->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:weightSum="1">
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1">
+
+                                <EditText
+                                    android:id="@+id/txt_email"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="57dp"
+                                    android:hint="@string/email"
+                                    android:inputType="textEmailAddress"
+                                    android:singleLine="true" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+
+                        </LinearLayout>
+                        <!--.//email-->
+
+                        <!--hourly rate-->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:weightSum="1">
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1">
+
+                                <EditText
+                                    android:id="@+id/txt_hourly_rate"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="57dp"
+                                    android:hint="@string/hourly_rate"
+                                    android:inputType="number"
+                                    android:singleLine="true" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+
+                        </LinearLayout>
+                        <!--.//hourly rate-->
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:text="@string/banking_details"
+                            android:textSize="9dp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:weightSum="1">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:background="@drawable/et_background">
+
+                                <Spinner
+                                    android:id="@+id/spinner_bank_name"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="57dp" />
+                            </LinearLayout>
+
+
+                        </LinearLayout>
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:weightSum="1">
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1">
+
+                                <EditText
+                                    android:id="@+id/txt_bank_account_number"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="57dp"
+                                    android:hint="@string/account_number"
+                                    android:inputType="number"
+                                    android:singleLine="true" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+
+                        </LinearLayout>
+
+                        <com.beardedhen.androidbootstrap.BootstrapButton
+                            android:id="@+id/btn_save_details"
+                            android:layout_width="match_parent"
+                            android:layout_height="57dp"
+                            android:layout_marginTop="20dp"
+                            android:text="@string/save"
+                            app:bootstrapBrand="success"
+                            app:roundedCorners="true"
+                            app:showOutline="false" />
+
+                    </LinearLayout>
+                    <!--./details panel-->
+
+                </LinearLayout>
+
+
+                <!--.//additional settings panel-->
+
+            </ScrollView>
+        </LinearLayout>
+        <!--.//bottom layout of sliding up panel-->
+
+
+    </com.sothree.slidinguppanel.SlidingUpPanelLayout>
+
+
+</LinearLayout>

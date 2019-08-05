@@ -18,7 +18,6 @@ import com.example.porchlyt_artisan.app;
 
 import java.util.List;
 
-import MainActivityTabs.NewsFragment;
 import io.realm.Realm;
 import io.realm.Sort;
 import models.mNotification;
@@ -28,19 +27,9 @@ public class mNotification_Adapter extends RecyclerView.Adapter<mNotification_Ad
 
     List<mNotification> notifications;
 
-    public mNotification_Adapter()
+    public mNotification_Adapter(List<mNotification>notifications)
     {
-        Realm db = globals.getDB();
-        notifications = db.copyFromRealm( db.where(mNotification.class).sort("date", Sort.DESCENDING).findAll() );
-        db.close();
-        if(notifications.size()==0)
-        {
-            NewsFragment.lin_notifications.setVisibility(View.GONE);//hide
-        }
-        else
-        {
-            NewsFragment.lin_notifications.setVisibility(View.VISIBLE);//show
-        }
+        this.notifications=notifications;
     }
 
 

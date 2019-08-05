@@ -44,7 +44,6 @@ import org.joda.time.LocalDateTime;
 import org.json.JSONObject;
 
 import MainActivityTabs.JobsFragment;
-import MainActivityTabs.NewsFragment;
 import MainActivityTabs.ProfileFragment;
 import io.realm.Realm;
 import io.realm.RealmList;
@@ -428,8 +427,6 @@ public class MyMqtt extends Service {
                     db.insertOrUpdate(notification);
                 }
             });
-            ProfileFragment.get_number_of_notifications();
-            NewsFragment.set_notification_adapter();
 
             //notification ontop of screen
             Notification builder = new NotificationCompat.Builder(app.ctx)

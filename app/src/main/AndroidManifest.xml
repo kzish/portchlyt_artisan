@@ -29,7 +29,11 @@
         android:versionCode="1"
         android:versionName="1.0"
         android:windowSoftInputMode="stateHidden">
-        <activity android:name=".CancelJobActivity"></activity>
+        <activity android:name=".ViewBlogActivity"></activity>
+        <activity android:name=".ViewNotificationsActivity" />
+        <activity android:name=".ViewExtraJobsActivity" />
+        <activity android:name=".ViewMoreEarningsActivity" />
+        <activity android:name=".CancelJobActivity" />
         <activity android:name=".SigninActivity" />
         <activity android:name=".ViewNotificationActivity" />
         <activity android:name=".CardPaymentReceivedActivity" />
@@ -72,11 +76,9 @@
             android:theme="@style/Base.Theme.AppCompat" />
 
         <service android:name="org.eclipse.paho.android.service.MqttService" />
-
         <service
             android:name="globals.MyMqtt"
-            android:exported="false"/>
-
+            android:exported="false" />
     </application>
 
 </manifest>
