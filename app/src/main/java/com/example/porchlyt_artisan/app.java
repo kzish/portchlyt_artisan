@@ -28,16 +28,20 @@ import models.appSettings;
 public class app extends MultiDexApplication {
 
     public static Context ctx;
-
+    public static RealmConfiguration realmConfig;
     @Override
     public void onCreate() {
         super.onCreate();
+
         Realm.init(this);
+
         JodaTimeAndroid.init(this);
+
         MultiDex.install(this);
-        RealmConfiguration realmConfig = new RealmConfiguration.Builder()
+
+        realmConfig = new RealmConfiguration.Builder()
                 .name("porchlyt_artisan.realm")
-                .schemaVersion(21)
+                .schemaVersion(22)
                 .deleteRealmIfMigrationNeeded()
                 .build();
         Realm.setDefaultConfiguration(realmConfig);
@@ -47,13 +51,13 @@ public class app extends MultiDexApplication {
 
         ctx = getApplicationContext();
 
-        //create and insert the appsettings
+        /*//create and insert the appsettings
         Realm db = Realm.getDefaultInstance();
         db.beginTransaction();
         appSettings s = new appSettings();
         db.insertOrUpdate(s);
         db.commitTransaction();
-        db.close();
+        db.close();*/
 
         //delete all realm data
         //Realm.deleteRealm(realmConfig);

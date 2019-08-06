@@ -43,6 +43,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.joda.time.LocalDateTime;
 import org.json.JSONObject;
 
+import MainActivityTabs.BlogFragment;
 import MainActivityTabs.JobsFragment;
 import MainActivityTabs.ProfileFragment;
 import io.realm.Realm;
@@ -273,6 +274,18 @@ public class MyMqtt extends Service {
                     try {
                         String _job_id = json.getString("_job_id");
                         String reason_for_dispute = json.getString("reason_for_dispute");
+
+                        Realm db=globals.getDB();
+                        db.executeTransaction(new Realm.Transaction() {
+                            @Override
+                            public void execute(Realm realm) {
+                                mJobs job = db.where(mJobs.class).equalTo("_job_id",_job_id).findFirst();
+                                job.job_status=JobStatus.disputed.toString();
+                                JobsFragment.refreshJobsAdapter();
+                            }
+                        });
+                        db.close();
+
                         Intent notification_activity = new Intent(app.ctx, DisputeNotificationActivity.class);
                         notification_activity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         notification_activity.putExtra("reason_for_dispute", reason_for_dispute);
@@ -475,6 +488,7 @@ public class MyMqtt extends Service {
             return "";
         } finally {
             db.close();
+            BlogFragment.get_number_of_notifications();//refresh this
         }
 
     }

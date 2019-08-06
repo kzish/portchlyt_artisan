@@ -18,6 +18,7 @@ import com.github.marlonlom.utilities.timeago.TimeAgo;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
+import MainActivityTabs.BlogFragment;
 import MainActivityTabs.ProfileFragment;
 import globals.globals;
 import io.realm.Realm;
@@ -62,7 +63,7 @@ public class ViewNotificationActivity extends AppCompatActivity {
             @Override
             public void execute(Realm realm) {
                 notification.is_read = true;
-
+                BlogFragment.get_number_of_notifications();//refresh it
             }
         });
         db.close();

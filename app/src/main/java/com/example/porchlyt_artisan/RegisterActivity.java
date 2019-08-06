@@ -42,8 +42,10 @@ public class RegisterActivity extends AppCompatActivity {
     BootstrapEditText txt_mobile;
     CountryCodePicker ccp;
     Toolbar mtoolbar;
+    String sdata = "";//data of the partisan to be posted
     private ArrayAdapter<String> adapter;
     Realm db;
+    String tag = "RegisterActivity";
 
 
     @Override
@@ -60,9 +62,7 @@ public class RegisterActivity extends AppCompatActivity {
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_24dp);
         getSupportActionBar().setTitle(getString(R.string.registration));
         mtoolbar.setTitle(getResources().getString(R.string.registration));
-        db = Realm.getDefaultInstance();
     }
-
 
 
     @Override
@@ -76,27 +76,52 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public void Register(View v) {
+
+
+        //clear previous data
+
+        //delete all realm data to begin with
+        db = globals.getDB();
+        db.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                db.deleteAll();//delete all realm data to begin with
+            }
+        });
+        //create and insert the appsettings
+        db.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                appSettings s = new appSettings();
+                db.insertOrUpdate(s);
+            }
+        });
+        db.close();
+
+
         String mobile = txt_mobile.getText().toString();
         if (mobile.equals("")) {
             txt_mobile.setError(getResources().getString(R.string.cannot_be_blank));
             return;
         }
+        db = globals.getDB();
+        db.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                mArtisan m = new mArtisan();
+                m.mobile = ccp.getSelectedCountryCodeWithPlus() + mobile;
+                appSettings aps = db.where(appSettings.class).findFirst();
+                m.app_id = aps.app_id;
+                db.insertOrUpdate(m);//insert this artisan into the db
+                try {
+                    sdata = new Gson().toJson((m));
+                } catch (Exception ex) {
+                    Log.e("d", ex.getMessage());
+                }
+            }
+        });
+        db.close();
 
-
-        db.beginTransaction();
-        mArtisan m = new mArtisan();
-        m.mobile = ccp.getSelectedCountryCodeWithPlus() + mobile;
-        appSettings aps=db.where(appSettings.class).findFirst();
-        m.app_id =aps.app_id;
-        db.insertOrUpdate(m);//insert this artisan into the db
-        db.commitTransaction();
-
-        String sdata = "";//data of the partisan to be posted
-        try {
-            sdata = new Gson().toJson((m));
-        } catch (Exception ex) {
-            Log.e("d", ex.getMessage());
-        }
 
         try {
             pd.setMessage(getString(R.string.registration_in_progress));
@@ -110,6 +135,8 @@ public class RegisterActivity extends AppCompatActivity {
                     .setCallback(new FutureCallback<Response<String>>() {
                         @Override
                         public void onCompleted(Exception e, Response<String> result) {
+
+                            Log.e(tag, "result: " + result.getResult());
                             pd.hide();
                             if (e == null) {
                                 try {
@@ -117,20 +144,31 @@ public class RegisterActivity extends AppCompatActivity {
                                     String res = "";
                                     String msg = "";
                                     String otp = "";
-                                    try{res= new JSONObject(result.getResult()).getString("res");}catch (Exception ex){}
-                                    try{msg= new JSONObject(result.getResult()).getString("msg");}catch (Exception ex){}
-                                    try{otp= new JSONObject(result.getResult()).getString("otp");}catch (Exception ex){}
+                                    try {
+                                        res = new JSONObject(result.getResult()).getString("res");
+                                    } catch (Exception ex) {
+                                    }
+                                    try {
+                                        msg = new JSONObject(result.getResult()).getString("msg");
+                                    } catch (Exception ex) {
+                                    }
+                                    try {
+                                        otp = new JSONObject(result.getResult()).getString("otp");
+                                    } catch (Exception ex) {
+                                    }
 
                                     if (res.equals("ok")) {
                                         // to the next activity to confirm the otp pin
+                                        db = globals.getDB();
                                         mArtisan m = db.where(mArtisan.class).findFirst();
                                         db.beginTransaction();
                                         m.otp = otp;
                                         db.commitTransaction();//this auto saves the thing
+                                        db.close();
                                         startActivity(new Intent(RegisterActivity.this, ConfirmOTPActivity.class));
                                     } else {
-                                        //show the err measage
-                                        Toast.makeText(RegisterActivity.this, msg+"", Toast.LENGTH_SHORT).show();
+                                        //show the err meassage
+                                        Toast.makeText(RegisterActivity.this, "Error: " + msg + "", Toast.LENGTH_SHORT).show();
                                     }
 
                                 } catch (Exception ex) {
@@ -138,7 +176,7 @@ public class RegisterActivity extends AppCompatActivity {
                                     Log.d("d", ex.getMessage() + " line 161");
                                 }
                             } else {
-                                    Toast.makeText(RegisterActivity.this, getString(R.string.error_occured), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(RegisterActivity.this, getString(R.string.error_occured), Toast.LENGTH_SHORT).show();
                             }
                         }
                     });

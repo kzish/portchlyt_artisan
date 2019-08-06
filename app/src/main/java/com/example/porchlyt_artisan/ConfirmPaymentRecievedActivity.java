@@ -113,8 +113,8 @@ public class ConfirmPaymentRecievedActivity extends AppCompatActivity {
                                     public void execute(Realm realm) {
                                         if(job.end_time==null) {//make sure we dont change the date again
                                             job.end_time = LocalDateTime.now().toString();//set the end time
-                                            job.job_status= JobStatus.closed.toString();
                                         }
+                                        job.job_status= JobStatus.closed.toString();
                                     }
                                 });
                                 db2.close();

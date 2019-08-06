@@ -240,7 +240,13 @@ public class ViewJobActivity extends AppCompatActivity {
         if (job.job_status.equals(JobStatus.cancelled.toString())) {
             Snackbar.make(content_view, getString(R.string.this_job_was_cancelled), Snackbar.LENGTH_INDEFINITE).show();
         }
+
+        if (job.job_status.equals(JobStatus.disputed.toString())) {
+            Snackbar.make(content_view, getString(R.string.this_job_is_under_dispute), Snackbar.LENGTH_INDEFINITE).show();
+        }
         db.close();
+
+
 
 
     }

@@ -102,7 +102,9 @@ public class ViewExtraJobsActivity extends AppCompatActivity {
                 final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) extra_jobs_recycler_view.getLayoutManager();
                 int totalItemCount = extra_jobs_adapter.getItemCount();
                 int lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
-                if (totalItemCount <= (lastVisibleItem + 1)) {
+                //if (totalItemCount <= (lastVisibleItem + 1))
+                if (!extra_jobs_recycler_view.canScrollVertically(1))
+                {
 
                     //dont insert yet another if already loading
                     mArtisanServiceRequest job = extra_jobs.get(extra_jobs.size()-1);

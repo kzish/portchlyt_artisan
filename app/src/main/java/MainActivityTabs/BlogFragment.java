@@ -144,8 +144,10 @@ public class BlogFragment extends Fragment {
                 final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) blogs.getLayoutManager();
                 int totalItemCount = posts_adapter.getItemCount();
                 int lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
-                if (totalItemCount <= (lastVisibleItem + 1)) {
-
+                //if (totalItemCount <= (lastVisibleItem + 1))
+                //direction integers: -1 for up, 1 for down, 0 will always return false.
+                if (!blogs.canScrollVertically(1))
+                {
                     //dont insert yet another if already loading
                     mBlogPost post = posts.get(posts.size()-1);
                     if(post==null)return;//if the last insertion was already a null then dont execute this again
