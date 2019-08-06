@@ -2,6 +2,7 @@ package com.example.porchlyt_artisan;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.util.Log;
 
 import androidx.multidex.MultiDex;

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -65,7 +66,10 @@ public class BlogFragment extends Fragment {
 
     LinearLayout linlay;
     SwipeRefreshLayout swipeContainer;
-
+    static int page = 1;//blogs page
+    int per_page = 5;//posts per page to retreive
+    List<mBlogPost> posts = new ArrayList<>();
+    mBlogPostsAdapter posts_adapter;
 
 
     public BlogFragment() {
@@ -92,10 +96,15 @@ public class BlogFragment extends Fragment {
 
 
         //
-        lbl_notifications=(TextView)view.findViewById(R.id.lbl_notifications);
+        lbl_notifications = (TextView) view.findViewById(R.id.lbl_notifications);
 
-        blogs=(RecyclerView) view.findViewById(R.id.blogs);
-        linlay=(LinearLayout) view.findViewById(R.id.linlay);
+        blogs = (RecyclerView) view.findViewById(R.id.blogs);
+        linlay = (LinearLayout) view.findViewById(R.id.linlay);
+
+        //
+        RecyclerView.LayoutManager lm = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
+        blogs.setLayoutManager(lm);
+        blogs.setHasFixedSize(true);
 
         get_number_of_notifications();
 
@@ -121,11 +130,39 @@ public class BlogFragment extends Fragment {
         });
 
 
-        swipeContainer = (SwipeRefreshLayout)view.findViewById(R.id.swipeContainer);
 
-        //fetch the blogs
-        fetch_posts();
 
+
+        //
+        posts_adapter = new mBlogPostsAdapter(getActivity(), posts);
+        posts_adapter.setHasStableIds(true);
+
+        blogs.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) blogs.getLayoutManager();
+                int totalItemCount = posts_adapter.getItemCount();
+                int lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
+                if (totalItemCount <= (lastVisibleItem + 1)) {
+
+                    //dont insert yet another if already loading
+                    mBlogPost post = posts.get(posts.size()-1);
+                    if(post==null)return;//if the last insertion was already a null then dont execute this again
+
+                    posts.add(null);//add the loading dialog view
+                    posts_adapter.notifyItemInserted(posts.size() - 1);//notify your insert
+                    get_more_data();
+                }
+            }
+        });
+
+        blogs.setAdapter(posts_adapter);
+        get_more_data();//initial call
+
+
+
+        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
 
         // Setup refresh listener which triggers new data loading
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -135,7 +172,18 @@ public class BlogFragment extends Fragment {
                 // Your code to refresh the list here.
                 // Make sure you call swipeContainer.setRefreshing(false)
                 // once the network request has completed successfully.
-                fetch_posts();
+                //reset the page to 1 and clear the current list
+                try {
+                    page = 1;
+                    posts = new ArrayList<>();
+                    posts_adapter = new mBlogPostsAdapter(getActivity(), posts);
+                    posts_adapter.setHasStableIds(true);
+                    blogs.setAdapter(posts_adapter);
+                    get_more_data();
+                }catch (Exception ex)
+                {
+                    Log.e(tag,ex+"");
+                }
             }
         });
         // Configure the refreshing colors
@@ -143,6 +191,10 @@ public class BlogFragment extends Fragment {
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
+
+
+
+
 
 
 
@@ -167,72 +219,96 @@ public class BlogFragment extends Fragment {
     }
 
 
+    //fetch more posts data from the server
+    private void get_more_data() {
 
-    void fetch_posts()
-    {
-        Ion.with(getContext())
-                .load(globals.artisan_blog_base_url+"/posts?categories[]=2")//category 2 is for artisans
+
+
+
+        Ion.with(getActivity())
+                .load(globals.artisan_blog_base_url + "/posts?categories[]=2&page=" + page + "&orderby=date&per_page=" + per_page)//category 2 is for artisans
                 .asString()
                 .setCallback((e, result) -> {
 
-                    swipeContainer.setRefreshing(false);
-                    if(e==null)
-                        {
-                            try {
-                                List<mBlogPost>posts= new ArrayList<>();
-                                JSONArray json_a = new JSONArray(result);
-                                for(int i =0;i<json_a.length();i++)
-                                {
-                                    JSONObject json=json_a.getJSONObject(i);
-                                    mBlogPost post = new Gson().fromJson(json.toString(),mBlogPost.class);
-                                    posts.add(post);
-                                }
-                                set_blogs_adapter(getActivity(),posts);
-                            }catch (Exception ex)
-                            {
-                                Log.e(tag,ex.getMessage());
-                            }
-                        }else
-                        {
-                            Snackbar.make(linlay,getActivity().getString(R.string.error_occured),Snackbar.LENGTH_LONG).show();
+                    if(posts.size()>0) {
+                        mBlogPost last_inserted_post = posts.get(posts.size() - 1);
+                        if (last_inserted_post == null) {
+                            posts.remove(last_inserted_post);//remove that null item that was inserted
+                            posts_adapter.notifyItemRemoved(posts.size() - 1);//notify it
                         }
+                    }
 
+                    //delay dismissing the progress bar for a second
+                    Handler h = new Handler();
+                    h.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            swipeContainer.setRefreshing(false);
+                        }
+                    }, 1000);
 
+                    if (e != null) {
+                        Log.e(tag, "line 138 " + e);
+                        //Snackbar.make(linlay,"error 1",Snackbar.LENGTH_SHORT).show();
+                        if(posts.size()>0) {
+                            mBlogPost last_inserted_post = posts.get(posts.size() - 1);
+                            if (last_inserted_post == null) {
+                                posts.remove(last_inserted_post);//remove that null item that was inserted
+                                posts_adapter.notifyItemRemoved(posts.size() - 1);//notify it
+                            }
+                        }
+                        return;
+                    }
+
+                    if (result == null) {
+                        Log.e(tag, "line 136 result is null");
+                        //Snackbar.make(linlay,"error 2",Snackbar.LENGTH_SHORT).show();
+                        if(posts.size()>0) {
+                            mBlogPost last_inserted_post = posts.get(posts.size() - 1);
+                            if (last_inserted_post == null) {
+                                posts.remove(last_inserted_post);//remove that null item that was inserted
+                                posts_adapter.notifyItemRemoved(posts.size() - 1);//notify it
+                            }
+                        }
+                        return;
+                    }
+
+                    Log.e(tag, "result " + result);
+                    if(result.contains("rest_post_invalid_page_number"))return;
+
+                    try {
+                        JSONArray json_a = new JSONArray(result);
+                        for (int i = 0; i < json_a.length(); i++) {
+                            mBlogPost post = new Gson().fromJson(json_a.get(i).toString(), mBlogPost.class);
+                            if(!posts.contains(post)) {//dont repeat posts
+                                posts.add(post);//add to data set
+                            }
+                            posts_adapter.notifyItemInserted(posts.size() - 1);//notify the adapter
+                        }
+                        page++;
+                    } catch (Exception ex) {
+                        Log.e(tag, "line 148 " + ex);
+                        Snackbar.make(linlay,getActivity().getString(R.string.error_occured),Snackbar.LENGTH_SHORT).show();
+                        if(posts.size()>0) {
+                            mBlogPost last_inserted_post = posts.get(posts.size() - 1);
+                            if (last_inserted_post == null) {
+                                posts.remove(last_inserted_post);//remove that null item that was inserted
+                                posts_adapter.notifyItemRemoved(posts.size() - 1);//notify it
+                            }
+                        }
+                    }
                 });
-    }
-
-    public void set_blogs_adapter(Activity activity,List<mBlogPost>posts) {
-        try {
-            mBlogPostsAdapter posts_adapter = new mBlogPostsAdapter(activity,posts);
-            posts_adapter.setHasStableIds(true);
-            LinearLayoutManager lm = new LinearLayoutManager(app.ctx, LinearLayoutManager.VERTICAL, false);
-            blogs.setLayoutManager(lm);
-            blogs.setAdapter(posts_adapter);
-        } catch (Exception ex) {
-            Log.e(tag, ex.getLocalizedMessage());
-        }
-    }
-
-
-
-
-
-
-
-
+    }//.get_more_data
 
 
     //non read notifications
     public static void get_number_of_notifications() {
         Realm db = globals.getDB();
         int num_notifications = (int) db.where(mNotification.class).equalTo("is_read", false).count();
-        if(num_notifications>10)
-        {
+        if (num_notifications > 10) {
             lbl_notifications.setText("10+");
-        }
-        else
-        {
-            lbl_notifications.setText(num_notifications+"");
+        } else {
+            lbl_notifications.setText(num_notifications + "");
         }
         db.close();
     }

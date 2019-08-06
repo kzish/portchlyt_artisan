@@ -35,7 +35,7 @@
 
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/list_extra_jobs"
+            android:id="@+id/extra_jobs_recycler_view"
             android:minHeight="300dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
