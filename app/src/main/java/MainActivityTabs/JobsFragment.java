@@ -9,20 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.porchlyt_artisan.R;
-
-import java.util.List;
+import com.sirachlabs.porchlyt_artisan.R;
 
 import adapters.mjobsAdapter;
-import io.realm.OrderedRealmCollection;
-import io.realm.Realm;
-import io.realm.Sort;
-import models.mJobs.mJobs;
 
 public class JobsFragment extends Fragment {
 
@@ -83,7 +76,6 @@ public class JobsFragment extends Fragment {
     //refresh the jobs adapter to reflect any changes
     public static void refreshJobsAdapter()
     {
-        Realm db = Realm.getDefaultInstance();
 
         try {
             jad = new mjobsAdapter(ctx);
@@ -100,7 +92,6 @@ public class JobsFragment extends Fragment {
             Log.e(tag,e.getLocalizedMessage());
         }
         finally {
-            db.close();
         }
     }
 }

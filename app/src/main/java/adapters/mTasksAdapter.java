@@ -10,16 +10,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.porchlyt_artisan.R;
-import com.example.porchlyt_artisan.ViewJobActivity;
-import com.example.porchlyt_artisan.app;
-
-import org.w3c.dom.Text;
+import com.sirachlabs.porchlyt_artisan.R;
+import com.sirachlabs.porchlyt_artisan.ViewJobActivity;
+import com.sirachlabs.porchlyt_artisan.app;
 
 import java.util.List;
 
 import globals.globals;
-import io.realm.Realm;
+import models.mJobs.JobStatus;
 import models.mJobs.mJobs;
 import models.mJobs.mTask;
 
@@ -27,11 +25,12 @@ import models.mJobs.mTask;
 public class mTasksAdapter extends RecyclerView.Adapter<mTasksAdapter.myViewHolder> {
 
     mJobs job;
-    public mTasksAdapter(String _job_id)
-    {
-        Realm db = globals.getDB();
-        job      = db.copyFromRealm(   db.where(mJobs.class).equalTo("_job_id",_job_id).findFirst()  );
-        db.close();
+
+    List<mTask> tasks;
+
+    public mTasksAdapter(String _job_id) {
+        job = app.db.mJobsDao().get_job(_job_id);
+        tasks = app.db.taskDao().get_tasks(_job_id);
     }
 
     @NonNull
@@ -45,50 +44,37 @@ public class mTasksAdapter extends RecyclerView.Adapter<mTasksAdapter.myViewHold
     public void onBindViewHolder(@NonNull myViewHolder holder, int position) {
         mTasksAdapter.myViewHolder vh = (mTasksAdapter.myViewHolder) holder;
         //
-        mTask task = job.tasks.get(position);
+        mTask task = tasks.get(position);
         //
         vh.txt_task_description.setText(task.description);
-        vh.txt_task_price.setText(  globals.formatCurrency( task.price )  );
+        vh.txt_task_price.setText(globals.formatCurrencyExact(task.price));
         //
         vh.img_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //tasks_list.remove(position);
-                Realm db = globals.getDB();
-                db.executeTransaction(new Realm.Transaction() {
-                    @Override
-                    public void execute(Realm realm) {
-                        mTask t = job.tasks.get(position);
-                        //remove the task from the job
-                        db.where(mJobs.class).equalTo("_job_id",job._job_id).findFirst().tasks.remove(position);
-                        //now delete the task from realm also
-                        db.where( mTask.class ).equalTo("_id",t._id).findFirst().deleteFromRealm();
-
-                        ViewJobActivity.set_tasks_adapter();
-                        ViewJobActivity.setTotalPrice();
-                    }
-                });
-                db.close();
+                // delete the task
+                app.db.taskDao().delete_one(task);
+                ViewJobActivity.set_tasks_adapter();
+                ViewJobActivity.setTotalPrice();
             }
         });
 
 
-
-
-        if(job.end_time!=null)
+        if ( !job.job_status.equals(JobStatus.opened.toString()) )
         {
             //hide this delete button since the job is competed and no more chnages can be made
             vh.img_delete.setVisibility(View.INVISIBLE);
         }
-        if(position%2==0)
-        {
+
+        //set the background odd number colors
+        if (position % 2 == 0) {
             vh.linlay.setBackgroundColor(app.ctx.getResources().getColor(R.color.light_grey_bg));
         }
     }
 
     @Override
     public int getItemCount() {
-        return job.tasks.size();
+        return tasks.size();
     }
 
     class myViewHolder extends RecyclerView.ViewHolder {
@@ -96,14 +82,14 @@ public class mTasksAdapter extends RecyclerView.Adapter<mTasksAdapter.myViewHold
         public TextView txt_task_price;
         public ImageView img_delete;
         public LinearLayout linlay;
-        public myViewHolder(View view)
-        {
+
+        public myViewHolder(View view) {
             super(view);
-            linlay= (LinearLayout)view.findViewById(R.id.linlay);
-            txt_task_description=(TextView)view.findViewById(R.id.txt_task_description);
-            txt_task_price=(TextView)view.findViewById(R.id.txt_task_price);
-            img_delete=(ImageView) view.findViewById(R.id.img_delete);
-            linlay=(LinearLayout) view.findViewById(R.id.linlay);
+            linlay = (LinearLayout) view.findViewById(R.id.linlay);
+            txt_task_description = (TextView) view.findViewById(R.id.txt_task_description);
+            txt_task_price = (TextView) view.findViewById(R.id.txt_task_price);
+            img_delete = (ImageView) view.findViewById(R.id.img_delete);
+            linlay = (LinearLayout) view.findViewById(R.id.linlay);
         }
     }
 

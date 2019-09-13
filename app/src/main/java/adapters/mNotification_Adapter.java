@@ -1,7 +1,6 @@
 package adapters;
 
 import android.content.Intent;
-import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,16 +11,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.porchlyt_artisan.R;
-import com.example.porchlyt_artisan.ViewNotificationActivity;
-import com.example.porchlyt_artisan.app;
+import com.sirachlabs.porchlyt_artisan.R;
+import com.sirachlabs.porchlyt_artisan.ViewNotificationActivity;
+import com.sirachlabs.porchlyt_artisan.app;
 
 import java.util.List;
 
-import io.realm.Realm;
-import io.realm.Sort;
 import models.mNotification;
-import globals.*;
 
 public class mNotification_Adapter extends RecyclerView.Adapter<mNotification_Adapter.myHolder> {
 

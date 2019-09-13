@@ -20,14 +20,11 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.porchlyt_artisan.R;
-import com.example.porchlyt_artisan.ViewJobActivity;
-import com.example.porchlyt_artisan.ViewNotificationActivity;
-import com.example.porchlyt_artisan.app;
 import com.github.marlonlom.utilities.timeago.TimeAgo;
+import com.sirachlabs.porchlyt_artisan.R;
+import com.sirachlabs.porchlyt_artisan.app;
 
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
@@ -35,12 +32,7 @@ import org.joda.time.format.ISODateTimeFormat;
 import java.util.List;
 import java.util.Locale;
 
-import globals.globals;
-import io.realm.Realm;
-import io.realm.Sort;
 import models.mArtisanServiceRequest;
-import models.mJobs.mJobs;
-import models.mNotification;
 
 public class mExtra_Jobs_Adapter extends RecyclerView.Adapter<mExtra_Jobs_Adapter.myHolder> {
 
@@ -169,7 +161,6 @@ public class mExtra_Jobs_Adapter extends RecyclerView.Adapter<mExtra_Jobs_Adapte
                 @Override
                 public void run() {
 
-                    Realm db = globals.getDB();
                     Geocoder geocoder;
                     List<Address> addresses;
                     try {
@@ -190,8 +181,6 @@ public class mExtra_Jobs_Adapter extends RecyclerView.Adapter<mExtra_Jobs_Adapte
 
                     } catch (Exception ex) {
                         Log.e(tag, "asrda line 95 " + ex.getMessage());
-                    } finally {
-                        db.close();
                     }
 
                     //this will now run on the ui thread
@@ -203,7 +192,7 @@ public class mExtra_Jobs_Adapter extends RecyclerView.Adapter<mExtra_Jobs_Adapte
                             }
                         });
                     } catch (Exception ex) {
-                        db.close();
+
                     }
                 }
             });

@@ -1,33 +1,28 @@
 package globals;
 
-import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
-import android.os.Build;
 import android.os.IBinder;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
-
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
-import com.example.porchlyt_artisan.AnswerServiceRequestDialogActivity;
-import com.example.porchlyt_artisan.CardPaymentReceivedActivity;
-import com.example.porchlyt_artisan.ConfirmPaymentRecievedActivity;
-import com.example.porchlyt_artisan.DisputeNotificationActivity;
-import com.example.porchlyt_artisan.MainActivity;
-import com.example.porchlyt_artisan.R;
-import com.example.porchlyt_artisan.ViewJobActivity;
-import com.example.porchlyt_artisan.ViewNotificationActivity;
-import com.example.porchlyt_artisan.app;
+import com.sirachlabs.porchlyt_artisan.AnswerServiceRequestDialogActivity;
+import com.sirachlabs.porchlyt_artisan.CardPaymentReceivedActivity;
+import com.sirachlabs.porchlyt_artisan.ConfirmPaymentRecievedActivity;
+import com.sirachlabs.porchlyt_artisan.DisputeNotificationActivity;
+import com.sirachlabs.porchlyt_artisan.R;
+import com.sirachlabs.porchlyt_artisan.ViewJobActivity;
+import com.sirachlabs.porchlyt_artisan.ViewNotificationActivity;
+import com.sirachlabs.porchlyt_artisan.app;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
@@ -35,8 +30,6 @@ import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
-
-
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
@@ -46,8 +39,7 @@ import org.json.JSONObject;
 import MainActivityTabs.BlogFragment;
 import MainActivityTabs.JobsFragment;
 import MainActivityTabs.ProfileFragment;
-import io.realm.Realm;
-import io.realm.RealmList;
+import models.Account_status;
 import models.appSettings;
 import models.mArtisan.artisanRating;
 import models.mArtisan.mArtisan;
@@ -61,29 +53,30 @@ public class MyMqtt extends Service {
     public static Context ctx;
     static String clientId = "";//this is the client id for this specific device, this is the maintain the correct messages
     static String tag = "mqtt";
-    public static String mqtt_server="porchlyt_mqtt_server";
+    public static String mqtt_server = "porchlyt_mqtt_server";
 
     //init the mqtt service
     public static void init_(Context context) {
         ctx = context;
 
         //get the correct client id for this specific device
-        Realm db = Realm.getDefaultInstance();
-        mArtisan artisan = db.where(mArtisan.class).findFirst();
-        appSettings aps = db.where(appSettings.class).findFirst();
+        mArtisan artisan = app.db.mArtisanDao().get_artisan();
+        appSettings aps = app.db.appSettingsDao().get_app_settings();
         clientId = artisan.app_id;//use this topic for real time comms with the client app
-        db.close();
+
+
         mqttClient = new MqttAndroidClient(app.ctx, globals.mqtt_server, clientId);
         mqttClient.setCallback(new MqttCallbackExtended() {
             @Override
             public void connectComplete(boolean b, String s) {
-                subscribeToTopic(clientId, 0);//listen to these realtime notifications
+                subscribeToTopic(clientId, 1);//listen to these realtime notifications
             }
 
             @Override
             public void connectionLost(Throwable throwable) {
 
                 Log.e(tag, "connection lost: " + throwable.getLocalizedMessage());
+                connect();
             }
 
             @Override
@@ -103,31 +96,65 @@ public class MyMqtt extends Service {
                 //route the message to the correct handler
 
 
+                if (type.equals("account_status")) {
+                    String msg = json.getString("msg");
+                    appSettings aps = app.db.appSettingsDao().get_app_settings();
+                    if (msg.equals("active")) {
+                        aps.account_status = Account_status.active.toString();
+                        app.db.appSettingsDao().update(aps);
+                    }
+                    if (msg.equals("blocked")) {
+                        aps.account_status = Account_status.blocked.toString();
+                        app.db.appSettingsDao().update(aps);
+                    }
+                    if (msg.equals("remit_cash")) {
+                        aps.account_status = Account_status.must_remit_cash.toString();
+                        app.db.appSettingsDao().update(aps);
+                    }
+                    ProfileFragment.check_account_status();
+                }
+
+
                 if (type.equals("general_notification")) {
                     create_notification(json.getString("general_notification_message"));
+
+                    //get the earnings information passed in the general notification
+                    try {
+                        String json_data = json.getString("monthly_earning");
+                        JSONObject obj = new JSONObject(json_data);
+                        String total_earnings = obj.getString("total_earnings");
+                        String total_earnings_this_month = obj.getString("total_earnings_this_month");
+                        String total_jobs = obj.getString("total_jobs");
+                        String total_jobs_this_month = obj.getString("total_jobs_this_month");
+
+                        mArtisan artisan = app.db.mArtisanDao().get_artisan();
+                        artisan.earnings_since_last_disbursement = Double.parseDouble(total_earnings_this_month);
+                        app.db.mArtisanDao().update_one(artisan);
+
+                        ProfileFragment.set_my_earning();
+
+                    } catch (Exception ex) {
+                        Log.e(tag, ex + "");
+                    }
+
                 }
 
                 if (type.equals("job_cancelled")) {
                     try {
                         String notification_id = create_notification(json.getString("reason_for_cancellation"));
-                        Realm db = globals.getDB();
-                        mJobs job = db.where(mJobs.class).equalTo("_job_id", json.getString("_job_id")).findFirst();
-                        db.executeTransaction(new Realm.Transaction() {
-                            @Override
-                            public void execute(Realm realm) {
-                                job.end_time = LocalDateTime.now().toString();
-                                job.job_status = JobStatus.cancelled.toString();
-                            }
-                        });
-                        db.close();
-
+                        String _job_id = json.getString("_job_id");
+                        mJobs job = app.db.mJobsDao().get_job(_job_id);
+                        job.end_time = LocalDateTime.now().toString();
+                        job.job_status = JobStatus.cancelled.toString();
+                        app.db.mJobsDao().update_one(job);
                         //refresh the jobs adapter
                         JobsFragment.refreshJobsAdapter();
 
                         //close the ViewJobActivity if running
-                        try{
+                        try {
                             ViewJobActivity.close_activity();
-                        }catch (Exception ex){}
+                        } catch (Exception ex) {
+                        }
 
                         //open the notification activity
                         Intent notification = new Intent(app.ctx, ViewNotificationActivity.class);
@@ -141,20 +168,14 @@ public class MyMqtt extends Service {
 
 
                 if (type.equals("clear_artisan_earning")) {
-                    Realm db = globals.getDB();
                     try {
-                        mArtisan m = db.where(mArtisan.class).findFirst();
-                        db.executeTransaction(new Realm.Transaction() {
-                            @Override
-                            public void execute(Realm realm) {
-                                m.earnings_since_last_disbursement = 0;
-                            }
-                        });
+                        mArtisan artisan = app.db.mArtisanDao().get_artisan();
+                        artisan.earnings_since_last_disbursement = 0;
+                        app.db.mArtisanDao().update_one(artisan);
                         ProfileFragment.set_my_earning();
                     } catch (Exception ex) {
                         Log.e(tag, "clear_artisan_earning " + ex.getMessage());
                     } finally {
-                        db.close();
                     }
                 }
 
@@ -162,21 +183,15 @@ public class MyMqtt extends Service {
                 if (type.equals("artisan_earning")) {
                     //what the artisan has earned
                     //insert it into the database
-                    Realm db = globals.getDB();
                     double earning = json.getDouble("earning");
                     try {
-                        mArtisan m = db.where(mArtisan.class).findFirst();
-                        db.executeTransaction(new Realm.Transaction() {
-                            @Override
-                            public void execute(Realm realm) {
-                                m.earnings_since_last_disbursement += earning;
-                            }
-                        });
+                        mArtisan artisan = app.db.mArtisanDao().get_artisan();
+                        artisan.earnings_since_last_disbursement += earning;
+                        app.db.mArtisanDao().update_one(artisan);
                         ProfileFragment.set_my_earning();
                     } catch (Exception ex) {
                         Log.e(tag, "artisan_earning " + ex.getLocalizedMessage());
                     } finally {
-                        db.close();
                     }
 
                 }
@@ -185,32 +200,17 @@ public class MyMqtt extends Service {
                 if (type.equals("update_artisan_services")) {
 
                     create_notification(app.ctx.getString(R.string.your_services_have_been_updated));
-
-                    Realm db = globals.getDB();
                     try {
                         //update the artisans services
-                        mArtisan m = db.where(mArtisan.class).findFirst();
+                        mArtisan artisan = app.db.mArtisanDao().get_artisan();
                         String[] services = json.getString("services").split(":");
-                        RealmList<String> skills = new RealmList<>();
-                        for (String s : services) {
-                            skills.add(s);
-                        }
-                        db.executeTransaction(new Realm.Transaction() {
-                            @Override
-                            public void execute(Realm realm) {
-                                //update
-                                m.skills = skills;
-                            }
-                        });
-
-
+                        artisan.skills = TextUtils.join(" . ", services);
+                        app.db.mArtisanDao().update_one(artisan);
                         //display the skills
                         ProfileFragment.set_artisan_skills();
-
                     } catch (Exception ex) {
                         Toast.makeText(app.ctx, app.ctx.getString(R.string.error_updating_services), Toast.LENGTH_SHORT).show();
                     } finally {
-                        db.close();
                     }
                 }
 
@@ -229,10 +229,10 @@ public class MyMqtt extends Service {
                         cp.putExtra("_job_id", _job_id);
 
                         //close the ViewJobActivity if running
-                        try{
+                        try {
                             ViewJobActivity.close_activity();
-                        }catch (Exception ex){}
-
+                        } catch (Exception ex) {
+                        }
 
 
                         app.ctx.startActivity(cp);
@@ -242,27 +242,19 @@ public class MyMqtt extends Service {
                 }
 
                 if (type.equals("rating_notification")) {
-                    Realm db = globals.getDB();
                     try {
                         //save my rating and notify the artisan
                         int rating = json.getInt("rating");
-                        //update my rating
-                        mArtisan m = db.where(mArtisan.class).findFirst();
-                        db.executeTransaction(new Realm.Transaction() {
-                            @Override
-                            public void execute(Realm realm) {
-                                artisanRating a_rating = new artisanRating();
-                                a_rating.numStars = rating;
-                                m.artisanRating.add(a_rating);
-                                ProfileFragment.get_my_rating();//show my rating
-                            }
-                        });
-                        create_notification(app.ctx.getString(R.string.you_have_recieved_a_rating_of)+ " " +rating);
-                    } catch (Exception ex) {
+                        artisanRating a_rating = new artisanRating();
+                        a_rating.numStars = rating;
+                        //insert my rating into the db
+                        app.db.mArtisanRatingDao().insert_one(a_rating);
+                        ProfileFragment.get_my_rating();//show my rating
+                        create_notification(app.ctx.getString(R.string.you_have_recieved_a_rating_of) + " " + rating);
+                    } catch (
+                            Exception ex) {
                         Log.e(tag, ex.getMessage());
                     } finally {
-
-                        db.close();
                     }
                 }
 
@@ -274,17 +266,10 @@ public class MyMqtt extends Service {
                     try {
                         String _job_id = json.getString("_job_id");
                         String reason_for_dispute = json.getString("reason_for_dispute");
-
-                        Realm db=globals.getDB();
-                        db.executeTransaction(new Realm.Transaction() {
-                            @Override
-                            public void execute(Realm realm) {
-                                mJobs job = db.where(mJobs.class).equalTo("_job_id",_job_id).findFirst();
-                                job.job_status=JobStatus.disputed.toString();
-                                JobsFragment.refreshJobsAdapter();
-                            }
-                        });
-                        db.close();
+                        mJobs job = app.db.mJobsDao().get_job(_job_id);
+                        job.job_status = JobStatus.disputed.toString();
+                        app.db.mJobsDao().update_one(job);
+                        JobsFragment.refreshJobsAdapter();
 
                         Intent notification_activity = new Intent(app.ctx, DisputeNotificationActivity.class);
                         notification_activity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -356,7 +341,7 @@ public class MyMqtt extends Service {
         MqttConnectOptions mqttConnectOptions = new MqttConnectOptions();
         mqttConnectOptions.setAutomaticReconnect(true);
         mqttConnectOptions.setCleanSession(false);
-        mqttConnectOptions.setMaxInflight(10);
+        //mqttConnectOptions.setMaxInflight(10);
 
         try {
             mqttClient.connect(mqttConnectOptions, app.ctx, new IMqttActionListener() {
@@ -400,6 +385,21 @@ public class MyMqtt extends Service {
         }
     }
 
+    //send a string message to a specific topic
+    public static boolean publishStringMessage(String message, String topic, int qos) {
+        try {
+            MqttMessage m = new MqttMessage();
+            m.setPayload(message.getBytes());
+            m.setQos(qos);
+            m.setRetained(true);
+            mqttClient.publish(topic, m);
+            return true;
+        } catch (Exception ex) {
+            Log.e(tag, ex.getMessage());
+            return false;
+        }
+    }
+
 
     public static void subscribeToTopic(final String topic, int qos) {
         try {
@@ -428,18 +428,12 @@ public class MyMqtt extends Service {
     //insert notification into db
     private static String create_notification(String notification_text) {
         String[] notification_id = {""};
-        Realm db = globals.getDB();
         try {
-            db.executeTransaction(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    //insert a notification
-                    mNotification notification = new mNotification();
-                    notification.notification_text = notification_text;
-                    notification_id[0] = notification._id;
-                    db.insertOrUpdate(notification);
-                }
-            });
+            //insert a notification
+            mNotification notification = new mNotification();
+            notification.notification_text = notification_text;
+            notification_id[0] = notification._id;
+            app.db.mNotificationDao().insert_one(notification);
 
             //notification ontop of screen
             Notification builder = new NotificationCompat.Builder(app.ctx)
@@ -463,7 +457,7 @@ public class MyMqtt extends Service {
                 int importance = NotificationManager.IMPORTANCE_HIGH;
                 NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
                 // Create a notification and set the notification channel.
-                Notification notification = new Notification.Builder(app.ctx)
+                Notification notification_8 = new Notification.Builder(app.ctx)
                         .setContentTitle(app.ctx.getString(R.string.notification))
                         .setContentText(notification_text)
                         .setSmallIcon(R.drawable.p_logo_)
@@ -473,7 +467,7 @@ public class MyMqtt extends Service {
                 NotificationManager mNotificationManager =
                         (NotificationManager) app.ctx.getSystemService(Context.NOTIFICATION_SERVICE);
                 mNotificationManager.createNotificationChannel(mChannel);
-                mNotificationManager.notify(notifyID, notification);
+                mNotificationManager.notify(notifyID, notification_8);
 
             }
 
@@ -487,7 +481,6 @@ public class MyMqtt extends Service {
             Log.e(tag, "line 323 create_notification" + ex.getMessage());
             return "";
         } finally {
-            db.close();
             BlogFragment.get_number_of_notifications();//refresh this
         }
 
@@ -505,7 +498,7 @@ public class MyMqtt extends Service {
             connect();
         }
 
-        return START_REDELIVER_INTENT;
+        return START_STICKY;
     }
 
     @Override

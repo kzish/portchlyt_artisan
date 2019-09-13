@@ -4,7 +4,6 @@ buildscript {
     repositories {
         google()
         jcenter()
-        maven {url "https://github.com/uPhyca/stetho-realm/raw/master/maven-repo"}
         maven {url "https://repo.eclipse.org/content/repositories/paho-releases/"}
         maven {url "https://repo.eclipse.org/content/repositories/paho-snapshots/"}
         maven {url "https://jitpack.io" }
@@ -15,7 +14,6 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.5.0-alpha13'
-        classpath "io.realm:realm-gradle-plugin:5.11.0"
 
     }
 }
@@ -24,7 +22,6 @@ allprojects {
     repositories {
         google()
         jcenter()
-        maven {url "https://github.com/uPhyca/stetho-realm/raw/master/maven-repo"}
         maven {url "https://repo.eclipse.org/content/repositories/paho-releases/"}
         maven {url "https://repo.eclipse.org/content/repositories/paho-snapshots/"}
         maven {url "https://jitpack.io" }

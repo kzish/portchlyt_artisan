@@ -1,30 +1,22 @@
 package globals;
 
 
-import io.realm.Realm;
 
 public class globals {
 
     //online settings
-    final static String mqtt_server = "tcp://18.222.225.98:1883";
-    public static String base_url="http://18.222.225.98:89/apiArtisan";
-    public static String artisan_blog_base_url="http://18.222.225.98:8083/wp-json/wp/v2";
+//    final static String mqtt_server = "tcp://18.222.225.98:1883";
+//    public static String base_url="http://18.222.225.98:1111/apiArtisan";
+//    public static String artisan_blog_base_url="http://18.222.225.98:8083/wp-json/wp/v2";
 
 
     //offline settings
-    /*final static String mqtt_server = "tcp://192.168.4.1:1883";
-    public static String base_url="http://192.168.4.1:4444/apiArtisan";
+    final static String mqtt_server = "tcp://192.168.4.1:1883";
+    public static String base_url="http://192.168.4.1:1111/apiArtisan";
     public static String artisan_blog_base_url="http://192.168.4.1:70/wp-json/wp/v2";
-*/
 
 
 
-    //handle realm
-    public static Realm getDB()
-    {
-        Realm db = Realm.getDefaultInstance();
-        return db;
-    }
 
 
 
@@ -42,6 +34,8 @@ public class globals {
 
         return amount_currency;
     }
+
+
 
     //get currency exact
     public static String formatCurrencyExact(double amount) {

@@ -1,35 +1,24 @@
 package adapters;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.recyclerview.widget.DiffUtil;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.example.porchlyt_artisan.R;
-import com.example.porchlyt_artisan.ViewBlogActivity;
+import com.sirachlabs.porchlyt_artisan.R;
+import com.sirachlabs.porchlyt_artisan.ViewBlogActivity;
 
-import java.nio.channels.InterruptedByTimeoutException;
-import java.security.PublicKey;
 import java.util.List;
 
-import globals.globals;
 import models.Posts.mBlogPost;
 
 public class mBlogPostsAdapter extends RecyclerView.Adapter<mBlogPostsAdapter.myHolder> {

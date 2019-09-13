@@ -1,22 +1,26 @@
 package models.mJobs;
 
-import org.joda.time.DateTime;
+import androidx.annotation.Keep;
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+import com.sirachlabs.porchlyt_artisan.app;
+
 import org.joda.time.LocalDateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 import java.util.List;
 import java.util.UUID;
 
-import io.realm.RealmList;
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
 
 //this is a single job per visit
 //this job may have many sub tasks in the job
 //this class must match with the artian app class of mjobs
-public class mJobs extends RealmObject {
+@Entity
+@Keep
+public class mJobs {
     @PrimaryKey
+    @NonNull
     public String _id = UUID.randomUUID().toString();
     public String _job_id;//this is commmon between both the client and the artisan
     public String client_mobile;//mobile number for the cleient
@@ -31,7 +35,6 @@ public class mJobs extends RealmObject {
     public String address;//the address of the client requested from will aquire through reverse geo coding
     public double price;
     public String description;//any notes the artsian may want to note
-    public RealmList<mTask> tasks;//these are te bills or break down of the job
     public String job_status=JobStatus.opened.toString();//
 
     public mJobs() {
@@ -39,8 +42,10 @@ public class mJobs extends RealmObject {
         _job_id = UUID.randomUUID().toString();//this artisan must create the job id then send it to the client
     }
 
-    public double getTheTotalPrice() {
+
+    public double get_the_total_price() {
         double total = 0;
+        List<mTask> tasks = app.db.taskDao().get_tasks(_job_id);
         for (mTask t : tasks) {
             total += t.price;
         }

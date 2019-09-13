@@ -6,9 +6,6 @@
     <string name="cannot_be_blank">cannot be blank</string>
     <string name="we_need_to_verify_your_mobile_number">we need to verify your mobile number</string>
     <string name="save">SAVE</string>
-    <string name="max_3_skills">Max 3 skills</string>
-    <string name="select_skills">Select Skills</string>
-    <string name="select_some_skills">Select some skills</string>
 
     <string name="registration_in_progress">Registration in progress...</string>
     <string name="error_occured">Error occurred</string>
@@ -18,14 +15,11 @@
     <string name="completed_jobs">Completed\njobs</string>
     <string name="cancelled_jobs">Cancelled\njobs</string>
     <string name="disputed_jobs">Disputed\njobs</string>
-    <string name="available_jobs">Available jobs</string>
     <string name="profile">Profile</string>
     <string name="blog">Blog</string>
     <string name="availability">Availability</string>
-    <string name="ok">ok</string>
     <string name="cancel">cancel</string>
     <string name="please_wait">please wait...</string>
-    <string name="per_hour">/hr</string>
     <string name="you_will_not_recieve_any_job_notifications">you will not recieve any job notifications</string>
     <string name="you_will_recieve_job_notifications">you will recieve job notifications</string>
     <string name="tap_to_enable_your_location_settings">tap to enable your location settings</string>
@@ -43,18 +37,13 @@
     <string name="call_or_text_your_client_to_begin_communication">Call or text your client to begin communication</string>
     <string name="start_time">Start time:</string>
     <string name="end_time">End time:</string>
-    <string name="job_description">Job Description</string>
     <string name="job_details">Job Details</string>
     <string name="total_price">Total Price</string>
     <string name="add_bill">Add bill</string>
-    <string name="task_name">task name... eg bulb fitting</string>
     <string name="total_time">Total time: </string>
     <string name="days">days </string>
     <string name="hrs"> hrs </string>
     <string name="mins"> mins </string>
-    <string name="tasks">Tasks</string>
-    <string name="address">Address</string>
-    <string name="client_details">Client details</string>
     <string name="bills">bills</string>
     <string name="item">item</string>
     <string name="price">price</string>
@@ -63,10 +52,10 @@
     <string name="bill_name">bill name</string>
     <string name="sent">sent</string>
     <string name="add_some_bills">Add some bills</string>
-    <string name="full_name">full name</string>
-    <string name="email">email</string>
-    <string name="hourly_rate">hourly rate</string>
-    <string name="account_number">account number</string>
+    <string name="full_name">* full name</string>
+    <string name="email">  email</string>
+    <string name="hourly_rate">* hourly rate</string>
+    <string name="account_number">* account number</string>
     <string name="error_updating_details">Error updating details</string>
     <string name="change_profile_picture">Change Profile Picture</string>
     <string name="select_photo_from_gallery">Select photo from gallery</string>
@@ -88,11 +77,9 @@
     <string name="earnings">Earnings</string>
     <string name="saved">saved</string>
     <string name="error_updating_services">Error updating services</string>
-    <string name="skills_updated">Skills updated</string>
     <string name="cash_payment_received">Cash payment received</string>
     <string name="your_services_have_been_updated">Your services have been updated</string>
     <string name="view_notification">View notification</string>
-    <string name="error_fetching_jobs">Error fetching jobs</string>
     <string name="swipe_down_to_refresh">Swipe down to refresh</string>
     <string name="this_mobile_does_not_exist">This mobile does not exist</string>
     <string name="unknown_location">Unknown location?</string>
@@ -115,6 +102,8 @@
     <string name="banking_details">Banking details</string>
     <string name="total_earnings">Total earnings</string>
     <string name="view_more">View more</string>
+    <string name="account_blocked_remitt_cash">Account Blocked: Remitt cash</string>
+    <string name="account_blocked">Account Blocked</string>
     <string name="additional_settings">Additional Settings</string>
     <string name="jobs">Jobs</string>
     <string name="total_jobs">Total jobs</string>
@@ -125,6 +114,7 @@
     <string name="no_notifications">No notifications</string>
     <string name="no_extra_jobs">No extra jobs</string>
     <string name="this_job_is_under_dispute">This job is under dispute</string>
+    <string name="mobile">mobile</string>
 
 
 

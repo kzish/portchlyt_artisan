@@ -100,6 +100,7 @@
                     android:textStyle="bold" />
 
                 <RelativeLayout
+                    android:id="@+id/account_active"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:background="#000">
@@ -111,6 +112,37 @@
                         android:layout_centerInParent="true"
                         android:clickable="true"
                         android:text="@string/view_more"
+                        android:textColor="#fff" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/account_blocked_remit_cash"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="#f00">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:clickable="true"
+                        android:text="@string/account_blocked_remitt_cash"
+                        android:textColor="#fff" />
+                </RelativeLayout>
+
+
+                <RelativeLayout
+                    android:id="@+id/account_blocked"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="#f00">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:clickable="true"
+                        android:text="@string/account_blocked"
                         android:textColor="#fff" />
                 </RelativeLayout>
 
@@ -328,7 +360,7 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
-                    <!--mobile number and availability-->
+                    <!--availability-->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -336,23 +368,13 @@
                         android:orientation="vertical"
                         android:padding="10dp">
 
-                        <TextView
-                            android:id="@+id/txt_mobile"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="+263773303669"
-                            android:textColor="#000"
-                            android:textStyle="bold" />
-
-
                         <Switch
                             android:id="@+id/switchAvailable"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/availability" />
-
                     </LinearLayout>
-                    <!--.//mobile number and availability-->
+                    <!--.//availability-->
 
 
                     <!--details panel-->
@@ -362,6 +384,33 @@
                         android:background="#fff"
                         android:orientation="vertical"
                         android:padding="10dp">
+
+
+                        <!--mobile-->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:weightSum="1">
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1">
+
+                                <EditText
+                                    android:inputType="phone"
+                                    android:id="@+id/txt_mobile"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="57dp"
+                                    android:hint="@string/mobile"
+                                    android:singleLine="true" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+
+                        </LinearLayout>
+                        <!--.//mobile-->
 
                         <!--name-->
                         <LinearLayout

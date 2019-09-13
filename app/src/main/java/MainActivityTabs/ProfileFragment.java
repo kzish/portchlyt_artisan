@@ -34,23 +34,18 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.beardedhen.androidbootstrap.BootstrapButton;
-import com.beardedhen.androidbootstrap.BootstrapLabel;
-import com.example.porchlyt_artisan.R;
-import com.example.porchlyt_artisan.ViewMoreEarningsActivity;
-import com.example.porchlyt_artisan.app;
+import com.beardedhen.androidbootstrap.BootstrapEditText;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -59,13 +54,16 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.jackandphantom.circularimageview.CircleImage;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.koushikdutta.ion.Response;
+import com.rilixtech.CountryCodePicker;
+import com.sirachlabs.porchlyt_artisan.R;
+import com.sirachlabs.porchlyt_artisan.ViewMoreEarningsActivity;
+import com.sirachlabs.porchlyt_artisan.app;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.theartofdev.edmodo.cropper.CropImage;
-
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -84,26 +82,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-
-import globals.*;
-
-import javax.annotation.Nullable;
-
-
 import globals.MyMqtt;
-import io.realm.Realm;
+import globals.globals;
+import models.Account_status;
+import models.appSettings;
 import models.mArtisan.mArtisan;
+import models.mArtisan.mLocation;
 import models.mArtisanSearch;
 import models.mBank;
 import models.mJobs.JobStatus;
-import models.mJobs.mJobs;
-import models.mNotification;
 
 
 //todo ensure google play services is up to date and working
 public class ProfileFragment extends Fragment {
 
-    TextView txt_mobile;
+    static RelativeLayout account_blocked_remit_cash;
+    static RelativeLayout account_blocked;
+    static RelativeLayout account_active;
+
+
+    EditText txt_mobile;
     TextView txt_view_more_earnings;
     EditText txt_name;
     EditText txt_email;
@@ -146,14 +144,13 @@ public class ProfileFragment extends Fragment {
     private FusedLocationProviderClient mFusedLocationClient;
     final int LOCATION_REQUEST_CODE = 1;
 
+    public static SlidingUpPanelLayout sliding_layout;
+
 
     //
     private static final String IMAGE_DIRECTORY = "/_pictures";
     private int GALLERY = 1, CAMERA = 2;
 
-
-    double wayLatitude;
-    double wayLongitude;
 
     String tag = "Profile Fragment";
 
@@ -184,6 +181,26 @@ public class ProfileFragment extends Fragment {
 
     }
 
+    public static void check_account_status() {
+        //if active, blocked, remit?
+        appSettings aps = app.db.appSettingsDao().get_app_settings();
+        if (aps.account_status.equals(Account_status.active.toString())) {
+            account_active.setVisibility(View.VISIBLE);
+            account_blocked.setVisibility(View.GONE);
+            account_blocked_remit_cash.setVisibility(View.GONE);
+        }
+        if (aps.account_status.equals(Account_status.blocked.toString())) {
+            account_active.setVisibility(View.GONE);
+            account_blocked.setVisibility(View.VISIBLE);
+            account_blocked_remit_cash.setVisibility(View.GONE);
+        }
+        if (aps.account_status.equals(Account_status.must_remit_cash.toString())) {
+            account_active.setVisibility(View.GONE);
+            account_blocked.setVisibility(View.GONE);
+            account_blocked_remit_cash.setVisibility(View.VISIBLE);
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              final Bundle savedInstanceState) {
@@ -193,7 +210,7 @@ public class ProfileFragment extends Fragment {
         pd = new ProgressDialog(getContext());
 
         //
-        txt_mobile = (TextView) view.findViewById(R.id.txt_mobile);
+        txt_mobile = (EditText) view.findViewById(R.id.txt_mobile);
         lbl_earnings = (TextView) view.findViewById(R.id.lbl_earnings);
         txt_name = (EditText) view.findViewById(R.id.txt_name);
         txt_email = (EditText) view.findViewById(R.id.txt_email);
@@ -209,6 +226,12 @@ public class ProfileFragment extends Fragment {
         btn_save_details = (BootstrapButton) view.findViewById(R.id.btn_save_details);
         btn_save_details.setVisibility(View.GONE);
 
+        sliding_layout = (SlidingUpPanelLayout) view.findViewById(R.id.sliding_layout);
+
+        account_blocked_remit_cash = (RelativeLayout) view.findViewById(R.id.account_blocked_remit_cash);
+        account_blocked = (RelativeLayout) view.findViewById(R.id.account_blocked);
+        account_active = (RelativeLayout) view.findViewById(R.id.account_active);
+        check_account_status();
 
         lbl_completed_jobs = (TextView) view.findViewById(R.id.lbl_completed_jobs);
         lbl_cancelled_jobs = (TextView) view.findViewById(R.id.lbl_cancelled_jobs);
@@ -218,10 +241,20 @@ public class ProfileFragment extends Fragment {
 
         populate_spinner_banks();
 
+        //view more
+        account_active.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent vm = new Intent(activity, ViewMoreEarningsActivity.class);
+                vm.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getActivity().startActivity(vm);
+            }
+        });
+//also view more
         txt_view_more_earnings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent vm= new Intent(activity,ViewMoreEarningsActivity.class);
+                Intent vm = new Intent(activity, ViewMoreEarningsActivity.class);
                 vm.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getActivity().startActivity(vm);
             }
@@ -235,30 +268,33 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        Realm db = globals.getDB();
-        mArtisan m = db.where(mArtisan.class).findFirst();
+        mArtisan artisan = app.db.mArtisanDao().get_artisan();
 
         //get artisan details first time load
-        switchAvailable.setChecked(m.on_duty);
-        txt_mobile.setText(m.mobile);
-        txt_name.setText(m.name);
-        txt_email.setText(m.email);
-        txt_bank_account_number.setText(m.account_number);
+        switchAvailable.setChecked(artisan.on_duty);
+        txt_mobile.setText(artisan.mobile);
+        txt_name.setText(artisan.name);
+        txt_email.setText(artisan.email);
+        txt_bank_account_number.setText(artisan.account_number);
 
-        txt_skills.setText(TextUtils.join(" ", m.skills));
-        txt_hourly_rate.setText(m.hourlyRate + "");
-        lbl_earnings.setText(globals.formatCurrency(m.earnings_since_last_disbursement));
+        txt_skills.setText(artisan.skills);
+        txt_hourly_rate.setText(artisan.hourlyRate + "");
+        lbl_earnings.setText(globals.formatCurrency(artisan.earnings_since_last_disbursement));
 
-        if (!m.synced) {
+        if (!artisan.synced) {
             btn_save_details.setVisibility(View.VISIBLE);
         }
-        //
-        db.close();
 
         //
         set_profile_pic();
         //
         get_my_rating();
+
+        //set the last known location if it is there
+        mLocation loc = app.db.LocationDao().get_location();
+        if (loc != null) {
+            txt_location.setText(loc.last_known_location);//set the address
+        }
 
         //
         img_profile.setOnClickListener(new View.OnClickListener() {
@@ -298,6 +334,24 @@ public class ProfileFragment extends Fragment {
 
         //
         txt_email.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                btn_save_details.setVisibility(View.VISIBLE);
+            }
+        });
+
+        //
+        txt_mobile.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -376,17 +430,15 @@ public class ProfileFragment extends Fragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
                 String sdata = "";//data to be sent to the server
-                Realm db = globals.getDB();
                 try {
-                    mArtisan m = db.where(mArtisan.class).findFirst();
+                    mArtisan artisan = app.db.mArtisanDao().get_artisan();
                     JSONObject json = new JSONObject();
-                    json.put("artisan_app_id", m.app_id);
+                    json.put("artisan_app_id", artisan.app_id);
                     json.put("available", switchAvailable.isChecked());
                     sdata = json.toString();
                 } catch (Exception ex) {
                     Log.e("d", ex.getMessage());
                 } finally {
-                    db.close();
                 }
                 pd.setMessage(getString(R.string.please_wait));
                 pd.show();
@@ -418,18 +470,12 @@ public class ProfileFragment extends Fragment {
 
 
                                             //now update the local copy
-                                            Realm db = globals.getDB();
-                                            db.executeTransaction(new Realm.Transaction() {
-                                                @Override
-                                                public void execute(Realm realm) {
-                                                    mArtisan m = db.where(mArtisan.class).findFirst();
-                                                    m.on_duty = switchAvailable.isChecked();
-                                                }
-                                            });
-                                            db.close();
+                                            artisan.on_duty = switchAvailable.isChecked();
+                                            app.db.mArtisanDao().update_one(artisan);
                                         }
 
-                                    } catch (Exception ex) {
+                                    } catch (
+                                            Exception ex) {
                                         Log.e("d", ex.getMessage());
                                     }
                                 } else {
@@ -458,9 +504,11 @@ public class ProfileFragment extends Fragment {
                     @Override
                     public void onSuccess(Location location) {
                         if (location != null) {
-                            wayLatitude = location.getLatitude();
-                            wayLongitude = location.getLongitude();
-                            set_my_address(wayLatitude, wayLongitude);
+
+                            mLocation loc = app.db.LocationDao().get_location();
+                            loc.lat = location.getLatitude();
+                            loc.lng = location.getLongitude();
+                            set_my_address(loc.lat, loc.lng);
                         }
                     }
                 });
@@ -531,12 +579,14 @@ public class ProfileFragment extends Fragment {
                 }
                 for (Location location : locationResult.getLocations()) {
                     if (location != null) {
-                        wayLatitude = location.getLatitude();
-                        wayLongitude = location.getLongitude();
-                        //
-                        set_my_address(wayLatitude, wayLongitude);
-                        update_my_location(wayLatitude, wayLongitude);//send my location to the server
 
+                        mLocation loc = app.db.LocationDao().get_location();
+
+                        loc.lat = location.getLatitude();
+                        loc.lng = location.getLongitude();
+                        //
+                        set_my_address(loc.lat, loc.lng);
+                        update_my_location(loc.lat, loc.lng);//send my location to the server
                         //Log.e("l", wayLatitude + " " + wayLongitude);
                     }
                 }
@@ -554,15 +604,12 @@ public class ProfileFragment extends Fragment {
 
 
     public static void get_my_rating() {
-        Realm db = globals.getDB();
         try {
-            mArtisan m = db.where(mArtisan.class).findFirst();
-            ratingBar.setRating(m.getRating());
-
+            mArtisan artisan = app.db.mArtisanDao().get_artisan();
+            ratingBar.setRating(artisan.get_rating());
         } catch (Exception ex) {
             //
         } finally {
-            db.close();
         }
     }
 
@@ -620,63 +667,41 @@ public class ProfileFragment extends Fragment {
 
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
+
     }
 
     //tbis method will update the server, periodically my details incase any hve changed
     public void update_my_details() {
 
+        if (txt_mobile.getText().toString().equals("")) {
+            txt_mobile.setError(getString(R.string.cannot_be_blank));
+            return;
+        }
 
-        if (txt_name.getText().equals("")) {
+        if (txt_name.getText().toString().equals("")) {
             txt_name.setError(getString(R.string.cannot_be_blank));
             return;
         }
 
-        if (txt_email.getText().equals("")) {
+        /*if (txt_email.getText().equals("")) {
             txt_email.setError(getString(R.string.cannot_be_blank));
             return;
-        }
+        }*/
 
-        if (txt_bank_account_number.getText().equals("")) {
+        if (txt_bank_account_number.getText().toString().equals("")) {
             txt_bank_account_number.setError(getString(R.string.cannot_be_blank));
             return;
         }
 
-        //get the changes
-        final Realm db = globals.getDB();
-
-        db.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                //effect only when non empty
-                mArtisan m = db.where(mArtisan.class).findFirst();
-                //
-                if (txt_hourly_rate.getText().toString() != "") {
-                    m.hourlyRate = Double.parseDouble(txt_hourly_rate.getText().toString());
-                    m.synced = false;
-                }
-                //
-                if (txt_name.getText().toString() != "") {
-                    m.name = txt_name.getText().toString();
-                    m.synced = false;
-                }
-                //
-                if (txt_email.getText().toString() != "") {
-                    m.email = txt_email.getText().toString();
-                    m.synced = false;
-                }
-
-                //
-                if (txt_bank_account_number.getText().toString() != "") {
-                    m.account_number = txt_bank_account_number.getText().toString();
-                    m.synced = false;
-                }
-
-
-                m.account_bank = spinner_bank_name.getSelectedItem().toString();
-            }
-        });
-        db.close();
-
+        //effect changes
+        mArtisan artisan = app.db.mArtisanDao().get_artisan();
+        artisan.hourlyRate = Double.parseDouble(txt_hourly_rate.getText().toString());
+        artisan.mobile = txt_mobile.getText().toString();
+        artisan.name = txt_name.getText().toString();
+        artisan.email = txt_email.getText().toString();
+        artisan.account_number = txt_bank_account_number.getText().toString();
+        artisan.account_bank = spinner_bank_name.getSelectedItem().toString();
+        artisan.synced = false;
 
         //
         ProgressDialog pd = new ProgressDialog(ctx);
@@ -685,18 +710,17 @@ public class ProfileFragment extends Fragment {
         pd.show();
 
 
-        Realm db2 = globals.getDB();
-        mArtisan m = db2.where(mArtisan.class).findFirst();
-        if (!m.synced) {
+        if (!artisan.synced) {
             String sdata = "";
             try {
                 JSONObject json = new JSONObject();
-                json.put("artisan_app_id", m.app_id);
-                json.put("name", m.name);
-                json.put("email", m.email);
-                json.put("hourlyRate", m.hourlyRate);
-                json.put("account_bank", m.account_bank);
-                json.put("account_number", m.account_number);
+                json.put("artisan_app_id", artisan.app_id);
+                json.put("name", artisan.name);
+                json.put("email", artisan.email);
+                json.put("hourlyRate", artisan.hourlyRate);
+                json.put("account_bank", artisan.account_bank);
+                json.put("account_number", artisan.account_number);
+                json.put("mobile", artisan.mobile);
 
                 sdata = json.toString();
                 Log.e("d", sdata);
@@ -712,21 +736,19 @@ public class ProfileFragment extends Fragment {
                                 try {
                                     String res = new JSONObject(result).getString("res");
                                     String msg = new JSONObject(result).getString("msg");
-                                    db.executeTransaction(new Realm.Transaction() {
-                                        @Override
-                                        public void execute(Realm realm) {
-                                            if (res.equals("ok")) {
-                                                m.synced = true;//indicate that no more updates needed
-                                                btn_save_details.setVisibility(View.GONE);
-                                                Snackbar.make(content_view, getString(R.string.saved), Snackbar.LENGTH_SHORT).show();
-                                            } else {
-                                                Toast.makeText(getContext(), msg + " ", Toast.LENGTH_LONG).show();
-                                                Snackbar.make(content_view, getString(R.string.error_updating_details), Snackbar.LENGTH_SHORT).show();
-                                            }
-                                        }
-                                    });
-                                } catch (Exception ex) {
 
+                                    if (res.equals("ok")) {
+                                        artisan.synced = true;//indicate that no more updates needed
+                                        btn_save_details.setVisibility(View.GONE);
+                                        Snackbar.make(content_view, getString(R.string.saved), Snackbar.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(getContext(), msg + " ", Toast.LENGTH_LONG).show();
+                                        Snackbar.make(content_view, getString(R.string.error_updating_details), Snackbar.LENGTH_SHORT).show();
+                                    }
+                                    //update the artisan
+                                    app.db.mArtisanDao().update_one(artisan);
+                                } catch (Exception ex) {
+                                    Log.e(tag, ex.getMessage());
                                 }//try catch
                             }//.if e==null
 
@@ -734,7 +756,6 @@ public class ProfileFragment extends Fragment {
             } catch (Exception ex) {
                 Log.e(tag, ex.getMessage());
             } finally {
-                db.close();
             }
         }//if !m.synced
 
@@ -786,7 +807,7 @@ public class ProfileFragment extends Fragment {
 
 
     //
-    //handle data from camera or from gallary
+//handle data from camera or from gallary
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -879,53 +900,39 @@ public class ProfileFragment extends Fragment {
     //remove photo from img_profile and database and delete from file
     private void clearPhoto() {
 
-        Realm db = globals.getDB();
-        mArtisan m = db.where(mArtisan.class).findFirst();
+        mArtisan artisan = app.db.mArtisanDao().get_artisan();
 
         img_progress_bar.setVisibility(View.VISIBLE);
         Ion.with(ctx)
                 .load(globals.base_url + "/remove_profile_picture")
-                .setBodyParameter("artisan_app_id", m.app_id)
+                .setBodyParameter("artisan_app_id", artisan.app_id)
                 .asString()
                 .setCallback((e, result) -> {
                     img_progress_bar.setVisibility(View.INVISIBLE);
                     if (e == null) {
                         if (result.contains("ok")) {
-                            db.executeTransaction(new Realm.Transaction() {
-                                @Override
-                                public void execute(Realm realm) {
-                                    try {
-                                        File file = new File(Uri.parse(m.image).getPath());
-                                        file.delete();
-                                        m.image = null;
-                                    } catch (Exception ex) {
-                                        //
-                                    }
-                                }
-                            });
-                            db.close();
-                            img_profile.setImageDrawable(ctx.getResources().getDrawable(R.drawable.ic_worker));
-                        } else {
-                            db.close();
-                            Snackbar.make(content_view, getString(R.string.error_occured), Snackbar.LENGTH_SHORT).show();
+                            try {
+                                File file = new File(Uri.parse(artisan.image).getPath());
+                                file.delete();
+                                artisan.image = null;
+                            } catch (Exception ex) {
+                                //
+                            }
                         }
+                        img_profile.setImageDrawable(ctx.getResources().getDrawable(R.drawable.ic_worker));
                     } else {
-                        db.close();
                         Snackbar.make(content_view, getString(R.string.error_occured), Snackbar.LENGTH_SHORT).show();
                     }
                 });
     }
-
 
     //upload to server and save into the database
     private void upload_profile_picture(Uri path) {
 
 
         String artisan_app_id = "";
-        Realm db = globals.getDB();
-        mArtisan m = db.where(mArtisan.class).findFirst();
-        artisan_app_id = m.app_id;
-        db.close();
+        mArtisan artisan = app.db.mArtisanDao().get_artisan();
+        artisan_app_id = artisan.app_id;
 
         img_progress_bar.setVisibility(View.VISIBLE);
         Ion.with(ctx)
@@ -944,15 +951,8 @@ public class ProfileFragment extends Fragment {
                         if (result.contains("ok"))//uploaded successfully
                         {
                             //save the image into the database
-                            Realm db_ = globals.getDB();
-                            mArtisan m_ = db.where(mArtisan.class).findFirst();
-                            db_.executeTransaction(new Realm.Transaction() {
-                                @Override
-                                public void execute(Realm realm) {
-                                    m_.image = path.toString();//now update the artisan class in db
-                                }
-                            });
-                            db_.close();
+                            artisan.image = path.toString();//now update the artisan class in db
+                            app.db.mArtisanDao().update_one(artisan);
                             set_profile_pic();//set the profile pic now
                         } else//error occured in server
                         {
@@ -968,19 +968,17 @@ public class ProfileFragment extends Fragment {
 
     //set profile pic from db
     private void set_profile_pic() {
-        Realm db = globals.getDB();
-        mArtisan m = db.where(mArtisan.class).findFirst();
-        if (m.image != null) {
+        mArtisan artisan = app.db.mArtisanDao().get_artisan();
+        if (artisan.image != null) {
             //set the profile if one exists
             try {
-                Log.e("pp", m.image);
-                Uri contentURI = Uri.parse(m.image);
+                Log.e(tag, artisan.image);
+                Uri contentURI = Uri.parse(artisan.image);
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(ctx.getContentResolver(), contentURI);
                 img_profile.setImageBitmap(bitmap);
             } catch (Exception ex) {
-                Log.e("pp", ex + " line 178");
+                Log.e(tag, ex + " line 178");
             } finally {
-                db.close();
             }
         }
     }
@@ -994,9 +992,11 @@ public class ProfileFragment extends Fragment {
                 Geocoder geocoder;
                 List<Address> addresses;
                 try {
+
+
                     my_address = getString(R.string.unknown_location);
                     geocoder = new Geocoder(ctx, Locale.getDefault());
-                    addresses = geocoder.getFromLocation(wayLatitude, wayLongitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+                    addresses = geocoder.getFromLocation(lat, lng, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
                     String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
                     String city = addresses.get(0).getLocality();
                     String state = addresses.get(0).getAdminArea();
@@ -1012,6 +1012,11 @@ public class ProfileFragment extends Fragment {
                     if (my_address.equals("") || my_address.equals(" ") || TextUtils.isEmpty(my_address))
                         my_address = getString(R.string.unknown_location);
 
+                    //update my last location
+                    mLocation loc = app.db.LocationDao().get_location();
+                    loc.last_known_location = my_address;
+                    app.db.LocationDao().update_one(loc);
+
                 } catch (Exception ex) {
                     Log.e(tag, "line 456 " + ex.getMessage());
                 }
@@ -1021,7 +1026,8 @@ public class ProfileFragment extends Fragment {
                     activity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            txt_location.setText(my_address);//set the address
+                            mLocation loc = app.db.LocationDao().get_location();
+                            txt_location.setText(loc.last_known_location);//set the address
                             txt_location.setSelected(true);
                         }
                     });
@@ -1036,12 +1042,9 @@ public class ProfileFragment extends Fragment {
 
     //update my location
     private void update_my_location(double lat, double lng) {
-        Realm db = globals.getDB();
-
         try {
             //
-            mArtisan m = db.where(mArtisan.class).findFirst();
-
+            mArtisan m = app.db.mArtisanDao().get_artisan();
             //
             JSONObject json = new JSONObject();
             json.put("lat", lat);
@@ -1055,35 +1058,24 @@ public class ProfileFragment extends Fragment {
         } catch (Exception ex) {
             Log.e(tag, "line 936 " + ex.getMessage());
         } finally {
-            db.close();
         }
     }
 
 
     public static void set_artisan_skills() {
-        Realm db = globals.getDB();
-        mArtisan m = db.where(mArtisan.class).findFirst();
-        txt_skills.setText(TextUtils.join(" ", m.skills));
-        db.close();
+        mArtisan artisan = app.db.mArtisanDao().get_artisan();
+        txt_skills.setText(artisan.skills);
     }
 
     private int get_number_of_completed_jobs() {
-        Realm db = globals.getDB();
-        int num_jobs = (int) db.where(mJobs.class).equalTo("job_status", JobStatus.closed.toString()).count();
-        db.close();
+        int num_jobs = (int) app.db.mJobsDao().get_jobs_with_status(JobStatus.closed.toString()).size();
         return num_jobs;
-
     }
 
 
-
-
     public static void set_my_earning() {
-        Realm db = globals.getDB();
-        mArtisan m = db.where(mArtisan.class).findFirst();
-        lbl_earnings.setText(globals.formatCurrency(m.earnings_since_last_disbursement));
-        db.close();
-
+        mArtisan artisan = app.db.mArtisanDao().get_artisan();
+        lbl_earnings.setText(globals.formatCurrency(artisan.earnings_since_last_disbursement));
     }
 
 
@@ -1109,12 +1101,10 @@ public class ProfileFragment extends Fragment {
 
             }
 
-
             List<String> spinnerArray = new ArrayList<String>();
             int index = 0;
             int selected_index = 0;
-            Realm db = globals.getDB();
-            mArtisan artisan = db.where(mArtisan.class).findFirst();
+            mArtisan artisan = app.db.mArtisanDao().get_artisan();
             for (mBank bank : banks) {
 
                 spinnerArray.add(bank.Name);
@@ -1123,7 +1113,6 @@ public class ProfileFragment extends Fragment {
                 }
                 index++;
             }
-            db.close();
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(
                     getActivity(), android.R.layout.simple_spinner_item, spinnerArray);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -1152,16 +1141,14 @@ public class ProfileFragment extends Fragment {
         long num_cancelled_jobs = 0;
         long num_disputed_jobs = 0;
 
-        Realm db = globals.getDB();
-        num_completed_jobs = db.where(mJobs.class).equalTo("job_status", JobStatus.closed.toString()).count();
-        num_cancelled_jobs = db.where(mJobs.class).equalTo("job_status", JobStatus.cancelled.toString()).count();
-        num_disputed_jobs = db.where(mJobs.class).equalTo("job_status", JobStatus.disputed.toString()).count();
+        num_completed_jobs = app.db.mJobsDao().get_jobs_with_status(JobStatus.closed.toString()).size();
+        num_cancelled_jobs = app.db.mJobsDao().get_jobs_with_status(JobStatus.cancelled.toString()).size();
+        num_disputed_jobs = app.db.mJobsDao().get_jobs_with_status(JobStatus.disputed.toString()).size();
 
-        db.close();
 
-        lbl_completed_jobs.setText( globals.numberCalculation(num_completed_jobs) );
-        lbl_cancelled_jobs.setText( globals.numberCalculation(num_cancelled_jobs) );
-        lbl_disputed_jobs.setText( globals.numberCalculation(num_disputed_jobs) );
+        lbl_completed_jobs.setText(globals.numberCalculation(num_completed_jobs));
+        lbl_cancelled_jobs.setText(globals.numberCalculation(num_cancelled_jobs));
+        lbl_disputed_jobs.setText(globals.numberCalculation(num_disputed_jobs));
 
     }
 

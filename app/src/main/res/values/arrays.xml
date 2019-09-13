@@ -1,27 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <array name="job_categories">
-        <item>Carpentry</item>
-        <item>Electricals</item>
-        <item>Plumbing</item>
-        <item>Cleaning Services</item>
-        <item>Fumigation</item>
-        <item>Masonry</item>
-        <item>Painting</item>
-        <item>Home Inspection</item>
-        <item>Air Conditioner Repairs</item>
-        <item>Refrigerator Repair</item>
-        <item>Home/Office Relocation</item>
-        <item>Tilers</item>
-        <item>Swimming Pool Maintenance</item>
-        <item>Gardner</item>
-        <item>Furniture</item>
-        <item>Generator Repairs</item>
-        <item>Solar Installation</item>
-        <item>Security Systems</item>
-        <item>Roofing</item>
-        <item>Fencing</item>
-        <item>Laundry services</item>
-        <item>Gas cooker repairs</item>
-    </array>
-</resources>
+<resources></resources>

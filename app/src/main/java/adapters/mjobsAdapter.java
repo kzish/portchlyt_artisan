@@ -1,20 +1,8 @@
 package adapters;
 
-import globals.globals;
-import io.realm.OrderedRealmCollection;
-import io.realm.Realm;
-import io.realm.RealmModel;
-import io.realm.RealmRecyclerViewAdapter;
-import io.realm.Sort;
-import models.mArtisan.mArtisan;
-import models.mJobs.JobStatus;
-import models.mJobs.mJobs;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.media.Image;
-import android.media.JetPlayer;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -25,25 +13,23 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.beardedhen.androidbootstrap.BootstrapLabel;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.example.porchlyt_artisan.R;
-import com.example.porchlyt_artisan.ViewJobActivity;
-import com.example.porchlyt_artisan.app;
 import com.github.marlonlom.utilities.timeago.TimeAgo;
+import com.sirachlabs.porchlyt_artisan.R;
+import com.sirachlabs.porchlyt_artisan.ViewJobActivity;
+import com.sirachlabs.porchlyt_artisan.app;
 
-import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
 import java.util.Collections;
 import java.util.List;
+
+import models.mArtisan.mArtisan;
+import models.mJobs.JobStatus;
+import models.mJobs.mJobs;
 
 
 //this is just an adapter used to display the running jobs that this artisan has on the job fragment
@@ -54,11 +40,8 @@ public class mjobsAdapter extends RecyclerView.Adapter<mjobsAdapter.myViewHolder
     String artisan_app_id;
 
     public mjobsAdapter(Activity act) {
-        Realm db = globals.getDB();
-        List<mJobs> _jobs = db.where(mJobs.class).findAll();
-        jobs = db.copyFromRealm(_jobs);
+        jobs = app.db.mJobsDao().get_jobs();
         Collections.reverse(jobs);
-        db.close();
         this.act = act;
         this.artisan_app_id = artisan_app_id;
     }
@@ -148,8 +131,7 @@ public class mjobsAdapter extends RecyclerView.Adapter<mjobsAdapter.myViewHolder
 
     //set profile pic from db
     private void set_profile_pic(ImageView img_profile) {
-        Realm db = globals.getDB();
-        mArtisan m = db.where(mArtisan.class).findFirst();
+        mArtisan m = app.db.mArtisanDao().get_artisan();
         if (m.image != null) {
             //set the profile if one exists
             try {
@@ -159,8 +141,6 @@ public class mjobsAdapter extends RecyclerView.Adapter<mjobsAdapter.myViewHolder
                 img_profile.setImageBitmap(bitmap);
             } catch (Exception ex) {
                 Log.e("pp", ex + " line 178");
-            } finally {
-                db.close();
             }
         }
     }

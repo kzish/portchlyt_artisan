@@ -1,10 +1,12 @@
 package models;
 
+import androidx.annotation.Keep;
+
 import java.util.ArrayList;
-import java.util.List;
 
 ///this is a model of  a search item
 
+@Keep
 public class mArtisanSearch {
     public String latitude;
     public String longitude;

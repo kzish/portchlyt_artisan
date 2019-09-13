@@ -134,7 +134,6 @@
                 android:text="@string/we_want_to_know_why_you_did_not_respond"/>
 
                 <RadioGroup
-                    android:id="@+id/rd_response"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <RadioButton

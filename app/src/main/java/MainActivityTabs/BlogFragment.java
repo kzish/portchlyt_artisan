@@ -2,13 +2,10 @@ package MainActivityTabs;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,39 +13,27 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.example.porchlyt_artisan.R;
-import com.example.porchlyt_artisan.ViewExtraJobsActivity;
-import com.example.porchlyt_artisan.ViewNotificationsActivity;
-import com.example.porchlyt_artisan.app;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
-import com.koushikdutta.async.http.body.JSONObjectBody;
 import com.koushikdutta.ion.Ion;
+import com.sirachlabs.porchlyt_artisan.R;
+import com.sirachlabs.porchlyt_artisan.ViewExtraJobsActivity;
+import com.sirachlabs.porchlyt_artisan.ViewNotificationsActivity;
+import com.sirachlabs.porchlyt_artisan.app;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import adapters.mBlogPostsAdapter;
-import adapters.mExtra_Jobs_Adapter;
-import adapters.mNotification_Adapter;
-
-import globals.*;
-import io.realm.Realm;
+import globals.globals;
 import models.Posts.mBlogPost;
-import models.mArtisan.mArtisan;
-import models.mArtisanServiceRequest;
-import models.mNotification;
 
 public class BlogFragment extends Fragment {
 
@@ -146,7 +131,10 @@ public class BlogFragment extends Fragment {
                 int lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
                 //if (totalItemCount <= (lastVisibleItem + 1))
                 //direction integers: -1 for up, 1 for down, 0 will always return false.
-                if (!blogs.canScrollVertically(1))
+                //if (!blogs.canScrollVertically(1))
+                Log.e("123","totalItemCount: "+totalItemCount);
+                Log.e("123","lastVisibleItem: "+lastVisibleItem);
+                if((totalItemCount)>=lastVisibleItem && blogs.canScrollVertically(1))
                 {
                     //dont insert yet another if already loading
                     mBlogPost post = posts.get(posts.size()-1);
@@ -176,7 +164,7 @@ public class BlogFragment extends Fragment {
                 // once the network request has completed successfully.
                 //reset the page to 1 and clear the current list
                 try {
-                    page = 1;
+                    page = 1;//start at 1 for wordpress blog
                     posts = new ArrayList<>();
                     posts_adapter = new mBlogPostsAdapter(getActivity(), posts);
                     posts_adapter.setHasStableIds(true);
@@ -283,14 +271,19 @@ public class BlogFragment extends Fragment {
                         for (int i = 0; i < json_a.length(); i++) {
                             mBlogPost post = new Gson().fromJson(json_a.get(i).toString(), mBlogPost.class);
                             if(!posts.contains(post)) {//dont repeat posts
-                                posts.add(post);//add to data set
+                                //int post_index = posts.size()-1;
+                                //if(post_index<0)post_index=0;
+                                //mBlogPost last_post = posts.get(post_index);
+                                //if(last_post.id!=post.id) {
+                                    posts.add(post);//add to data set
+                                    posts_adapter.notifyItemInserted(posts.size() - 1);//notify the adapter
+                                //}
                             }
-                            posts_adapter.notifyItemInserted(posts.size() - 1);//notify the adapter
                         }
                         page++;
                     } catch (Exception ex) {
                         Log.e(tag, "line 148 " + ex);
-                        Snackbar.make(linlay,getActivity().getString(R.string.error_occured),Snackbar.LENGTH_SHORT).show();
+                        //Snackbar.make(linlay,getActivity().getString(R.string.error_occured),Snackbar.LENGTH_SHORT).show();
                         if(posts.size()>0) {
                             mBlogPost last_inserted_post = posts.get(posts.size() - 1);
                             if (last_inserted_post == null) {
@@ -303,16 +296,15 @@ public class BlogFragment extends Fragment {
     }//.get_more_data
 
 
-    //non read notifications
+    //non read notificationscount them
     public static void get_number_of_notifications() {
-        Realm db = globals.getDB();
-        int num_notifications = (int) db.where(mNotification.class).equalTo("is_read", false).count();
+
+        int num_notifications = (int) app.db.mNotificationDao().get_notifications(false).size();
         if (num_notifications > 10) {
             lbl_notifications.setText("10+");
         } else {
             lbl_notifications.setText(num_notifications + "");
         }
-        db.close();
     }
 
 }

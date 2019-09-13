@@ -29,42 +29,36 @@
             android:orientation="horizontal"
             android:weightSum="1">
 
-            <com.rilixtech.CountryCodePicker
-                android:id="@+id/ccp"
-                android:layout_width="0dp"
-                android:layout_height="57dp"
-                android:layout_weight="0.4"
-                android:background="@drawable/txt_bg"
-                android:gravity="center"
-                android:padding="5dp"
-                app:ccp_defaultNameCode="NG"
-                app:ccp_textSize="9dp" />
 
-            <com.beardedhen.androidbootstrap.BootstrapEditText
-                android:id="@+id/txt_mobile"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="0dp"
-                android:layout_height="57dp"
-                android:layout_weight="0.6"
-                android:textSize="9dp"
-                android:inputType="number"
-                app:bootstrapBrand="warning"
-                app:roundedCorners="false" />
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <EditText
+                    android:inputType="phone"
+                    android:id="@+id/txt_mobile"
+                    android:layout_width="match_parent"
+                    android:layout_height="57dp"
+                    android:hint="@string/mobile"
+                    android:singleLine="true" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
 
         </LinearLayout>
 
         <com.beardedhen.androidbootstrap.BootstrapButton
-            android:id="@+id/btnRegister"
             android:layout_width="match_parent"
             android:layout_height="57dp"
             android:onClick="Register"
             android:text="@string/register"
             android:textColor="#000"
+            app:roundedCorners="true"
             app:bootstrapBrand="warning"
             app:showOutline="true" />
 
         <TextView
-            android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

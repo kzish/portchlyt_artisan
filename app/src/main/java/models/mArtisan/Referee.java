@@ -1,24 +1,22 @@
 package models.mArtisan;
 
+import androidx.annotation.Keep;
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import java.util.UUID;
 
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
 
-public class Referee extends RealmObject
+@Entity
+@Keep
+public class Referee
 {
     @PrimaryKey
+    @NonNull
     public String _id = UUID.randomUUID().toString();
     public String refname;
     public String refemail;
     public String refmobile;
-
-    //contructor
-    public Referee()
-    {
-        refname = "";
-        refmobile = "";
-        refemail = "";
-    }
 
 }
