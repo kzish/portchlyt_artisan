@@ -56,7 +56,7 @@ dependencies {
     implementation 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.google.android.gms:play-services-location:16.0.0'
-    implementation 'com.google.android.gms:play-services-maps:16.0.0'
+    implementation 'com.google.android.gms:play-services-maps:16.1.0'
 
 
     implementation 'com.jackandphantom.android:circularimageview:1.2.0'

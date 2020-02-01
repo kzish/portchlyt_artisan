@@ -1,6 +1,6 @@
 <resources>
     <string name="registration">Registration</string>
-    <string name="app_name">porchlyt-artisan</string>
+    <string name="app_name">etixng</string>
     <string name="register">Register</string>
     <string name="sign_in">Sign in</string>
     <string name="cannot_be_blank">cannot be blank</string>

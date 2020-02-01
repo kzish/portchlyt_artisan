@@ -60,7 +60,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:text="porchlyt"
+        android:text="@string/app_name"
         android:layout_below="@+id/imageView"
         android:textColor="#dedede"
         android:textSize="48dp" />

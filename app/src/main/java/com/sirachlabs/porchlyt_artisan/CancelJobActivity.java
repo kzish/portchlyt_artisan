@@ -20,6 +20,7 @@ import com.koushikdutta.ion.Ion;
 import org.json.JSONObject;
 
 import MainActivityTabs.JobsFragment;
+import MainActivityTabs.ProfileFragment;
 import globals.globals;
 import models.mJobs.JobStatus;
 import models.mJobs.mJobs;
@@ -148,8 +149,9 @@ public class CancelJobActivity extends AppCompatActivity {
                                     mJobs job = app.db.mJobsDao().get_job(_job_id);
                                     job.job_status = JobStatus.cancelled.toString();
                                     //update the job
-                                    app.db.mJobsDao().update_many(job);
+                                    app.db.mJobsDao().update_one(job);
                                     JobsFragment.refreshJobsAdapter();
+                                    ProfileFragment.load_jobs();
                                     Toast.makeText(CancelJobActivity.this, getString(R.string.job_cancelled), Toast.LENGTH_SHORT).show();
                                     finishActivityFromChild(CancelJobActivity.this, ViewJobActivity.request_code_for_cancel_job);
                                     finish();

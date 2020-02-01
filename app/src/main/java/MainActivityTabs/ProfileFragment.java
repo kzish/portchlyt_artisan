@@ -513,9 +513,6 @@ public class ProfileFragment extends Fragment {
                     }
                 });
 
-        //
-        init_location_listner();
-
         txt_location.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -570,6 +567,7 @@ public class ProfileFragment extends Fragment {
     @SuppressLint("MissingPermission")
     private void init_location_listner() {
         //
+        if(locationCallback!=null)return;//since already initialized
         locationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
@@ -584,9 +582,12 @@ public class ProfileFragment extends Fragment {
 
                         loc.lat = location.getLatitude();
                         loc.lng = location.getLongitude();
+
+                        app.db.LocationDao().update_one(loc);
+
+                        update_my_location(loc.lat, loc.lng);//send my location to the server
                         //
                         set_my_address(loc.lat, loc.lng);
-                        update_my_location(loc.lat, loc.lng);//send my location to the server
                         //Log.e("l", wayLatitude + " " + wayLongitude);
                     }
                 }
@@ -742,8 +743,8 @@ public class ProfileFragment extends Fragment {
                                         btn_save_details.setVisibility(View.GONE);
                                         Snackbar.make(content_view, getString(R.string.saved), Snackbar.LENGTH_SHORT).show();
                                     } else {
-                                        Toast.makeText(getContext(), msg + " ", Toast.LENGTH_LONG).show();
-                                        Snackbar.make(content_view, getString(R.string.error_updating_details), Snackbar.LENGTH_SHORT).show();
+                                        //Toast.makeText(getContext(), msg + " ", Toast.LENGTH_LONG).show();
+                                        Snackbar.make(content_view, getString(R.string.error_updating_details)+ " invalid banking details", Snackbar.LENGTH_SHORT).show();
                                     }
                                     //update the artisan
                                     app.db.mArtisanDao().update_one(artisan);
@@ -1054,9 +1055,9 @@ public class ProfileFragment extends Fragment {
 
             MyMqtt.publishStringMessage(json.toString(), MyMqtt.mqtt_server);
 
-
         } catch (Exception ex) {
             Log.e(tag, "line 936 " + ex.getMessage());
+            Toast.makeText(getActivity(),"line 936 "+ex.getLocalizedMessage(),Toast.LENGTH_LONG).show();
         } finally {
         }
     }

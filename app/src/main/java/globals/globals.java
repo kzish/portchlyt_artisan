@@ -5,15 +5,16 @@ package globals;
 public class globals {
 
     //online settings
-//    final static String mqtt_server = "tcp://18.222.225.98:1883";
-//    public static String base_url="http://18.222.225.98:1111/apiArtisan";
-//    public static String artisan_blog_base_url="http://18.222.225.98:8083/wp-json/wp/v2";
+    final static String mqtt_server = "tcp://etixng.com:1883";
+    public static String base_url="http://etixng.com:1000/apiArtisan";//live
+    //public static String base_url="http://192.168.100.5:1111/apiArtisan";//local
+    public static String artisan_blog_base_url="http://etixng.com:8083/wp-json/wp/v2";
 
 
     //offline settings
-    final static String mqtt_server = "tcp://192.168.4.1:1883";
-    public static String base_url="http://192.168.4.1:1111/apiArtisan";
-    public static String artisan_blog_base_url="http://192.168.4.1:70/wp-json/wp/v2";
+//    final static String mqtt_server = "tcp://192.168.4.1:1883";
+//    public static String base_url="http://192.168.4.1:1111/apiArtisan";
+//    public static String artisan_blog_base_url="http://192.168.4.1:70/wp-json/wp/v2";
 
 
 

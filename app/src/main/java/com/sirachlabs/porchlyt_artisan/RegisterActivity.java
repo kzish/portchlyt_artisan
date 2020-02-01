@@ -115,7 +115,6 @@ public class RegisterActivity extends AppCompatActivity {
                         }
                         Log.e(tag, "result: " + result);
                             try {
-                                if (result == null) return;//return if the result is null
                                 String res = "";
                                 String msg = "";
                                 String otp = "";

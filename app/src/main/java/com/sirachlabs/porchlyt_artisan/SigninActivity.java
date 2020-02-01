@@ -62,7 +62,6 @@ public class SigninActivity extends AppCompatActivity {
     }
 
 
-    //todo provide a method to pull all my existing data from the server
     public void Sign_in(View v) {
 
         //clear all

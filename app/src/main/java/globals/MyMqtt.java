@@ -149,6 +149,7 @@ public class MyMqtt extends Service {
                         app.db.mJobsDao().update_one(job);
                         //refresh the jobs adapter
                         JobsFragment.refreshJobsAdapter();
+                        ProfileFragment.load_jobs();
 
                         //close the ViewJobActivity if running
                         try {
@@ -250,6 +251,7 @@ public class MyMqtt extends Service {
                         //insert my rating into the db
                         app.db.mArtisanRatingDao().insert_one(a_rating);
                         ProfileFragment.get_my_rating();//show my rating
+                        ProfileFragment.load_jobs();
                         create_notification(app.ctx.getString(R.string.you_have_recieved_a_rating_of) + " " + rating);
                     } catch (
                             Exception ex) {
@@ -412,7 +414,7 @@ public class MyMqtt extends Service {
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    Log.e(tag, "Subscribed fail! to " + topic);
+                    Log.e(tag, "Subscribedgl fail! to " + topic);
                 }
 
             });
